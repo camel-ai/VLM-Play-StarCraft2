@@ -1,0 +1,210 @@
+[
+    {
+        "English name": "Zealot",
+        "Type": 73,
+        "Alliance": 1,
+        "Map Position": [
+            25,
+            31
+        ],
+        "Clicked Position": [
+            387,
+            95
+        ]
+    },
+    {
+        "English name": "WidowMine",
+        "Type": 498,
+        "Alliance": 1,
+        "Map Position": [
+            45,
+            31
+        ],
+        "Clicked Position": [
+            1541,
+            116
+        ]
+    },
+    {
+        "English name": "DarkTemplar",
+        "Type": 76,
+        "Alliance": 1,
+        "Map Position": [
+            32,
+            31
+        ],
+        "Clicked Position": [
+            764,
+            104
+        ]
+    },
+    {
+        "English name": "Baneling",
+        "Type": 9,
+        "Alliance": 1,
+        "Map Position": [
+            28,
+            31
+        ],
+        "Clicked Position": [
+            580,
+            108
+        ]
+    },
+    {
+        "English name": "Stalker",
+        "Type": 74,
+        "Alliance": 1,
+        "Map Position": [
+            26,
+            36
+        ],
+        "Clicked Position": [
+            391,
+            329
+        ]
+    },
+    {
+        "English name": "Drone",
+        "Type": 104,
+        "Alliance": 1,
+        "Map Position": [
+            32,
+            38
+        ],
+        "Clicked Position": [
+            767,
+            423
+        ]
+    },
+    {
+        "English name": "Sentry",
+        "Type": 77,
+        "Alliance": 1,
+        "Map Position": [
+            24,
+            42
+        ],
+        "Clicked Position": [
+            196,
+            652
+        ]
+    },
+    {
+        "English name": "Unknown",
+        "Type": 838,
+        "Alliance": 1,
+        "Map Position": [
+            29,
+            40
+        ],
+        "Clicked Position": [
+            579,
+            541
+        ]
+    },
+    {
+        "English name": "Marine",
+        "Type": 48,
+        "Alliance": 1,
+        "Map Position": [
+            35,
+            42
+        ],
+        "Clicked Position": [
+            957,
+            650
+        ]
+    },
+    {
+        "English name": "Roach",
+        "Type": 110,
+        "Alliance": 1,
+        "Map Position": [
+            29,
+            36
+        ],
+        "Clicked Position": [
+            578,
+            332
+        ]
+    },
+    {
+        "English name": "Hellion",
+        "Type": 53,
+        "Alliance": 1,
+        "Map Position": [
+            38,
+            38
+        ],
+        "Clicked Position": [
+            1152,
+            423
+        ]
+    },
+    {
+        "English name": "Hellbat",
+        "Type": 484,
+        "Alliance": 1,
+        "Map Position": [
+            38,
+            31
+        ],
+        "Clicked Position": [
+            1155,
+            109
+        ]
+    },
+    {
+        "English name": "Adept",
+        "Type": 311,
+        "Alliance": 1,
+        "Map Position": [
+            32,
+            34
+        ],
+        "Clicked Position": [
+            768,
+            224
+        ]
+    },
+    {
+        "English name": "Reaper",
+        "Type": 49,
+        "Alliance": 1,
+        "Map Position": [
+            41,
+            42
+        ],
+        "Clicked Position": [
+            1340,
+            637
+        ]
+    },
+    {
+        "English name": "SCV",
+        "Type": 45,
+        "Alliance": 1,
+        "Map Position": [
+            41,
+            36
+        ],
+        "Clicked Position": [
+            1341,
+            329
+        ]
+    },
+    {
+        "English name": "Hydralisk",
+        "Type": 107,
+        "Alliance": 1,
+        "Map Position": [
+            32,
+            41
+        ],
+        "Clicked Position": [
+            768,
+            566
+        ]
+    }
+]

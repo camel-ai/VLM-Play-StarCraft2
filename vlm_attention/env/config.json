@@ -1,0 +1,38 @@
+{
+  "predefined_tags": {
+    "74,_PLAYER_SELF": 1,
+    "78,_PLAYER_SELF": 2,
+    "73,_PLAYER_SELF": 3,
+    "77,_PLAYER_SELF": 4,
+    "83,_PLAYER_SELF": 5,
+    "141,_PLAYER_SELF": 6,
+    "32,_PLAYER_ENEMY": 7,
+    "49,_PLAYER_ENEMY": 8,
+    "50,_PLAYER_ENEMY": 9,
+    "48,_PLAYER_ENEMY": 10,
+    "51,_PLAYER_ENEMY": 11, 
+    "54,_PLAYER_ENEMY": 12,
+    "484,_PLAYER_ENEMY": 13,
+    "55,_PLAYER_ENEMY": 14,
+    "34,_PLAYER_ENEMY": 15
+  },
+  "unit_align_dict": {
+    "74": "Stalker",
+    "73": "Zealot",
+    "77": "Sentry",
+    "78": "Phoenix",
+    "83": "Immortal",
+    "141": "Archon",
+    "32": "Siege Tank Sieged",
+    "49": "Reaper",
+    "50": "Ghost",
+    "48": "Marine",
+    "51": "Marauder",
+    "54": "Medivac",
+    "484": "Hellbat",
+    "55": "Banshee",
+    "34": "Viking Assault"
+  },
+    "self_color": [0, 255, 0],
+"enemy_color": [0, 255, 255]
+}

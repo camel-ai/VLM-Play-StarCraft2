@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/vlm_attention/env/multiprocess_test/sc2_logs" />
+      <excludeFolder url="file://$MODULE_DIR$/vlm_attention/run_env/log" />
+    </content>
+    <orderEntry type="jdk" jdkName="Python 3.10 (vlm_attention)" jdkType="Python SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PyDocumentationSettings">
+    <option name="format" value="PLAIN" />
+    <option name="myDocStringFormat" value="Plain" />
+  </component>
+</module>

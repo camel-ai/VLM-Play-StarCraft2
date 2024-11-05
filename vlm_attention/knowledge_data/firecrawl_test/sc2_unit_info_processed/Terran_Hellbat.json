@@ -1,0 +1,46 @@
+{
+  "Type": "Ground Unit",
+  "Description":  "A tough melee-range unit with conical splash damage. After finishing an Armory Hellbats can be produced from the Factory or transformed from and into the Hellion (transformation takes 3 seconds).\n\nHellbats are slower, moving about half as fast, but have 45 more health (50% more) and almost triple the damage against most units.\n\nThe Hellbat can be healed by both a gang of SCVs, which can also heal Hellions, and Medivacs that can target one Hellbat at once but not by multiple Medivacs; so no need to produce an excessive number to heal.",
+  "Built From": "Factory",
+  "Requirements": "Armory",
+  "Cost": {
+    "mineral": 100,
+    "vespene": 0,
+    "game_time": 21.0,
+    "supply": 2
+  },
+  "Hotkey": "R",
+  "Attack": {
+    "Targets": "Ground",
+    "Damage": "18 (+2)",
+    "DPS": "12.6 (+1.4)",
+    "Cooldown": "1.43",
+    "Bonus": "++12 vs Light (Infernal Pre-Igniter)",
+    "Bonus DPS": "+8.4 vs Light (Infernal Pre-Igniter)",
+    "Range": "2"
+  },
+  "Unit stats": {
+    "Defense": "135 0 (+1)",
+    "Attributes": "Biological, Light, Mechanical",
+    "Sight": "10",
+    "Speed": "3.15",
+    "Cargo size": "4"
+  },
+  "Strong against": [
+    "Zergling",
+    "Zealot"
+  ],
+  "Weak against": [
+    "Marauder",
+    "Stalker",
+    "Baneling"
+  ],
+  "Ability": "No ability found",
+  "Upgrade": "No upgrade found",
+  "Competitive Usage": {
+    "General": "Used in TvT and TvZ to stop Stimpack and Metabolic Boost rushes from turning into Siege Tank pushes and Baneling busts, as Hellions combined with Medivacs can counter harass an opponent's base after they have moved out and cause serious damage.\nEven more effective against Melee troops in chokes.\nAs a high health and relatively low DPS unit, Hellbats are best used in combination with high firepower units like the Marine and Siege Tank.\nHellbat drops are very effective at harassing mineral lines, and the Medivac's Ignite Afterburners ability makes it possible to chase down retreating harvesters.",
+    "Vs. Protoss": "Sometimes used to pressure Adepts to defend and force Stalkers to waste early gas.\nMaking a Cyclone is a bit better, usually made to defend against Oracles blind anyways.",
+    "Vs. Terran": "Hellions are used to counter any early Marine + Siege Tank pushes can force an SCV pull if not stopped mid map.\nAbove is a common with a Starport before Cyclones where a thing, Medivacs can be used best after the enemy has expanded to the natural for options than one base.\nHellions are prefered to Hellbats to match Marine range throughout the match-up and can retreat to repair as well.",
+    "Vs. Zerg": "Hellions to at least 4 is the most common TvZ opening to pressure Zerglings and Drones, to turn this into an attack timing go to 8 as fast as possible and add an Armory. That's it, Hellbats have a bit more damage than Hellions, can pressure Queens and even tank for Cyclones.\nHellbats can be used instead of Hellions to snipe low HP-bases, this is more effective with the Smart Servos upgrade.\nDespite having the Light unit tag, a single Hellbat can tank 4 baneling hits by itself, making them decent cover for marine squads outside of their poor mobility.\nIn most cases, Marauders are preferred however as they can deal with Roaches or Stalkers and have better range and DPS with Stimpack. However they are more costly and in some situations slower to mass up compared to the Hellbat/Hellion.\nWhen playing mech, Banelings counter Hellbats, hence Terrans try to split the Hellbats, to minimize the Banelings splash damage."
+  }
+}

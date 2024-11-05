@@ -1,0 +1,397 @@
+import numpy as np
+from pysc2.agents import base_agent
+from pysc2.lib import actions, features
+from collections import defaultdict
+from vlm_attention.env.config import COLORS, get_unit_name
+
+# 玩家类型常量
+_PLAYER_SELF = 1
+_PLAYER_ENEMY = 4
+
+# 方向常量
+UP, RIGHT, DOWN, LEFT = range(4)
+
+
+class UnitInfo:
+    """单位信息类"""
+
+    def __init__(self, unit, alliance, simplified_tag=None):
+        self.original_tag = int(unit.tag)  # 原始tag编号,即unit.tag
+        self.alliance = int(alliance)
+        self.unit_type = int(unit.unit_type)
+        self.simplified_tag = simplified_tag  # 简化的tag编号,即我们自己定义的编号
+        # 记录单位的最大生命值和护盾
+        self.max_health = float(unit.health)
+        self.max_shield = float(unit.shield)
+        self.update_status(unit)
+
+    def update_status(self, unit):
+        """更新单位状态"""
+        self.health = float(unit.health)
+        self.shield = float(unit.shield)
+        self.energy = float(unit.energy)
+        self.x = float(unit.x)
+        self.y = float(unit.y)
+
+    def to_dict(self):
+        """转换为字典格式"""
+        return {
+            'original_tag': self.original_tag,
+            'simplified_tag': self.simplified_tag,
+            'alliance': self.alliance,
+            'unit_type': self.unit_type,
+            'health': self.health,
+            'max_health': self.max_health,
+            'shield': self.shield,
+            'max_shield': self.max_shield,
+            'energy': self.energy,
+            'position': (self.x, self.y)
+        }
+
+
+class UnitManager:
+    """单位管理器"""
+
+    def __init__(self):
+        self.unit_info = {}  # original_tag -> UnitInfo
+        self.alliance_groups = defaultdict(list)  # alliance -> [original_tags]
+        self.simplified_tags = {}  # original_tag -> simplified_tag
+
+    def update_units(self, units):
+        """更新单位信息"""
+        # 收集新的单位信息并按alliance分组
+        temp_groups = defaultdict(list)
+        for unit in units:
+            original_tag = int(unit.tag)
+            alliance = int(unit.alliance)
+
+            if alliance not in (_PLAYER_SELF, _PLAYER_ENEMY):
+                continue
+
+            # 更新或创建单位信息
+            if original_tag not in self.unit_info:
+                self.unit_info[original_tag] = UnitInfo(unit, alliance)
+            else:
+                self.unit_info[original_tag].update_status(unit)
+
+            temp_groups[alliance].append(original_tag)
+
+        # 对每个阵营组内的tag排序
+        for alliance in temp_groups:
+            temp_groups[alliance].sort()
+
+        # 更新alliance_groups
+        self.alliance_groups = temp_groups
+
+        # 如果需要，初始化simplified tag
+        if not self.simplified_tags:
+            self.initialize_simplified_tags()
+
+    def initialize_simplified_tags(self):
+        """初始化simplified tag映射"""
+        self.simplified_tags.clear()
+        current_tag = 1
+
+        # 按阵营顺序分配tag（优先处理自己的单位）
+        alliance_order = sorted(self.alliance_groups.keys(),
+                                key=lambda x: (x != _PLAYER_SELF, x))
+
+        for alliance in alliance_order:
+            for original_tag in self.alliance_groups[alliance]:
+                self.simplified_tags[original_tag] = current_tag
+                self.unit_info[original_tag].simplified_tag = current_tag
+                current_tag += 1
+
+    def get_simplified_tag(self, original_tag):
+        """获取simplified tag"""
+        return self.simplified_tags.get(int(original_tag), -1)
+
+
+class Multimodal_bot(base_agent.BaseAgent):
+    """StarCraft II 多模态机器人代理
+
+    该代理能够:
+    1. 处理和生成多模态观察（图像、文本描述和单位信息）
+    2. 执行多种类型的动作（攻击、移动）
+    3. 管理单位信息和状态
+
+    Attributes:
+        unit_manager (UnitManager): 管理游戏中单位的信息和状态
+        step_count (int): 当前步数
+        self_color (tuple): 己方单位的RGB颜色
+        enemy_color (tuple): 敌方单位的RGB颜色
+        feature_screen_size (tuple): 特征屏幕尺寸
+        image_size (tuple): 图像尺寸
+        game_map_size (tuple): 游戏地图尺寸
+        attack_commands (list): 当前回合的攻击命令列表
+        original_move_commands (list): 当前回合的移动命令列表
+        smac_move_commands (list): 当前回合的SMAC风格移动命令列表
+        max_health_shield (dict): 记录单位的最大生命值和护盾
+    """
+    def __init__(self, self_color=(0, 255, 0), enemy_color=(0, 0, 255), feature_dims=None, rgb_dims=None,
+                 map_size=None):
+        super(Multimodal_bot, self).__init__()
+        self.unit_manager = UnitManager()
+        self.step_count = 0
+        self.self_color = self_color
+        self.enemy_color = enemy_color
+        self.feature_screen_size = feature_dims
+        self.image_size = rgb_dims
+        self.game_map_size = map_size
+
+        # 添加命令存储
+        self.attack_commands = []
+        self.original_move_commands = []
+        self.smac_move_commands = []
+        self.max_health_shield = {}
+
+    def step(self, obs):
+        """处理每一步的观察并返回动作列表"""
+        # 第一步时记录单位的最大生命值和护盾
+        if self.step_count == 1:
+            for unit in obs.observation.raw_units:
+                self.max_health_shield[unit.tag] = (unit.health, unit.shield)
+
+        # 调用父类的step方法
+        super(Multimodal_bot, self).step(obs)
+
+        # 更新单位管理器
+        self.unit_manager.update_units(obs.observation.raw_units)
+
+        actions_list = []
+
+        # 处理攻击命令
+        for attacker_simplified_tag, target_simplified_tag in self.attack_commands:
+            action = self.create_attack_action(attacker_simplified_tag, target_simplified_tag)
+            if action is not None:
+                actions_list.append(action)
+
+        # 处理原始移动命令
+        for unit_simplified_tag, grid_pos in self.original_move_commands:
+            action = self.create_move_action(unit_simplified_tag, grid_pos)
+            if action is not None:
+                actions_list.append(action)
+
+        # 处理SMAC移动命令
+        for unit_simplified_tag, direction in self.smac_move_commands:
+            action = self.create_smac_move_action(unit_simplified_tag, direction)
+            if action is not None:
+                actions_list.append(action)
+
+        # 如果没有任何命令，执行空操作
+        if not actions_list:
+            actions_list.append(actions.RAW_FUNCTIONS.no_op())
+
+        # 清除本轮的命令
+        self.attack_commands.clear()
+        self.original_move_commands.clear()
+        self.smac_move_commands.clear()
+
+        self.step_count += 1
+        return actions_list
+
+    def reset(self):
+        """重置智能体状态"""
+        super(Multimodal_bot, self).reset()
+        self.step_count = 0
+        self.attack_commands.clear()
+        self.original_move_commands.clear()
+        self.smac_move_commands.clear()
+        self.max_health_shield.clear()
+        if hasattr(self, '_simplified_to_original_cache'):
+            self._simplified_to_original_cache.clear()  # 清除缓存
+
+    def add_attack_command(self, attacker_simplified_tag, target_simplified_tag):
+        """添加攻击命令
+
+        Args:
+            attacker_simplified_tag (int): 攻击者的简化ID
+            target_simplified_tag (int): 目标的简化ID
+        """
+        # 验证单位是否存在且有效
+        attacker_tag = self.get_original_tag(attacker_simplified_tag)
+        target_tag = self.get_original_tag(target_simplified_tag)
+
+        if attacker_tag is None or target_tag is None:
+            return  # 无效的单位ID
+
+        attacker_info = self.unit_manager.unit_info[attacker_tag]
+        target_info = self.unit_manager.unit_info[target_tag]
+
+        # 验证攻击者是己方单位，目标是敌方单位
+        if (attacker_info.alliance == _PLAYER_SELF and
+                target_info.alliance == _PLAYER_ENEMY and
+                attacker_info.health > 0):  # 确保攻击者存活
+            self.attack_commands.append((attacker_simplified_tag, target_simplified_tag))
+
+    def add_move_command(self, unit_simplified_tag, grid_pos):
+        """添加移动命令"""
+        self.original_move_commands.append((unit_simplified_tag, grid_pos))
+
+    def add_smac_move_command(self, unit_simplified_tag, direction):
+        """添加SMAC移动命令"""
+        self.smac_move_commands.append((unit_simplified_tag, direction))
+    def get_raw_image_and_unit_info(self, obs):
+        """获取原始图像和详细的单位信息"""
+        # 更新单位信息
+        self.unit_manager.update_units(obs.observation.raw_units)
+
+        # 获取RGB屏幕图像
+        if 'rgb_screen' in obs.observation:
+            frame = np.array(obs.observation['rgb_screen'], dtype=np.uint8)
+        else:
+            frame = np.zeros((*self.image_size, 3), dtype=np.uint8)
+
+        # 收集单位信息
+        unit_info = []
+        for unit in obs.observation.raw_units:
+            if unit.alliance in (_PLAYER_SELF, _PLAYER_ENEMY):
+                simplified_tag = self.unit_manager.get_simplified_tag(unit.tag)
+                if simplified_tag != -1:
+                    for feature_unit in obs.observation.feature_units:
+                        if feature_unit.tag == unit.tag:
+                            # 转换坐标
+                            screen_x = int(feature_unit.x * self.image_size[0] / self.feature_screen_size[0])
+                            screen_y = int(feature_unit.y * self.image_size[1] / self.feature_screen_size[1])
+
+                            color = self.self_color if unit.alliance == _PLAYER_SELF else self.enemy_color
+
+                            # 获取单位详细信息
+                            unit_data = self.unit_manager.unit_info[unit.tag].to_dict()
+                            unit_data.update({
+                                'position': (screen_x, screen_y),
+                                'map_position': (unit.x, unit.y),
+                                'color': color
+                            })
+                            unit_info.append(unit_data)
+                            break
+
+        return frame, unit_info
+
+    def get_text_description(self, obs):
+        """获取游戏状态的文字描述"""
+        description = "Current game state:\n\n"
+
+        # 用于跟踪单位类型计数
+        type_alliance_count = {}
+
+        # 按alliance分组输出单位信息
+        for alliance in sorted(self.unit_manager.alliance_groups.keys()):
+            is_self = alliance == _PLAYER_SELF
+            description += "Our units:\n" if is_self else "Enemy units:\n"
+
+            # 获取该alliance的所有单位，并按simplified_tag排序以保持稳定性
+            units = [(tag, self.unit_manager.unit_info[tag]) for tag in self.unit_manager.alliance_groups[alliance]]
+            units.sort(key=lambda x: x[1].simplified_tag)
+
+            for original_tag, unit_info in units:
+                # 获取基础单位名称
+                base_unit_name = get_unit_name(unit_info.unit_type)
+
+                # 使用(unit_type, alliance)作为计数器的键
+                counter_key = (unit_info.unit_type, alliance)
+
+                # 获取并更新该类型的计数
+                if counter_key not in type_alliance_count:
+                    type_alliance_count[counter_key] = 1
+                else:
+                    type_alliance_count[counter_key] += 1
+
+                # 生成单位名称
+                unit_name = f"{base_unit_name}_{type_alliance_count[counter_key]}"
+
+                # 构建状态信息
+                health_info = f"Health: {unit_info.health:.1f}/{unit_info.max_health:.1f}"
+                shield_info = f", Shield: {unit_info.shield:.1f}/{unit_info.max_shield:.1f}" if is_self else ""
+
+                description += f"- {unit_name}: {health_info}{shield_info}\n"
+
+            description += "\n"
+
+        return description
+
+    def get_original_tag(self, simplified_tag):
+        """根据simplified_tag获取original_tag，使用缓存优化性能
+
+        Args:
+            simplified_tag: 简化的单位ID
+
+        Returns:
+            int or None: 原始tag，如果找不到则返回None
+        """
+        # 可以添加缓存字典作为类属性
+        if not hasattr(self, '_simplified_to_original_cache'):
+            self._simplified_to_original_cache = {}
+            # 初始化缓存
+            for original_tag, info in self.unit_manager.unit_info.items():
+                self._simplified_to_original_cache[info.simplified_tag] = original_tag
+
+        return self._simplified_to_original_cache.get(simplified_tag)
+
+    def create_move_action(self, simplified_tag, target_pos):
+        """创建移动动作
+        Args:
+            simplified_tag: 简化的单位ID
+            target_pos: 目标位置坐标 (x, y)
+        """
+        original_tag = self.get_original_tag(simplified_tag)
+        if original_tag is None:
+            return None
+
+        map_x = int(target_pos[0] * (self.game_map_size[0] / self.feature_screen_size[0]))
+        map_y = int(target_pos[1] * (self.game_map_size[1] / self.feature_screen_size[1]))
+
+        map_x = max(0, min(map_x, self.game_map_size[0] - 1))
+        map_y = max(0, min(map_y, self.game_map_size[1] - 1))
+
+        return actions.RAW_FUNCTIONS.Move_pt("now", original_tag, (map_x, map_y))
+
+    def create_smac_move_action(self, simplified_tag, direction):
+        """创建SMAC移动动作
+        Args:
+            simplified_tag: 简化的单位ID
+            direction: 移动方向
+        """
+        original_tag = self.get_original_tag(simplified_tag)
+        if original_tag is None:
+            return None
+
+        # 从unit_info获取单位当前位置
+        unit_info = self.unit_manager.unit_info[original_tag]
+        current_pos = (unit_info.x, unit_info.y)
+        new_pos = self.get_new_position(current_pos, direction)
+
+        new_pos = (
+            max(0, min(new_pos[0], self.game_map_size[0] - 1)),
+            max(0, min(new_pos[1], self.game_map_size[1] - 1))
+        )
+
+        return actions.RAW_FUNCTIONS.Move_pt("now", original_tag, new_pos)
+
+    def create_attack_action(self, attacker_simplified_tag, target_simplified_tag):
+        """创建攻击动作
+        Args:
+            attacker_simplified_tag: 攻击者的简化ID
+            target_simplified_tag: 目标的简化ID
+        """
+        attacker_original_tag = self.get_original_tag(attacker_simplified_tag)
+        target_original_tag = self.get_original_tag(target_simplified_tag)
+
+        if attacker_original_tag is None or target_original_tag is None:
+            return None
+
+        target_unit = self.unit_manager.unit_info[target_original_tag]
+        return actions.RAW_FUNCTIONS.Attack_unit("now", attacker_original_tag, target_original_tag)
+
+    def get_new_position(self, current_pos, direction):
+        """根据方向获取新位置"""
+        x, y = current_pos
+        if direction == UP:
+            return (x, y - 1)
+        elif direction == RIGHT:
+            return (x + 1, y)
+        elif direction == DOWN:
+            return (x, y + 1)
+        elif direction == LEFT:
+            return (x - 1, y)
+        return current_pos

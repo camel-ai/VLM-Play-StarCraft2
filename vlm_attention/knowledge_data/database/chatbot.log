@@ -1,0 +1,28 @@
+2024-09-29 16:25:35,064 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-09-29 16:25:35,087 DEBUG OpenAI client created
+2024-09-29 16:25:35,088 DEBUG Model set to: gpt-4o
+2024-09-29 16:25:35,088 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-09-29 16:25:35,107 DEBUG OpenAI client created
+2024-09-29 16:25:35,108 DEBUG Model set to: gpt-4o
+2024-09-29 16:25:35,120 DEBUG Querying model: gpt-4o
+2024-09-29 16:25:43,530 DEBUG Query successful
+2024-09-29 16:25:43,532 DEBUG Querying model: gpt-4o
+2024-09-29 16:25:44,323 DEBUG Query successful
+2024-09-29 16:25:44,338 DEBUG Querying model: gpt-4o
+2024-09-29 16:25:47,894 DEBUG Query successful
+2024-09-29 16:25:47,894 DEBUG Querying model: gpt-4o
+2024-09-29 16:25:55,873 DEBUG Query successful
+2024-09-29 18:53:33,772 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-09-29 18:53:33,802 DEBUG OpenAI client created
+2024-09-29 18:53:33,802 DEBUG Model set to: gpt-4o
+2024-09-29 18:53:33,802 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-09-29 18:53:33,824 DEBUG OpenAI client created
+2024-09-29 18:53:33,824 DEBUG Model set to: gpt-4o
+2024-09-29 18:53:33,843 DEBUG Querying model: gpt-4o
+2024-09-29 18:53:39,811 DEBUG Query successful
+2024-09-29 18:53:39,812 DEBUG Querying model: gpt-4o
+2024-09-29 18:53:40,803 DEBUG Query successful
+2024-09-29 18:53:40,825 DEBUG Querying model: gpt-4o
+2024-09-29 18:53:49,605 DEBUG Query successful
+2024-09-29 18:53:49,605 DEBUG Querying model: gpt-4o
+2024-09-29 18:53:58,489 DEBUG Query successful
