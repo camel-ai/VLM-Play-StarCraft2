@@ -139,7 +139,7 @@ if __name__ == "__main__":
     response1 = text_bot.query(system_prompt, user_input="What is the capital of France?", maintain_history=True)
     print("Response 1:", response1)
 
-    response2 = text_bot.query(system_prompt, user_input="What is its population?") # maintain_history 默认为 True
+    response2 = text_bot.query(system_prompt, user_input="What is its population?",maintain_history=True) # maintain_history 默认为 False
     print("Response 2:", response2)
 
     # 清除历史
