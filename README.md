@@ -271,4 +271,16 @@ class VLMAgentWithoutMove:
 
 ### 2024-10-25
 
-目前已实现从游戏引擎获取rgb图像,从游戏引擎获取unit.tag,支持多个同种单位操作(比如3个stalker).
+目前已实现从游戏引擎获取rgb图像,从游戏引擎获取unit.tag,支持多个同种单位操作(比如3个stalker). 
+
+### 2024-11-05
+更新新地图,请从pysc2/maps/VLM_ATTENTION 将地图放置在SC2/MAPS文件夹下面. 新地图为2cvs64zg 的vlm_attention版本.
+更新了调用模型的vlm_attention/utils/call_vlm.py. 现在默认为
+```python
+class TextChatbot(BaseChatbot):
+    def query(self, system_prompt, user_input, maintain_history=True):
+
+class MultimodalChatbot(BaseChatbot):
+    def query(self, system_prompt, user_input, image_path=None, maintain_history=True):
+
+```
