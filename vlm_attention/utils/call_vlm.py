@@ -50,7 +50,7 @@ class BaseChatbot:
 
 
 class TextChatbot(BaseChatbot):
-    def query(self, system_prompt, user_input, maintain_history=True):
+    def query(self, system_prompt, user_input, maintain_history=False):
         try:
             messages = [{"role": "system", "content": system_prompt}]
 
@@ -78,7 +78,7 @@ class TextChatbot(BaseChatbot):
 
 
 class MultimodalChatbot(BaseChatbot):
-    def query(self, system_prompt, user_input, image_path=None, maintain_history=True):
+    def query(self, system_prompt, user_input, image_path=None, maintain_history=False):
         try:
             messages = [{"role": "system", "content": system_prompt}]
 
