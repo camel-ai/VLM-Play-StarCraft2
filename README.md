@@ -275,7 +275,20 @@ class VLMAgentWithoutMove:
 
 ### 2024-11-05
 更新新地图,请从pysc2/maps/VLM_ATTENTION 将地图放置在SC2/MAPS文件夹下面. 新地图为2cvs64zg 的vlm_attention版本.
+```python
+目前可选地图为:
+map_list = ["vlm_attention_1",
+            "2c_vs_64zg_vlm_attention",
+            "2m_vs_1z_vlm_attention",
+            "2s_vs_1sc_vlm_attention",
+            "2s3z_vlm_attention",
+            "3m_vlm_attention",
+            "3s_vs_3z_vlm_attention"]
+```
+
 更新了调用模型的vlm_attention/utils/call_vlm.py. 现在默认为
+
+
 ```python
 class TextChatbot(BaseChatbot):
     def query(self, system_prompt, user_input, maintain_history=True):
