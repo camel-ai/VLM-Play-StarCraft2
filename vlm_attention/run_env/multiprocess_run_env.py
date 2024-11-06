@@ -24,14 +24,20 @@ from agent.vlm_agent_without_move_v5 import VLMAgentWithoutMove
 from vlm_attention import ROOT_DIR, CONFIG_FILE_RELATIVE_PATH
 from vlm_attention.env.env_core import SC2MultimodalEnv
 from agent.test_agent import TestAgent
-
+map_list = ["vlm_attention_1",
+            "2c_vs_64zg_vlm_attention",
+            "2m_vs_1z_vlm_attention",
+            "2s_vs_1sc_vlm_attention",
+            "2s3z_vlm_attention",
+            "3m_vlm_attention",
+            "3s_vs_3z_vlm_attention"]
 # Define flags
 FLAGS = flags.FLAGS
-flags.DEFINE_string("map", "vlm_attention_1", "Name of the map to use")
+flags.DEFINE_string("map", map_list[6], "Name of the map to use")
 flags.DEFINE_string("config_path", os.path.join(ROOT_DIR, CONFIG_FILE_RELATIVE_PATH), "Path to the configuration file")
 flags.DEFINE_boolean("draw_grid", False, "Whether to draw grid on screenshots")
 flags.DEFINE_boolean("annotate_units", True, "Whether to annotate units on screenshots")
-flags.DEFINE_string("agent", "RandomAgent", "Agent to use:RandomAgent, VLMAgentWithoutMove, TestAgent")
+flags.DEFINE_string("agent", "TestAgent", "Agent to use:RandomAgent, VLMAgentWithoutMove, TestAgent")
 flags.DEFINE_integer("num_processes", 4, "Number of parallel processes to use")
 flags.DEFINE_boolean("use_self_attention", True, "Whether to use self-attention in the agent")
 flags.DEFINE_boolean("use_rag", True, "Whether to use RAG in the agent")

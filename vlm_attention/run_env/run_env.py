@@ -13,13 +13,19 @@ from agent.test_agent import TestAgent
 from vlm_attention import ROOT_DIR, CONFIG_FILE_RELATIVE_PATH
 from vlm_attention.env.env_core import SC2MultimodalEnv
 
-map_list = ["vlm_attention_1","2c_vs_64zg_vlm_attention"]
+map_list = ["vlm_attention_1",
+            "2c_vs_64zg_vlm_attention",
+            "2m_vs_1z_vlm_attention",
+            "2s_vs_1sc_vlm_attention",
+            "2s3z_vlm_attention",
+            "3m_vlm_attention",
+            "3s_vs_3z_vlm_attention"]
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Define flags
 FLAGS = flags.FLAGS
-flags.DEFINE_string("map", "2c_vs_64zg_vlm_attention", "Name of the map to use,we can get from map_list")
+flags.DEFINE_string("map", map_list[3], "Name of the map to use,we can get from map_list")
 flags.DEFINE_string("config_path", os.path.join(ROOT_DIR, CONFIG_FILE_RELATIVE_PATH), "Path to the configuration file")
 flags.DEFINE_boolean("draw_grid", False, "Whether to draw grid on screenshots")
 flags.DEFINE_boolean("annotate_units", True, "Whether to annotate units on screenshots")

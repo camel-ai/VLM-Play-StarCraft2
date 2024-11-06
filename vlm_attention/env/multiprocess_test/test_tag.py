@@ -11,7 +11,13 @@ from collections import defaultdict
 from datetime import datetime
 
 FLAGS = flags.FLAGS
-
+map_list = ["vlm_attention_1",
+            "2c_vs_64zg_vlm_attention",
+            "2m_vs_1z_vlm_attention",
+            "2s_vs_1sc_vlm_attention",
+            "2s3z_vlm_attention",
+            "3m_vlm_attention",
+            "3s_vs_3z_vlm_attention"]
 # 定义屏幕尺寸常量
 FEATURE_SCREEN_SIZE = (256, 256)  # (width, height)
 RGB_SCREEN_SIZE = (1920, 1080)  # (width, height)
@@ -349,7 +355,7 @@ def run_test():
 
     try:
         with sc2_env.SC2Env(
-                map_name="2c_vs_64zg_vlm_attention",
+                map_name=map_list[2],
                 players=[sc2_env.Agent(sc2_env.Race.terran),
                          sc2_env.Bot(sc2_env.Race.random, sc2_env.Difficulty.very_easy)],
                 agent_interface_format=features.AgentInterfaceFormat(

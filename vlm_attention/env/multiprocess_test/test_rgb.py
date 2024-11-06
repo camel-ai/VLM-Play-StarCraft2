@@ -9,7 +9,13 @@ import numpy as np
 import json
 
 FLAGS = flags.FLAGS
-
+map_list = ["vlm_attention_1",
+            "2c_vs_64zg_vlm_attention",
+            "2m_vs_1z_vlm_attention",
+            "2s_vs_1sc_vlm_attention",
+            "2s3z_vlm_attention",
+            "3m_vlm_attention",
+            "3s_vs_3z_vlm_attention"]
 
 class SimpleAgent(base_agent.BaseAgent):
     def __init__(self):
