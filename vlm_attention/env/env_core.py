@@ -77,37 +77,119 @@ class SC2MultimodalEnv(gym.Env):
         self._define_spaces()
 
     def _define_spaces(self):
-        """定义观察和动作空间"""
-        # [原有的_define_spaces代码保持不变]
-        self.observation_space = spaces.Dict({
-            'text': spaces.Text(max_length=1000),
-            'image': spaces.Box(low=0, high=255, shape=(*self.rgb_dims, 3), dtype=np.uint8),
-            'unit_info': spaces.Sequence(spaces.Dict({
+        """定义观察和动作空间
+
+        Observation Space 包含三个主要部分:
+        1. Text Observation
+           - 游戏状态的文字描述
+           - 包含所有单位的生命值、护盾值等状态信息
+           - 按阵营(己方/敌方)分组组织
+
+        2. Image Observation
+           - RGB格式的游戏画面截图
+           - 形状: (height, width, 3)
+           - 像素值范围: [0, 255]
+           - 包含所有单位的可视化表示
+
+        3. Unit Information
+           - original_tag: PySC2原生单位标识符 (0 ~ 999999)
+           - simplified_tag: 简化的单位标识符 (1 ~ 99)
+           - alliance: 单位阵营 (1:己方, 4:敌方)
+           - unit_type: 单位类型编号 (0 ~ 999)
+           - unit_name: 单位类型名称
+           - health/shield/energy: 单位状态值
+           - position: 单位在屏幕上的坐标 (x, y)
+
+        Action Space 包含两种动作类型:
+        1. Attack Actions
+           Format: (attacker_tag, target_tag)
+           - attacker_tag: 发起攻击的己方单位的simplified_tag (0 ~ num_units-1)
+           - target_tag: 攻击目标的simplified_tag (0 ~ num_units-1)
+           注意: 验证时需确保attacker是己方单位，target是敌方单位
+
+        2. Move Actions
+           Format: (move_type, unit_tag, target)
+
+          2.1 Grid-based Movement (move_type = 1)
+               - unit_tag: 移动单位的simplified_tag (0 ~ num_units-1)
+               - target: 目标网格坐标 [x, y], x,y均在[0, 9]范围内
+               坐标系说明:
+               - 使用10x10网格
+               - 原点(0,0)在左上角
+               - x轴向右为正，范围[0,9]
+               - y轴向下为正，范围[0,9]
+
+           2.2 SMAC-style Movement (move_type = 2)
+               - unit_tag: 移动单位的simplified_tag (0 ~ num_units-1)
+               - target: [direction, 0]
+               direction说明:
+               - 0: 向上移动(y-1)
+               - 1: 向右移动(x+1)
+               - 2: 向下移动(y+1)
+               - 3: 向左移动(x-1)
+
+        Returns:
+            None: 直接设置类的observation_space和action_space属性
+        """
+        # 设置单位数量上限
+        self.num_units = 100
+
+        # 定义观察空间
+        unit_info_space = spaces.Sequence(
+            spaces.Dict({
+                # 原始tag范围设置为百万级，确保足够大
                 'original_tag': spaces.Discrete(1000000),
+                # 简化tag使用较小范围，便于处理
                 'simplified_tag': spaces.Discrete(100),
+                # alliance只有两个有效值：1(己方)和4(敌方)
                 'alliance': spaces.Discrete(5),
+                # unit_type范围设置为0-999
                 'unit_type': spaces.Discrete(1000),
+                # 单位名称最大长度50
                 'unit_name': spaces.Text(max_length=50),
+                # 生命值、护盾值、能量值均为非负浮点数
                 'health': spaces.Box(low=0, high=float('inf'), shape=()),
                 'max_health': spaces.Box(low=0, high=float('inf'), shape=()),
                 'shield': spaces.Box(low=0, high=float('inf'), shape=()),
                 'max_shield': spaces.Box(low=0, high=float('inf'), shape=()),
                 'energy': spaces.Box(low=0, high=float('inf'), shape=()),
+                # 位置坐标为二维非负浮点数
                 'position': spaces.Box(low=0, high=float('inf'), shape=(2,))
-            }))
+            })
+        )
+
+        self.observation_space = spaces.Dict({
+            'text': spaces.Text(max_length=1000),
+            'image': spaces.Box(
+                low=0,
+                high=255,
+                shape=(*self.rgb_dims, 3),
+                dtype=np.uint8
+            ),
+            'unit_info': unit_info_space
         })
 
-        self.num_units = 20
+        # 定义动作空间
+        attack_space = spaces.Tuple((
+            # 攻击者和目标的simplified_tag范围为[0, num_units-1]
+            spaces.Discrete(self.num_units),  # attacker_tag
+            spaces.Discrete(self.num_units)  # target_tag
+        ))
+
+        move_space = spaces.Tuple((
+            spaces.Discrete(3),  # move_type: 0(no_move), 1(grid_move), 2(smac_move)
+            spaces.Discrete(self.num_units),  # unit_tag
+            spaces.Box(  # target position or direction
+                low=0,
+                high=10,  # 改为10而不是9，因为是左闭右开区间[0,10)
+                shape=(2,),
+                dtype=np.int32
+            )
+        ))
+
         self.action_space = spaces.Dict({
-            'attack': spaces.Tuple((
-                spaces.Discrete(self.num_units),
-                spaces.Discrete(self.num_units)
-            )),
-            'move': spaces.Tuple((
-                spaces.Discrete(3),
-                spaces.Discrete(self.num_units),
-                spaces.Box(low=0, high=9, shape=(2,), dtype=np.int32)
-            ))
+            'attack': attack_space,
+            'move': move_space
         })
 
     def _get_game_result(self, timestep) -> Tuple[str, int]:
@@ -492,3 +574,4 @@ class SC2MultimodalEnv(gym.Env):
             except Exception as e:
                 logger.error(f"Unexpected error in env_context: {str(e)}")
                 raise
+

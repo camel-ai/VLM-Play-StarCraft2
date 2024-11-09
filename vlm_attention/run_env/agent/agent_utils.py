@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 """
 
 
-
 def generate_unit_selection_prompt(available_units: List[str], important_units_response: str) -> str:
     return f"""
     Based on the image analysis and the available units in our database, select the most relevant units to query for more information. 
@@ -19,6 +18,7 @@ def generate_unit_selection_prompt(available_units: List[str], important_units_r
 
     Please provide a list of unit names (comma-separated) that we should query from the database.
     """
+
 
 def summarize_unit_info(unit_info: Dict[str, Dict]) -> str:
     summary_prompt = "Summarize the key information for the following StarCraft 2 units, including their strengths, weaknesses, and special abilities:\n\n"
@@ -29,6 +29,7 @@ def summarize_unit_info(unit_info: Dict[str, Dict]) -> str:
         summary_prompt += f"Weak against: {', '.join(info.get('Weak against', ['N/A']))}\n"
         summary_prompt += f"Special ability: {info.get('Ability', 'N/A')}\n\n"
     return summary_prompt
+
 
 def generate_important_units_prompt() -> str:
     return """
@@ -54,6 +55,7 @@ def generate_important_units_prompt() -> str:
 
     Repeat this format for each important unit. Do not include any other text or explanations outside of this format.
     """
+
 
 def generate_decision_prompt() -> str:
     return """
@@ -81,7 +83,9 @@ def generate_decision_prompt() -> str:
     - Ensure that every friendly unit has exactly one attack action.
     """
 
-def format_units_info(unit_info: List[Dict[str, Any]], predefined_tags: Dict[str, int], unit_align_dict: Dict[str, str]) -> str:
+
+def format_units_info(unit_info: List[Dict[str, Any]], predefined_tags: Dict[str, int],
+                      unit_align_dict: Dict[str, str]) -> str:
     our_units = []
     enemy_units = []
 
@@ -109,6 +113,7 @@ def format_units_info(unit_info: List[Dict[str, Any]], predefined_tags: Dict[str
             logger.error(f"Error processing unit: {unit}. Error: {e}", exc_info=True)
 
     return f"Our units:\n" + "\n".join(our_units) + "\n\nEnemy units:\n" + "\n".join(enemy_units)
+
 
 def parse_vlm_response(response: str) -> List[int]:
     important_units = []
@@ -140,6 +145,7 @@ def parse_vlm_response(response: str) -> List[int]:
 
     return important_units
 
+
 def parse_vlm_decision(response: str) -> Dict[str, List[Tuple]]:
     attack_actions = []
 
@@ -168,20 +174,34 @@ def parse_vlm_decision(response: str) -> Dict[str, List[Tuple]]:
         'move': []  # Always return an empty list for move actions
     }
 
-def format_history_for_prompt(history: List[Dict[str, Any]]) -> str:
+
+def format_history_for_prompt(history: List[Dict[str, Any]], history_length: int) -> str:
     if not history:
         return "No previous steps available."
 
     formatted_history = []
     for entry in history:
         step_info = f"Step {entry['step']}:\n"
+
+        # 保持原有的重要单位信息
         step_info += f"Important Units: {', '.join(map(str, entry['important_units']))}\n"
-        step_info += "Attack Actions:\n"
-        for attack in entry['attack_actions']:
-            step_info += f"  Attack: {attack[0]} -> {attack[1]}\n"
+
+        # 攻击动作
+        if entry['attack_actions']:
+            step_info += "Attack Actions:\n"
+            for attack in entry['attack_actions']:
+                step_info += f"  Attack: {attack[0]} -> {attack[1]}\n"
+
+        # 移动动作
+        if 'move_actions' in entry and entry['move_actions']:
+            step_info += "Move Actions:\n"
+            for move_type, unit_tag, target in entry['move_actions']:
+                if move_type == 1:  # grid-based movement
+                    step_info += f"  Move: {unit_tag} -> {target}\n"
+
         formatted_history.append(step_info)
 
-    return "\n".join(formatted_history)
+    return "\n".join(formatted_history[-history_length:])  # 保持显示最近3步的历史
 
 
 def generate_enhanced_unit_selection_prompt(available_units: List[str], important_units_response: str,
@@ -231,7 +251,7 @@ def generate_unit_info_summary_prompt(unit_info: Dict[str, Dict]) -> str:
 def generate_action_normalization_prompt(text_observation: str, unit_info: str,
                                          raw_action: Dict[str, List[Tuple]]) -> str:
     return f"""
-    As a StarCraft 2 expert, review the current game state and generate optimal attack actions for our units.
+    As a StarCraft 2 expert, review the current game state and generate optimal attack and movement actions for our units.
 
     Current game state:
     {text_observation}
@@ -239,22 +259,30 @@ def generate_action_normalization_prompt(text_observation: str, unit_info: str,
     Unit information:
     {unit_info}
 
-    Please provide attack actions for each of our units using the following format:
-    ## Actions ##
+    Please provide both attack and movement actions for our units using the following format:
+    ## Attack Actions ##
     Attack: [Attacker Tag] -> [Target Tag]
     Reasoning: [Brief explanation of the strategic choice]
 
+    ## Move Actions ##
+    Move: [Unit Tag] -> [x, y]
+    Reasoning: [Brief explanation of the movement strategy]
+
     Ensure that:
-    1. All attacker tags correspond to our units.
-    2. All target tags correspond to enemy units.
-    3. Each of our units has exactly one attack action.
-    4. The actions make strategic sense given the current game state.
+    1. All attacker/moving unit tags correspond to our units.
+    2. All attack target tags correspond to enemy units.
+    3. Each unit should either attack OR move, not both.
+    4. Movement coordinates must be within the 10x10 grid (0-9 for both x and y).
+    5. All actions make strategic sense given the current game state.
 
     Example:
-    ## Actions ##
+    ## Attack Actions ##
     Attack: 1 -> 9
     Reasoning: The Stalker targets the Ghost to neutralize its high damage potential and disruptive abilities.
 
-    Attack: 2 -> 14
-    Reasoning: The Phoenix focuses on the damaged Banshee to quickly remove its air-to-ground threat.
+    ## Move Actions ##
+    Move: 2 -> [3, 4]
+    Reasoning: The Phoenix repositions to a safer grid position while maintaining attack range.
+
+    Remember: Grid coordinates [0,0] is top-left, [9,9] is bottom-right.
     """

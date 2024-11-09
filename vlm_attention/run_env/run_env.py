@@ -25,7 +25,7 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 
 # Define flags
 FLAGS = flags.FLAGS
-flags.DEFINE_string("map", map_list[3], "Name of the map to use,we can get from map_list")
+flags.DEFINE_string("map", map_list[2], "Name of the map to use,we can get from map_list")
 flags.DEFINE_string("config_path", os.path.join(ROOT_DIR, CONFIG_FILE_RELATIVE_PATH), "Path to the configuration file")
 flags.DEFINE_boolean("draw_grid", False, "Whether to draw grid on screenshots")
 flags.DEFINE_boolean("annotate_units", True, "Whether to annotate units on screenshots")
