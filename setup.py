@@ -14,6 +14,7 @@
 """Module setuptools script."""
 
 import distutils.command.build
+
 from setuptools import setup
 
 description = """PySC2 - StarCraft II Learning Environment
@@ -36,10 +37,10 @@ Read the README at https://github.com/deepmind/pysc2 for more information.
 
 class BuildCommand(distutils.command.build.build):
 
-  def initialize_options(self):
-    distutils.command.build.build.initialize_options(self)
-    # To avoid conflicting with the Bazel BUILD file.
-    self.build_base = '_build'
+    def initialize_options(self):
+        distutils.command.build.build.initialize_options(self)
+        # To avoid conflicting with the Bazel BUILD file.
+        self.build_base = '_build'
 
 
 setup(
@@ -79,6 +80,9 @@ setup(
         's2protocol',
         'sk-video',
         'websocket-client',
+        'pre-commit',
+        'camel-ai=0.2.6',
+        'pillow',
     ],
     entry_points={
         'console_scripts': [
