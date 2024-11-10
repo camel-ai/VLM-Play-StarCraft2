@@ -7,7 +7,7 @@ from datetime import datetime
 import cv2
 import numpy as np
 
-from vlm_attention.run_env.utils import _annotate_units_on_image, _draw_grid
+from vlm_attention.run_env.utils import _annotate_units_on_image, draw_grid_with_labels
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -226,27 +226,7 @@ class TestAgent:
         """在图像上绘制网格和标签"""
         h, w = frame.shape[:2]
         screen_size = (w, h)
-
-        frame_with_grid = _draw_grid(frame, screen_size, self.grid_size)
-
-        cell_w, cell_h = w // self.grid_size[0], h // self.grid_size[1]
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        font_scale = 0.7
-        font_thickness = 2
-        font_color = (255, 255, 255)
-
-        # 添加网格标签
-        for i in range(self.grid_size[0]):
-            x = i * cell_w + cell_w // 2
-            cv2.putText(frame_with_grid, str(i), (x - 10, 30), font, font_scale, (0, 0, 0), font_thickness + 1)
-            cv2.putText(frame_with_grid, str(i), (x - 10, 30), font, font_scale, font_color, font_thickness)
-
-        for i in range(self.grid_size[1]):
-            y = i * cell_h + cell_h // 2
-            cv2.putText(frame_with_grid, str(i), (10, y + 10), font, font_scale, (0, 0, 0), font_thickness + 1)
-            cv2.putText(frame_with_grid, str(i), (10, y + 10), font, font_scale, font_color, font_thickness)
-
-        return frame_with_grid
+        return draw_grid_with_labels(frame, screen_size, self.grid_size)
 
     def _save_image(self, image: np.ndarray, directory: str, prefix: str) -> str:
         """保存图像到指定目录"""

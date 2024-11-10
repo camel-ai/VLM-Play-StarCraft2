@@ -23436,3 +23436,2127 @@ openai.APIConnectionError: Connection error.
 2024-10-27 14:03:30,111 DEBUG Querying model: gpt-4o-mini-2024-07-18
 2024-10-27 14:03:38,610 DEBUG Query successful
 2024-10-27 14:03:38,673 DEBUG Querying model: gpt-4o-mini-2024-07-18
+2024-11-09 18:59:00,268 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 18:59:01,023 DEBUG Model set to: gpt-4o-mini
+2024-11-09 18:59:12,794 DEBUG Query successful
+2024-11-09 18:59:12,879 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 18:59:12,902 DEBUG Model set to: gpt-4o-mini
+2024-11-09 18:59:25,515 DEBUG Query successful
+2024-11-09 19:00:21,294 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:00:21,747 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:00:38,584 DEBUG Query successful
+2024-11-09 19:00:38,670 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:00:38,693 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:00:57,278 DEBUG Query successful
+2024-11-09 19:00:57,281 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:00:57,301 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:01:15,180 DEBUG Query successful
+2024-11-09 19:01:15,184 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:01:15,207 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:01:20,868 DEBUG Query successful
+2024-11-09 19:01:20,870 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:01:20,895 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:01:25,868 DEBUG Query successful
+2024-11-09 19:01:25,869 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:01:25,896 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:01:30,435 DEBUG Query successful
+2024-11-09 19:01:30,986 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:01:31,028 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:01:48,964 DEBUG Query successful
+2024-11-09 19:01:49,049 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:01:49,072 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:02:01,766 DEBUG Query successful
+2024-11-09 19:02:01,769 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:02:01,792 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:04:00,763 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:04:01,227 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:04:21,796 DEBUG Query successful
+2024-11-09 19:04:21,876 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:04:21,901 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:04:32,876 DEBUG Query successful
+2024-11-09 19:04:32,882 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:04:32,903 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:04:48,158 DEBUG Query successful
+2024-11-09 19:04:48,162 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:04:48,187 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:04:58,616 DEBUG Query successful
+2024-11-09 19:04:58,617 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:04:58,640 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:05:05,218 DEBUG Query successful
+2024-11-09 19:05:05,220 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:05:05,241 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:05:20,242 DEBUG Query successful
+2024-11-09 19:05:20,747 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:05:20,786 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:05:37,200 DEBUG Query successful
+2024-11-09 19:05:37,277 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:05:37,302 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:05:50,498 DEBUG Query successful
+2024-11-09 19:05:50,500 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:05:50,522 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:06:03,295 DEBUG Query successful
+2024-11-09 19:06:03,298 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:06:03,325 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:06:07,468 DEBUG Query successful
+2024-11-09 19:06:07,470 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:06:07,498 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:06:11,993 DEBUG Query successful
+2024-11-09 19:06:11,994 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:06:12,017 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:06:16,477 DEBUG Query successful
+2024-11-09 19:06:16,955 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:06:16,985 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:06:27,814 DEBUG Query successful
+2024-11-09 19:06:27,890 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:06:27,912 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:06:38,648 DEBUG Query successful
+2024-11-09 19:06:38,653 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:06:38,675 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:06:48,315 DEBUG Query successful
+2024-11-09 19:06:48,322 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:06:48,343 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:06:53,336 DEBUG Query successful
+2024-11-09 19:06:53,337 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:06:53,358 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:06:57,701 DEBUG Query successful
+2024-11-09 19:06:57,702 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:06:57,737 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:07:03,297 DEBUG Query successful
+2024-11-09 19:07:03,735 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:07:03,757 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:07:12,825 DEBUG Query successful
+2024-11-09 19:07:12,904 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:07:12,927 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:07:23,343 DEBUG Query successful
+2024-11-09 19:07:23,347 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:07:23,368 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:07:33,218 DEBUG Query successful
+2024-11-09 19:07:33,222 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:07:33,245 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:07:43,930 DEBUG Query successful
+2024-11-09 19:07:43,936 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:07:43,962 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:07:51,203 DEBUG Query successful
+2024-11-09 19:07:51,204 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:07:51,226 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:07:57,601 DEBUG Query successful
+2024-11-09 19:07:58,087 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:07:58,121 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:08:07,025 DEBUG Query successful
+2024-11-09 19:08:07,107 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:08:07,128 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:08:17,602 DEBUG Query successful
+2024-11-09 19:08:17,604 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:08:17,624 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:08:26,961 DEBUG Query successful
+2024-11-09 19:08:26,964 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:08:26,989 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:08:34,321 DEBUG Query successful
+2024-11-09 19:08:34,322 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:08:34,342 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:08:39,857 DEBUG Query successful
+2024-11-09 19:08:39,859 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:08:39,885 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:08:46,651 DEBUG Query successful
+2024-11-09 19:08:47,092 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:08:47,115 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:08:56,121 DEBUG Query successful
+2024-11-09 19:08:56,197 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:08:56,219 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:09:08,660 DEBUG Query successful
+2024-11-09 19:09:08,661 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:09:08,683 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:09:18,796 DEBUG Query successful
+2024-11-09 19:09:18,800 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:09:18,822 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:09:24,010 DEBUG Query successful
+2024-11-09 19:09:24,011 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:09:24,031 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:09:30,233 DEBUG Query successful
+2024-11-09 19:09:30,235 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:09:30,256 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:09:34,470 DEBUG Query successful
+2024-11-09 19:09:34,853 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:09:34,877 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:09:43,690 DEBUG Query successful
+2024-11-09 19:09:43,761 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:09:43,781 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:09:54,573 DEBUG Query successful
+2024-11-09 19:09:54,578 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:09:54,600 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:10:04,302 DEBUG Query successful
+2024-11-09 19:10:04,308 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:10:04,327 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:10:08,946 DEBUG Query successful
+2024-11-09 19:10:08,947 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:10:08,967 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:10:14,231 DEBUG Query successful
+2024-11-09 19:10:14,232 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:10:14,252 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:10:18,566 DEBUG Query successful
+2024-11-09 19:10:18,967 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:10:18,987 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:10:28,128 DEBUG Query successful
+2024-11-09 19:10:28,205 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:10:28,256 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:10:39,127 DEBUG Query successful
+2024-11-09 19:10:39,132 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:10:39,153 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:10:47,582 DEBUG Query successful
+2024-11-09 19:10:47,585 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:10:47,608 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:10:54,220 DEBUG Query successful
+2024-11-09 19:10:54,225 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:10:54,250 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:11:02,882 DEBUG Query successful
+2024-11-09 19:11:02,883 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:11:02,909 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:11:08,451 DEBUG Query successful
+2024-11-09 19:11:08,854 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:11:08,875 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:11:18,211 DEBUG Query successful
+2024-11-09 19:11:18,289 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:11:18,313 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:11:28,751 DEBUG Query successful
+2024-11-09 19:11:28,755 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:11:28,780 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:11:38,165 DEBUG Query successful
+2024-11-09 19:11:38,166 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:11:38,187 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:11:43,576 DEBUG Query successful
+2024-11-09 19:11:43,580 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:11:43,601 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:11:48,781 DEBUG Query successful
+2024-11-09 19:11:48,786 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:11:48,805 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:11:53,830 DEBUG Query successful
+2024-11-09 19:11:54,213 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:11:54,234 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:12:03,520 DEBUG Query successful
+2024-11-09 19:12:03,607 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:12:03,633 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:12:14,826 DEBUG Query successful
+2024-11-09 19:12:14,827 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:12:14,850 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:12:22,827 DEBUG Query successful
+2024-11-09 19:12:22,830 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:12:22,851 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:25:00,639 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:25:01,108 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:25:10,958 DEBUG Query successful
+2024-11-09 19:25:11,036 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:25:11,056 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:25:21,233 DEBUG Query successful
+2024-11-09 19:25:21,238 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:25:21,260 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:25:30,889 DEBUG Query successful
+2024-11-09 19:25:30,893 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:25:30,914 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:25:36,420 DEBUG Query successful
+2024-11-09 19:25:36,980 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:25:37,008 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:25:46,949 DEBUG Query successful
+2024-11-09 19:25:47,027 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:25:47,050 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:25:59,697 DEBUG Query successful
+2024-11-09 19:25:59,702 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:25:59,723 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:26:08,395 DEBUG Query successful
+2024-11-09 19:26:08,397 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:26:08,419 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:26:13,578 DEBUG Query successful
+2024-11-09 19:26:14,168 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:26:14,199 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:26:23,145 DEBUG Query successful
+2024-11-09 19:26:23,227 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:26:23,251 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:26:34,123 DEBUG Query successful
+2024-11-09 19:26:34,125 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:26:34,146 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:26:44,455 DEBUG Query successful
+2024-11-09 19:26:44,458 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:26:44,478 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:26:51,210 DEBUG Query successful
+2024-11-09 19:26:51,623 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:26:51,645 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:27:00,611 DEBUG Query successful
+2024-11-09 19:27:00,685 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:27:00,705 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:27:11,589 DEBUG Query successful
+2024-11-09 19:27:11,594 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:27:11,614 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:27:21,050 DEBUG Query successful
+2024-11-09 19:27:21,056 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:27:21,077 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:27:26,583 DEBUG Query successful
+2024-11-09 19:27:26,978 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:27:27,031 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:27:36,339 DEBUG Query successful
+2024-11-09 19:27:36,416 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:27:36,436 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:27:47,572 DEBUG Query successful
+2024-11-09 19:27:47,577 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:27:47,599 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:27:56,868 DEBUG Query successful
+2024-11-09 19:27:56,871 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:27:56,890 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:28:02,026 DEBUG Query successful
+2024-11-09 19:28:02,461 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:28:02,489 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:28:10,642 DEBUG Query successful
+2024-11-09 19:28:10,728 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:28:10,748 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:28:22,736 DEBUG Query successful
+2024-11-09 19:28:22,740 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:28:22,760 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:28:31,497 DEBUG Query successful
+2024-11-09 19:28:31,499 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:28:31,522 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:28:35,810 DEBUG Query successful
+2024-11-09 19:28:36,221 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:28:36,245 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:28:44,527 DEBUG Query successful
+2024-11-09 19:28:44,602 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:28:44,630 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:28:58,853 DEBUG Query successful
+2024-11-09 19:28:58,859 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:28:58,880 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:29:08,025 DEBUG Query successful
+2024-11-09 19:29:08,028 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:29:08,048 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:29:13,118 DEBUG Query successful
+2024-11-09 19:29:13,749 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:29:13,805 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:29:22,444 DEBUG Query successful
+2024-11-09 19:29:22,525 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:29:22,546 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:29:33,756 DEBUG Query successful
+2024-11-09 19:29:33,762 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:29:33,783 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:29:45,731 DEBUG Query successful
+2024-11-09 19:29:45,733 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:29:45,754 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:29:50,587 DEBUG Query successful
+2024-11-09 19:29:51,056 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:29:51,083 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:30:00,856 DEBUG Query successful
+2024-11-09 19:30:00,931 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:30:00,953 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:30:10,741 DEBUG Query successful
+2024-11-09 19:30:10,743 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:30:10,764 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:30:20,592 DEBUG Query successful
+2024-11-09 19:30:20,596 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:30:20,616 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:30:25,921 DEBUG Query successful
+2024-11-09 19:30:26,337 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:30:26,358 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:30:34,968 DEBUG Query successful
+2024-11-09 19:30:35,044 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:30:35,068 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:30:45,716 DEBUG Query successful
+2024-11-09 19:30:45,717 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:30:45,740 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:30:54,425 DEBUG Query successful
+2024-11-09 19:30:54,427 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:30:54,448 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:30:58,057 DEBUG Query successful
+2024-11-09 19:30:58,465 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:30:58,487 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:31:07,785 DEBUG Query successful
+2024-11-09 19:31:07,863 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:31:07,885 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:31:18,989 DEBUG Query successful
+2024-11-09 19:31:18,993 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:31:19,020 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:31:28,392 DEBUG Query successful
+2024-11-09 19:31:28,394 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:31:28,416 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:31:31,392 DEBUG Query successful
+2024-11-09 19:31:31,796 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:31:31,816 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:31:41,324 DEBUG Query successful
+2024-11-09 19:31:41,415 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:31:41,441 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:31:50,033 DEBUG Query successful
+2024-11-09 19:31:50,039 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:31:50,058 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:31:59,296 DEBUG Query successful
+2024-11-09 19:31:59,299 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:31:59,321 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:32:02,898 DEBUG Query successful
+2024-11-09 19:32:03,320 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:32:03,341 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:32:11,133 DEBUG Query successful
+2024-11-09 19:32:11,211 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:32:11,232 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:32:19,161 DEBUG Query successful
+2024-11-09 19:32:19,166 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:32:19,188 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:32:28,889 DEBUG Query successful
+2024-11-09 19:32:28,896 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:32:28,919 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:32:33,293 DEBUG Query successful
+2024-11-09 19:32:33,730 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:32:33,752 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:32:42,542 DEBUG Query successful
+2024-11-09 19:32:42,624 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:32:42,645 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:32:51,293 DEBUG Query successful
+2024-11-09 19:32:51,295 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:32:51,316 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:32:59,688 DEBUG Query successful
+2024-11-09 19:32:59,691 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:32:59,715 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:33:02,700 DEBUG Query successful
+2024-11-09 19:33:03,092 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:33:03,116 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:33:13,016 DEBUG Query successful
+2024-11-09 19:33:13,091 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:33:13,112 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:33:24,168 DEBUG Query successful
+2024-11-09 19:33:24,173 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:33:24,193 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:33:32,890 DEBUG Query successful
+2024-11-09 19:33:32,893 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:33:32,912 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:33:36,056 DEBUG Query successful
+2024-11-09 19:33:36,448 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:33:36,468 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:33:46,668 DEBUG Query successful
+2024-11-09 19:33:46,750 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:33:46,771 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:33:58,817 DEBUG Query successful
+2024-11-09 19:33:58,822 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:33:58,841 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:34:08,422 DEBUG Query successful
+2024-11-09 19:34:08,424 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:34:08,445 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:34:13,065 DEBUG Query successful
+2024-11-09 19:34:13,480 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:34:13,501 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:34:22,386 DEBUG Query successful
+2024-11-09 19:34:22,459 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:34:22,481 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:34:32,781 DEBUG Query successful
+2024-11-09 19:34:32,786 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:34:32,806 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:34:41,028 DEBUG Query successful
+2024-11-09 19:34:41,034 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:34:41,056 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:34:43,779 DEBUG Query successful
+2024-11-09 19:34:44,177 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:34:44,197 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:34:53,061 DEBUG Query successful
+2024-11-09 19:34:53,137 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:34:53,161 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:35:05,067 DEBUG Query successful
+2024-11-09 19:35:05,073 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:35:05,094 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:35:15,455 DEBUG Query successful
+2024-11-09 19:35:15,457 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:35:15,481 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:35:18,324 DEBUG Query successful
+2024-11-09 19:35:18,700 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:35:18,721 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:35:28,977 DEBUG Query successful
+2024-11-09 19:35:29,063 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:35:29,087 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:35:40,578 DEBUG Query successful
+2024-11-09 19:35:40,584 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:35:40,606 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:35:50,283 DEBUG Query successful
+2024-11-09 19:35:50,284 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:35:50,305 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:35:53,456 DEBUG Query successful
+2024-11-09 19:35:53,837 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:35:53,860 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:36:03,192 DEBUG Query successful
+2024-11-09 19:36:03,268 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:36:03,316 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:36:12,640 DEBUG Query successful
+2024-11-09 19:36:12,645 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:36:12,665 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:36:20,997 DEBUG Query successful
+2024-11-09 19:36:20,997 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:36:21,019 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:36:24,505 DEBUG Query successful
+2024-11-09 19:36:24,893 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:36:24,914 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:36:37,301 DEBUG Query successful
+2024-11-09 19:36:37,374 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:36:37,395 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:36:52,932 DEBUG Query successful
+2024-11-09 19:36:52,937 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:36:52,960 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:37:01,706 DEBUG Query successful
+2024-11-09 19:37:01,711 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:37:01,735 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:37:05,594 DEBUG Query successful
+2024-11-09 19:37:05,994 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:37:06,017 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:37:14,094 DEBUG Query successful
+2024-11-09 19:37:14,169 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:37:14,190 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:37:24,076 DEBUG Query successful
+2024-11-09 19:37:24,081 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:37:24,100 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:37:35,320 DEBUG Query successful
+2024-11-09 19:37:35,321 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:37:35,342 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:37:39,090 DEBUG Query successful
+2024-11-09 19:37:39,470 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:37:39,494 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:37:49,289 DEBUG Query successful
+2024-11-09 19:37:49,366 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:37:49,387 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:38:00,971 DEBUG Query successful
+2024-11-09 19:38:00,976 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:38:00,996 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:38:11,336 DEBUG Query successful
+2024-11-09 19:38:11,337 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:38:11,357 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:38:16,040 DEBUG Query successful
+2024-11-09 19:38:16,457 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:38:16,479 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:38:24,985 DEBUG Query successful
+2024-11-09 19:38:25,057 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:38:25,076 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:38:33,426 DEBUG Query successful
+2024-11-09 19:38:33,427 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:38:33,449 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:38:42,259 DEBUG Query successful
+2024-11-09 19:38:42,261 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:38:42,282 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:38:45,060 DEBUG Query successful
+2024-11-09 19:38:45,427 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:38:45,450 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:38:56,603 DEBUG Query successful
+2024-11-09 19:38:56,675 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:38:56,696 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:39:04,003 DEBUG Query successful
+2024-11-09 19:39:04,007 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:39:04,027 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:39:12,263 DEBUG Query successful
+2024-11-09 19:39:12,264 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:39:12,283 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:39:16,951 DEBUG Query successful
+2024-11-09 19:39:17,351 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:39:17,372 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:39:25,555 DEBUG Query successful
+2024-11-09 19:39:25,630 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:39:25,652 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:39:34,596 DEBUG Query successful
+2024-11-09 19:39:34,598 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:39:34,620 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:39:48,145 DEBUG Query successful
+2024-11-09 19:39:48,147 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:39:48,169 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:39:50,824 DEBUG Query successful
+2024-11-09 19:39:51,203 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:39:51,225 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:39:59,973 DEBUG Query successful
+2024-11-09 19:40:00,047 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:40:00,067 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:40:09,081 DEBUG Query successful
+2024-11-09 19:40:09,086 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:40:09,107 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:40:19,815 DEBUG Query successful
+2024-11-09 19:40:19,821 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:40:19,848 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:40:23,212 DEBUG Query successful
+2024-11-09 19:40:23,609 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:40:23,632 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:40:31,236 DEBUG Query successful
+2024-11-09 19:40:31,310 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:40:31,330 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:40:39,297 DEBUG Query successful
+2024-11-09 19:40:39,302 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:40:39,324 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:40:50,251 DEBUG Query successful
+2024-11-09 19:40:50,252 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:40:50,274 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:40:53,342 DEBUG Query successful
+2024-11-09 19:40:53,749 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:40:53,769 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:41:01,617 DEBUG Query successful
+2024-11-09 19:41:01,691 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:41:01,712 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:41:08,335 DEBUG Query successful
+2024-11-09 19:41:08,337 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:41:08,357 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:41:17,062 DEBUG Query successful
+2024-11-09 19:41:17,063 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:41:17,104 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:41:20,285 DEBUG Query successful
+2024-11-09 19:41:20,666 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:41:20,689 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:41:27,908 DEBUG Query successful
+2024-11-09 19:41:27,977 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:41:27,997 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:41:37,693 DEBUG Query successful
+2024-11-09 19:41:37,694 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:41:37,716 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:41:49,614 DEBUG Query successful
+2024-11-09 19:41:49,616 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:41:49,638 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:41:53,972 DEBUG Query successful
+2024-11-09 19:41:54,381 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:41:54,401 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:42:01,790 DEBUG Query successful
+2024-11-09 19:42:01,857 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:42:01,877 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:42:09,364 DEBUG Query successful
+2024-11-09 19:42:09,366 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:42:09,387 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:42:19,059 DEBUG Query successful
+2024-11-09 19:42:19,067 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:42:19,087 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:42:22,220 DEBUG Query successful
+2024-11-09 19:42:22,580 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:42:22,603 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:42:30,844 DEBUG Query successful
+2024-11-09 19:42:30,915 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:42:30,937 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:42:37,500 DEBUG Query successful
+2024-11-09 19:42:37,505 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:42:37,527 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:42:49,071 DEBUG Query successful
+2024-11-09 19:42:49,074 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:42:49,094 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:42:54,187 DEBUG Query successful
+2024-11-09 19:42:54,602 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:42:54,623 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:43:02,738 DEBUG Query successful
+2024-11-09 19:43:02,820 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:43:02,840 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:43:10,761 DEBUG Query successful
+2024-11-09 19:43:10,762 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:43:10,784 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:43:20,542 DEBUG Query successful
+2024-11-09 19:43:20,545 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:43:20,567 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:43:24,321 DEBUG Query successful
+2024-11-09 19:50:25,992 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:50:26,543 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:50:35,607 DEBUG Query successful
+2024-11-09 19:50:35,686 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:50:35,710 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:50:45,066 DEBUG Query successful
+2024-11-09 19:50:45,069 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:50:45,092 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:50:58,057 DEBUG Query successful
+2024-11-09 19:50:58,060 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:50:58,089 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:51:02,978 DEBUG Query successful
+2024-11-09 19:51:02,980 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:51:03,003 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:51:06,029 DEBUG Query successful
+2024-11-09 19:51:06,032 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:51:06,055 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:51:09,546 DEBUG Query successful
+2024-11-09 19:51:10,054 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:51:10,082 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:51:20,089 DEBUG Query successful
+2024-11-09 19:51:20,167 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:51:20,188 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:51:36,872 DEBUG Query successful
+2024-11-09 19:51:36,873 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:51:36,895 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:51:50,103 DEBUG Query successful
+2024-11-09 19:51:50,106 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:51:50,138 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:51:57,982 DEBUG Query successful
+2024-11-09 19:54:52,610 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:54:53,151 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:55:10,495 DEBUG Query successful
+2024-11-09 19:55:10,578 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:55:10,601 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:55:23,263 DEBUG Query successful
+2024-11-09 19:55:23,270 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:55:23,295 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:55:37,227 DEBUG Query successful
+2024-11-09 19:55:37,229 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:55:37,250 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:55:40,556 DEBUG Query successful
+2024-11-09 19:55:40,561 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 19:55:40,584 DEBUG Model set to: gpt-4o-mini
+2024-11-09 19:55:46,260 DEBUG Query successful
+2024-11-09 20:07:50,314 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:07:50,999 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:08:02,569 DEBUG Query successful
+2024-11-09 20:08:02,647 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:08:02,669 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:08:14,168 DEBUG Query successful
+2024-11-09 20:08:14,170 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:08:14,191 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:08:25,520 DEBUG Query successful
+2024-11-09 20:08:25,522 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:08:25,543 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:08:28,265 DEBUG Query successful
+2024-11-09 20:08:28,797 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:08:28,828 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:08:37,955 DEBUG Query successful
+2024-11-09 20:08:38,036 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:08:38,070 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:08:52,105 DEBUG Query successful
+2024-11-09 20:08:52,110 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:08:52,129 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:09:01,284 DEBUG Query successful
+2024-11-09 20:09:01,286 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:09:01,310 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:09:05,452 DEBUG Query successful
+2024-11-09 20:09:06,018 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:09:06,044 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:09:14,987 DEBUG Query successful
+2024-11-09 20:09:15,057 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:09:15,081 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:09:27,809 DEBUG Query successful
+2024-11-09 20:09:27,814 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:09:27,833 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:09:37,651 DEBUG Query successful
+2024-11-09 20:09:37,656 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:09:37,679 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:09:40,610 DEBUG Query successful
+2024-11-09 20:09:41,090 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:09:41,117 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:09:50,580 DEBUG Query successful
+2024-11-09 20:09:50,659 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:09:50,682 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:10:02,997 DEBUG Query successful
+2024-11-09 20:10:03,001 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:10:03,022 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:10:11,599 DEBUG Query successful
+2024-11-09 20:10:11,602 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:10:11,624 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:10:15,267 DEBUG Query successful
+2024-11-09 20:10:15,738 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:10:15,764 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:10:25,599 DEBUG Query successful
+2024-11-09 20:10:25,715 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:10:25,745 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:10:36,838 DEBUG Query successful
+2024-11-09 20:10:36,840 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:10:36,866 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:10:46,510 DEBUG Query successful
+2024-11-09 20:10:46,516 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:10:46,539 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:10:49,358 DEBUG Query successful
+2024-11-09 20:10:49,952 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:10:49,977 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:10:58,321 DEBUG Query successful
+2024-11-09 20:10:58,398 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:10:58,420 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:11:10,249 DEBUG Query successful
+2024-11-09 20:11:10,254 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:11:10,277 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:11:19,427 DEBUG Query successful
+2024-11-09 20:11:19,434 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:11:19,455 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:11:22,908 DEBUG Query successful
+2024-11-09 20:11:23,548 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:11:23,572 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:11:32,294 DEBUG Query successful
+2024-11-09 20:11:32,378 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:11:32,403 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:11:43,454 DEBUG Query successful
+2024-11-09 20:11:43,456 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:11:43,481 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:11:54,111 DEBUG Query successful
+2024-11-09 20:11:54,116 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:11:54,204 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:11:56,993 DEBUG Query successful
+2024-11-09 20:11:57,524 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:11:57,547 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:12:06,609 DEBUG Query successful
+2024-11-09 20:12:06,689 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:12:06,712 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:12:18,649 DEBUG Query successful
+2024-11-09 20:12:18,654 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:12:18,678 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:12:29,191 DEBUG Query successful
+2024-11-09 20:12:29,194 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:12:29,219 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:12:31,945 DEBUG Query successful
+2024-11-09 20:12:32,488 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:12:32,513 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:12:41,219 DEBUG Query successful
+2024-11-09 20:12:41,317 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:12:41,475 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:12:52,373 DEBUG Query successful
+2024-11-09 20:12:52,375 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:12:52,397 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:13:01,420 DEBUG Query successful
+2024-11-09 20:13:01,422 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:13:01,447 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:13:04,500 DEBUG Query successful
+2024-11-09 20:13:04,987 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:13:05,010 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:13:14,260 DEBUG Query successful
+2024-11-09 20:13:14,338 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:13:14,362 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:13:22,949 DEBUG Query successful
+2024-11-09 20:13:22,952 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:13:22,976 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:13:31,972 DEBUG Query successful
+2024-11-09 20:13:31,979 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:13:32,002 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:13:35,013 DEBUG Query successful
+2024-11-09 20:13:35,549 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:13:35,608 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:13:45,114 DEBUG Query successful
+2024-11-09 20:13:45,191 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:13:45,213 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:13:54,877 DEBUG Query successful
+2024-11-09 20:13:54,879 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:13:54,899 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:14:03,520 DEBUG Query successful
+2024-11-09 20:14:03,543 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:14:03,567 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:14:06,389 DEBUG Query successful
+2024-11-09 20:14:06,830 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:14:06,855 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:14:16,687 DEBUG Query successful
+2024-11-09 20:14:16,762 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:14:16,783 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:14:25,170 DEBUG Query successful
+2024-11-09 20:14:25,171 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:14:25,193 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:14:32,434 DEBUG Query successful
+2024-11-09 20:14:32,440 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:14:32,462 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:14:34,607 DEBUG Query successful
+2024-11-09 20:14:35,114 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:14:35,142 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:14:43,836 DEBUG Query successful
+2024-11-09 20:14:43,915 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:14:43,939 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:14:52,226 DEBUG Query successful
+2024-11-09 20:14:52,231 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:14:52,254 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:15:00,876 DEBUG Query successful
+2024-11-09 20:15:00,882 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:15:00,905 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:15:02,861 DEBUG Query successful
+2024-11-09 20:15:03,328 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:15:03,354 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:15:13,228 DEBUG Query successful
+2024-11-09 20:15:13,309 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:15:13,335 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:15:22,340 DEBUG Query successful
+2024-11-09 20:15:22,344 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:15:22,367 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:15:30,992 DEBUG Query successful
+2024-11-09 20:15:30,999 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:15:31,023 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:15:33,043 DEBUG Query successful
+2024-11-09 20:15:33,703 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:15:33,724 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:30:14,654 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:30:15,130 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:30:25,688 DEBUG Query successful
+2024-11-09 20:30:25,771 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:30:25,794 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:30:39,823 DEBUG Query successful
+2024-11-09 20:30:39,828 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:30:39,850 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:30:49,603 DEBUG Query successful
+2024-11-09 20:30:49,610 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:30:49,631 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:30:56,540 DEBUG Query successful
+2024-11-09 20:30:57,118 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:30:57,143 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:31:07,035 DEBUG Query successful
+2024-11-09 20:31:07,120 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:31:07,154 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:31:20,342 DEBUG Query successful
+2024-11-09 20:31:20,346 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:31:20,371 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:31:32,409 DEBUG Query successful
+2024-11-09 20:31:32,413 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:31:32,438 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:31:40,574 DEBUG Query successful
+2024-11-09 20:31:41,074 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:31:41,101 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:31:50,697 DEBUG Query successful
+2024-11-09 20:31:50,779 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:31:50,805 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:32:04,286 DEBUG Query successful
+2024-11-09 20:32:04,290 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:32:04,312 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:32:18,233 DEBUG Query successful
+2024-11-09 20:32:18,236 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:32:18,258 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:32:22,855 DEBUG Query successful
+2024-11-09 20:32:23,573 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:32:23,599 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:32:33,176 DEBUG Query successful
+2024-11-09 20:32:33,260 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:32:33,285 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:33:05,906 DEBUG Query successful
+2024-11-09 20:33:05,911 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:33:05,934 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:33:15,073 DEBUG Query successful
+2024-11-09 20:33:15,075 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:33:15,097 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:33:20,587 DEBUG Query successful
+2024-11-09 20:33:21,136 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:33:21,163 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:33:31,115 DEBUG Query successful
+2024-11-09 20:33:31,193 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:33:31,215 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:33:42,853 DEBUG Query successful
+2024-11-09 20:33:42,857 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:33:42,878 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:33:50,877 DEBUG Query successful
+2024-11-09 20:33:50,879 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:33:50,901 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:33:57,009 DEBUG Query successful
+2024-11-09 20:33:57,633 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:33:57,664 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:34:07,466 DEBUG Query successful
+2024-11-09 20:34:07,545 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:34:07,567 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:34:20,039 DEBUG Query successful
+2024-11-09 20:34:20,045 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:34:20,065 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:34:28,906 DEBUG Query successful
+2024-11-09 20:34:28,908 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:34:28,930 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:34:38,536 DEBUG Query successful
+2024-11-09 20:34:39,037 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:34:39,067 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:34:50,049 DEBUG Query successful
+2024-11-09 20:34:50,130 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:34:50,153 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:35:02,581 DEBUG Query successful
+2024-11-09 20:35:02,582 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:35:02,604 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:35:10,862 DEBUG Query successful
+2024-11-09 20:35:10,864 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:35:10,885 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:35:16,874 DEBUG Query successful
+2024-11-09 20:35:17,405 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:35:17,431 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:35:27,231 DEBUG Query successful
+2024-11-09 20:35:27,308 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:35:27,331 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:35:39,054 DEBUG Query successful
+2024-11-09 20:35:39,059 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:35:39,081 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:35:47,506 DEBUG Query successful
+2024-11-09 20:35:47,508 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:35:47,530 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:35:55,537 DEBUG Query successful
+2024-11-09 20:35:56,038 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:35:56,061 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:36:06,306 DEBUG Query successful
+2024-11-09 20:36:06,388 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:36:06,409 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:36:19,020 DEBUG Query successful
+2024-11-09 20:36:19,025 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:36:19,048 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:36:28,773 DEBUG Query successful
+2024-11-09 20:36:28,779 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:36:28,801 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:36:35,305 DEBUG Query successful
+2024-11-09 20:36:35,838 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:36:35,860 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:36:45,339 DEBUG Query successful
+2024-11-09 20:36:45,416 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:36:45,438 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:36:58,207 DEBUG Query successful
+2024-11-09 20:36:58,212 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:36:58,234 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:37:06,273 DEBUG Query successful
+2024-11-09 20:37:06,277 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:37:06,297 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:37:11,211 DEBUG Query successful
+2024-11-09 20:37:11,687 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:37:11,708 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:37:21,522 DEBUG Query successful
+2024-11-09 20:37:21,596 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:37:21,617 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:37:36,141 DEBUG Query successful
+2024-11-09 20:37:36,147 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:37:36,168 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:37:48,086 DEBUG Query successful
+2024-11-09 20:37:48,090 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:37:48,111 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:37:54,683 DEBUG Query successful
+2024-11-09 20:37:55,129 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:37:55,151 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:38:04,537 DEBUG Query successful
+2024-11-09 20:38:04,614 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:38:04,636 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:38:16,653 DEBUG Query successful
+2024-11-09 20:38:16,658 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:38:16,678 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:38:29,465 DEBUG Query successful
+2024-11-09 20:38:29,469 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:38:29,488 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:38:33,214 DEBUG Query successful
+2024-11-09 20:38:33,764 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:38:33,789 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:38:42,133 DEBUG Query successful
+2024-11-09 20:38:42,208 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:38:42,229 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:38:54,863 DEBUG Query successful
+2024-11-09 20:38:54,868 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:38:54,890 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:39:02,665 DEBUG Query successful
+2024-11-09 20:39:02,673 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:39:02,702 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:39:05,677 DEBUG Query successful
+2024-11-09 20:39:06,124 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:39:06,146 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:39:14,666 DEBUG Query successful
+2024-11-09 20:39:14,743 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:39:14,764 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:39:22,861 DEBUG Query successful
+2024-11-09 20:39:22,862 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:39:22,883 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:39:30,264 DEBUG Query successful
+2024-11-09 20:39:30,265 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:39:30,288 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:39:38,811 DEBUG Query successful
+2024-11-09 20:39:39,256 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:39:39,281 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:39:49,087 DEBUG Query successful
+2024-11-09 20:39:49,168 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:39:49,189 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:39:58,042 DEBUG Query successful
+2024-11-09 20:39:58,048 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:39:58,069 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:40:06,976 DEBUG Query successful
+2024-11-09 20:40:06,978 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:40:07,001 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:40:10,762 DEBUG Query successful
+2024-11-09 20:40:11,386 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:40:11,410 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:40:22,755 DEBUG Query successful
+2024-11-09 20:40:22,832 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:40:22,853 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:40:33,871 DEBUG Query successful
+2024-11-09 20:40:33,872 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:40:33,895 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:40:42,448 DEBUG Query successful
+2024-11-09 20:40:42,451 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:40:42,473 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:40:45,969 DEBUG Query successful
+2024-11-09 20:40:46,399 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:40:46,422 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:40:55,362 DEBUG Query successful
+2024-11-09 20:40:55,440 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:40:55,461 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:41:04,984 DEBUG Query successful
+2024-11-09 20:41:04,985 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:41:05,008 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:41:14,060 DEBUG Query successful
+2024-11-09 20:41:14,063 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:41:14,087 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:41:19,080 DEBUG Query successful
+2024-11-09 20:41:19,601 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:41:19,625 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:41:28,822 DEBUG Query successful
+2024-11-09 20:41:28,902 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:41:28,922 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:41:38,051 DEBUG Query successful
+2024-11-09 20:41:38,056 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:41:38,076 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:41:47,613 DEBUG Query successful
+2024-11-09 20:41:47,616 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:41:47,637 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:41:50,897 DEBUG Query successful
+2024-11-09 20:41:51,332 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:41:51,354 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:42:00,361 DEBUG Query successful
+2024-11-09 20:42:00,444 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:42:00,466 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:42:11,387 DEBUG Query successful
+2024-11-09 20:42:11,393 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:42:11,415 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:42:19,465 DEBUG Query successful
+2024-11-09 20:42:19,468 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:42:19,489 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:42:25,235 DEBUG Query successful
+2024-11-09 20:42:25,822 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:42:25,849 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:42:35,348 DEBUG Query successful
+2024-11-09 20:42:35,431 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:42:35,479 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:42:45,409 DEBUG Query successful
+2024-11-09 20:42:45,409 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:42:45,431 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:42:52,962 DEBUG Query successful
+2024-11-09 20:42:52,964 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:42:52,986 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:42:58,697 DEBUG Query successful
+2024-11-09 20:42:59,138 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:42:59,161 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:43:09,436 DEBUG Query successful
+2024-11-09 20:43:09,517 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:43:09,539 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:43:19,185 DEBUG Query successful
+2024-11-09 20:43:19,186 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:43:19,207 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:43:26,763 DEBUG Query successful
+2024-11-09 20:43:26,771 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:43:26,794 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:43:29,619 DEBUG Query successful
+2024-11-09 20:43:30,038 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:43:30,061 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:43:39,382 DEBUG Query successful
+2024-11-09 20:43:39,458 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:43:39,479 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:43:49,457 DEBUG Query successful
+2024-11-09 20:43:49,461 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:43:49,481 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:43:58,027 DEBUG Query successful
+2024-11-09 20:43:58,029 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:43:58,054 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:44:00,832 DEBUG Query successful
+2024-11-09 20:44:01,427 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:44:01,459 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:44:08,594 DEBUG Query successful
+2024-11-09 20:44:08,674 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:44:08,696 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:44:17,295 DEBUG Query successful
+2024-11-09 20:44:17,296 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:44:17,318 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:44:27,221 DEBUG Query successful
+2024-11-09 20:44:27,224 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:44:27,245 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:44:29,309 DEBUG Query successful
+2024-11-09 20:44:29,809 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:44:29,837 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:44:37,877 DEBUG Query successful
+2024-11-09 20:44:37,959 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:44:37,981 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:44:47,857 DEBUG Query successful
+2024-11-09 20:44:47,858 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:44:47,880 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:44:55,787 DEBUG Query successful
+2024-11-09 20:44:55,790 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:44:55,814 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:45:03,085 DEBUG Query successful
+2024-11-09 20:45:03,539 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:45:03,561 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:45:10,605 DEBUG Query successful
+2024-11-09 20:45:10,682 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:45:10,704 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:45:20,611 DEBUG Query successful
+2024-11-09 20:45:20,612 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:45:20,634 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:45:28,618 DEBUG Query successful
+2024-11-09 20:45:28,622 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:45:28,647 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:45:35,018 DEBUG Query successful
+2024-11-09 20:45:35,436 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:45:35,466 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:45:43,535 DEBUG Query successful
+2024-11-09 20:45:43,613 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:45:43,638 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:45:53,204 DEBUG Query successful
+2024-11-09 20:45:53,208 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:45:53,232 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:45:59,928 DEBUG Query successful
+2024-11-09 20:45:59,931 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:45:59,952 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:46:02,407 DEBUG Query successful
+2024-11-09 20:46:02,962 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:46:02,985 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:46:10,325 DEBUG Query successful
+2024-11-09 20:46:10,403 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:46:10,425 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:46:19,082 DEBUG Query successful
+2024-11-09 20:46:19,083 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:46:19,104 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:46:29,770 DEBUG Query successful
+2024-11-09 20:46:29,772 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 20:46:29,793 DEBUG Model set to: gpt-4o-mini
+2024-11-09 20:46:32,204 DEBUG Query successful
+2024-11-09 22:06:24,223 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:24,373 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:25,346 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:26,016 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:26,664 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:27,264 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:31,736 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:33,073 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:37,124 DEBUG Query successful
+2024-11-09 22:06:37,227 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:37,256 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:37,819 DEBUG Query successful
+2024-11-09 22:06:37,966 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:38,037 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:39,742 DEBUG Query successful
+2024-11-09 22:06:39,852 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:39,894 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:41,057 DEBUG Query successful
+2024-11-09 22:06:41,058 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:41,088 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:41,235 DEBUG Query successful
+2024-11-09 22:06:41,237 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:41,275 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:42,221 DEBUG Query successful
+2024-11-09 22:06:42,356 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:42,392 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:43,206 DEBUG Query successful
+2024-11-09 22:06:43,215 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:43,285 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:46,318 DEBUG Query successful
+2024-11-09 22:06:46,320 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:46,365 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:49,529 DEBUG Query successful
+2024-11-09 22:06:49,533 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:49,565 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:50,078 DEBUG Query successful
+2024-11-09 22:06:50,082 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:50,110 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:52,617 DEBUG Query successful
+2024-11-09 22:06:52,623 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:52,645 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:54,041 DEBUG Query successful
+2024-11-09 22:06:54,044 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:54,065 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:55,041 DEBUG Query successful
+2024-11-09 22:06:55,522 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:55,550 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:55,747 DEBUG Query successful
+2024-11-09 22:06:56,435 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:56,469 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:56,589 DEBUG Query successful
+2024-11-09 22:06:57,069 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:57,093 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:06:57,850 DEBUG Query successful
+2024-11-09 22:06:58,527 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:06:58,554 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:04,668 DEBUG Query successful
+2024-11-09 22:07:04,763 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:04,840 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:05,309 DEBUG Query successful
+2024-11-09 22:07:05,395 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:05,426 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:05,548 DEBUG Query successful
+2024-11-09 22:07:05,645 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:05,690 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:06,982 DEBUG Query successful
+2024-11-09 22:07:07,079 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:07,116 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:09,251 DEBUG Query successful
+2024-11-09 22:07:09,252 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:09,272 DEBUG Query successful
+2024-11-09 22:07:09,273 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:09,279 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:09,297 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:10,228 DEBUG Query successful
+2024-11-09 22:07:10,232 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:10,253 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:11,158 DEBUG Query successful
+2024-11-09 22:07:11,160 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:11,186 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:17,207 DEBUG Query successful
+2024-11-09 22:07:17,215 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:17,244 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:18,248 DEBUG Query successful
+2024-11-09 22:07:18,250 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:18,277 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:18,793 DEBUG Query successful
+2024-11-09 22:07:18,797 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:18,826 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:19,239 DEBUG Query successful
+2024-11-09 22:07:19,244 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:19,284 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:21,040 DEBUG Query successful
+2024-11-09 22:07:21,479 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:21,513 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:22,497 DEBUG Query successful
+2024-11-09 22:07:22,916 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:22,938 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:24,474 DEBUG Query successful
+2024-11-09 22:07:24,856 DEBUG Query successful
+2024-11-09 22:07:24,948 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:24,974 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:25,361 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:25,383 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:31,000 DEBUG Query successful
+2024-11-09 22:07:31,088 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:31,113 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:31,183 DEBUG Query successful
+2024-11-09 22:07:31,279 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:31,312 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:34,805 DEBUG Query successful
+2024-11-09 22:07:34,898 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:34,922 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:34,978 DEBUG Query successful
+2024-11-09 22:07:35,071 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:35,076 DEBUG Query successful
+2024-11-09 22:07:35,078 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:35,103 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:35,109 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:35,335 DEBUG Query successful
+2024-11-09 22:07:35,338 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:35,371 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:38,225 DEBUG Query successful
+2024-11-09 22:07:38,226 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:38,259 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:38,377 DEBUG Query successful
+2024-11-09 22:07:38,378 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:38,400 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:42,406 DEBUG Query successful
+2024-11-09 22:07:42,412 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:42,447 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:43,197 DEBUG Query successful
+2024-11-09 22:07:43,200 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:43,228 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:46,711 DEBUG Query successful
+2024-11-09 22:07:46,715 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:46,737 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:46,950 DEBUG Query successful
+2024-11-09 22:07:46,956 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:46,983 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:46,984 DEBUG Query successful
+2024-11-09 22:07:47,503 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:47,533 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:47,946 DEBUG Query successful
+2024-11-09 22:07:48,443 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:48,468 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:50,625 DEBUG Query successful
+2024-11-09 22:07:50,847 DEBUG Query successful
+2024-11-09 22:07:51,237 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:51,276 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:51,434 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:51,460 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:56,112 DEBUG Query successful
+2024-11-09 22:07:56,198 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:56,221 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:57,557 DEBUG Query successful
+2024-11-09 22:07:57,649 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:57,677 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:07:58,955 DEBUG Query successful
+2024-11-09 22:07:59,045 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:07:59,084 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:00,066 DEBUG Query successful
+2024-11-09 22:08:00,153 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:00,176 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:02,609 DEBUG Query successful
+2024-11-09 22:08:02,610 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:02,632 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:04,886 DEBUG Query successful
+2024-11-09 22:08:04,888 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:04,911 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:08,876 DEBUG Query successful
+2024-11-09 22:08:08,877 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:08,899 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:09,534 DEBUG Query successful
+2024-11-09 22:08:09,536 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:09,561 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:11,575 DEBUG Query successful
+2024-11-09 22:08:11,578 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:11,605 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:12,116 DEBUG Query successful
+2024-11-09 22:08:12,118 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:12,149 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:15,660 DEBUG Query successful
+2024-11-09 22:08:15,985 DEBUG Query successful
+2024-11-09 22:08:16,116 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:16,146 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:16,723 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:16,749 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:17,754 DEBUG Query successful
+2024-11-09 22:08:17,758 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:17,814 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:19,104 DEBUG Query successful
+2024-11-09 22:08:19,108 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:19,130 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:21,839 DEBUG Query successful
+2024-11-09 22:08:22,305 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:22,339 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:22,891 DEBUG Query successful
+2024-11-09 22:08:23,479 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:23,515 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:26,412 DEBUG Query successful
+2024-11-09 22:08:26,498 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:26,522 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:27,576 DEBUG Query successful
+2024-11-09 22:08:27,659 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:27,690 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:30,279 DEBUG Query successful
+2024-11-09 22:08:30,281 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:30,302 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:30,867 DEBUG Query successful
+2024-11-09 22:08:30,868 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:30,894 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:31,529 DEBUG Query successful
+2024-11-09 22:08:31,623 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:31,653 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:31,887 DEBUG Query successful
+2024-11-09 22:08:31,978 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:32,002 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:35,162 DEBUG Query successful
+2024-11-09 22:08:35,163 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:35,185 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:37,554 DEBUG Query successful
+2024-11-09 22:08:37,556 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:37,585 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:38,219 DEBUG Query successful
+2024-11-09 22:08:38,222 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:38,255 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:38,314 DEBUG Query successful
+2024-11-09 22:08:38,316 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:38,349 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:42,503 DEBUG Query successful
+2024-11-09 22:08:43,034 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:43,060 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:43,812 DEBUG Query successful
+2024-11-09 22:08:44,226 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:44,253 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:45,986 DEBUG Query successful
+2024-11-09 22:08:45,990 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:46,005 DEBUG Query successful
+2024-11-09 22:08:46,008 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:46,016 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:46,034 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:48,846 DEBUG Query successful
+2024-11-09 22:08:49,485 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:49,512 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:50,053 DEBUG Query successful
+2024-11-09 22:08:50,496 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:50,534 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:51,950 DEBUG Query successful
+2024-11-09 22:08:52,041 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:52,072 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:54,420 DEBUG Query successful
+2024-11-09 22:08:54,510 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:54,539 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:56,415 DEBUG Query successful
+2024-11-09 22:08:56,417 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:56,440 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:58,638 DEBUG Query successful
+2024-11-09 22:08:58,725 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:58,748 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:59,476 DEBUG Query successful
+2024-11-09 22:08:59,539 DEBUG Query successful
+2024-11-09 22:08:59,542 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:59,564 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:08:59,575 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:08:59,587 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:03,559 DEBUG Query successful
+2024-11-09 22:09:03,560 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:03,582 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:04,087 DEBUG Query successful
+2024-11-09 22:09:04,089 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:04,118 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:04,482 DEBUG Query successful
+2024-11-09 22:09:04,483 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:04,510 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:07,533 DEBUG Query successful
+2024-11-09 22:09:07,993 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:08,022 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:08,118 DEBUG Query successful
+2024-11-09 22:09:08,122 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:08,150 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:11,436 DEBUG Query successful
+2024-11-09 22:09:11,439 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:11,465 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:12,408 DEBUG Query successful
+2024-11-09 22:09:12,902 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:12,925 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:14,386 DEBUG Query successful
+2024-11-09 22:09:14,829 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:14,854 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:15,239 DEBUG Query successful
+2024-11-09 22:09:15,242 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:15,266 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:17,037 DEBUG Query successful
+2024-11-09 22:09:17,135 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:17,160 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:17,865 DEBUG Query successful
+2024-11-09 22:09:18,357 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:18,381 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:20,071 DEBUG Query successful
+2024-11-09 22:09:20,159 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:20,187 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:22,424 DEBUG Query successful
+2024-11-09 22:09:22,426 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:22,458 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:23,513 DEBUG Query successful
+2024-11-09 22:09:23,600 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:23,628 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:24,202 DEBUG Query successful
+2024-11-09 22:09:24,206 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:24,234 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:27,180 DEBUG Query successful
+2024-11-09 22:09:27,269 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:27,293 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:28,022 DEBUG Query successful
+2024-11-09 22:09:28,024 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:28,048 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:30,926 DEBUG Query successful
+2024-11-09 22:09:30,930 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:30,964 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:31,858 DEBUG Query successful
+2024-11-09 22:09:31,861 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:31,893 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:32,658 DEBUG Query successful
+2024-11-09 22:09:32,664 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:32,687 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:34,719 DEBUG Query successful
+2024-11-09 22:09:35,088 DEBUG Query successful
+2024-11-09 22:09:35,118 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:35,150 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:35,259 DEBUG Query successful
+2024-11-09 22:09:35,270 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:35,298 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:35,553 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:35,578 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:38,209 DEBUG Query successful
+2024-11-09 22:09:38,663 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:38,688 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:41,047 DEBUG Query successful
+2024-11-09 22:09:41,052 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:41,081 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:43,233 DEBUG Query successful
+2024-11-09 22:09:43,322 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:43,345 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:43,702 DEBUG Query successful
+2024-11-09 22:09:43,794 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:43,816 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:44,188 DEBUG Query successful
+2024-11-09 22:09:44,651 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:44,678 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:46,975 DEBUG Query successful
+2024-11-09 22:09:46,977 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:47,013 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:47,159 DEBUG Query successful
+2024-11-09 22:09:47,259 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:47,291 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:48,127 DEBUG Query successful
+2024-11-09 22:09:48,129 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:48,165 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:50,444 DEBUG Query successful
+2024-11-09 22:09:50,448 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:50,477 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:53,548 DEBUG Query successful
+2024-11-09 22:09:53,637 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:53,666 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:56,291 DEBUG Query successful
+2024-11-09 22:09:56,295 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:56,316 DEBUG Query successful
+2024-11-09 22:09:56,319 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:56,325 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:56,341 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:57,924 DEBUG Query successful
+2024-11-09 22:09:57,925 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:57,949 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:58,329 DEBUG Query successful
+2024-11-09 22:09:58,332 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:58,356 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:58,533 DEBUG Query successful
+2024-11-09 22:09:58,965 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:58,988 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:09:59,407 DEBUG Query successful
+2024-11-09 22:09:59,824 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:09:59,854 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:00,267 DEBUG Query successful
+2024-11-09 22:10:00,711 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:00,738 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:06,657 DEBUG Query successful
+2024-11-09 22:10:06,760 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:06,787 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:07,636 DEBUG Query successful
+2024-11-09 22:10:07,725 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:07,752 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:08,451 DEBUG Query successful
+2024-11-09 22:10:08,543 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:08,570 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:10,395 DEBUG Query successful
+2024-11-09 22:10:10,398 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:10,419 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:11,779 DEBUG Query successful
+2024-11-09 22:10:11,779 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:11,807 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:12,297 DEBUG Query successful
+2024-11-09 22:10:12,299 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:12,321 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:13,038 DEBUG Query successful
+2024-11-09 22:10:13,040 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:13,064 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:13,456 DEBUG Query successful
+2024-11-09 22:10:13,931 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:13,954 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:19,543 DEBUG Query successful
+2024-11-09 22:10:19,544 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:19,565 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:20,202 DEBUG Query successful
+2024-11-09 22:10:20,205 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:20,229 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:21,453 DEBUG Query successful
+2024-11-09 22:10:21,456 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:21,486 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:21,739 DEBUG Query successful
+2024-11-09 22:10:22,113 DEBUG Query successful
+2024-11-09 22:10:22,216 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:22,246 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:22,572 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:22,596 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:23,596 DEBUG Query successful
+2024-11-09 22:10:23,698 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:23,725 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:25,314 DEBUG Query successful
+2024-11-09 22:10:29,534 DEBUG Query successful
+2024-11-09 22:10:29,619 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:29,643 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:30,075 DEBUG Query successful
+2024-11-09 22:10:30,078 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:30,099 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:30,172 DEBUG Query successful
+2024-11-09 22:10:30,254 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:30,279 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:32,702 DEBUG Query successful
+2024-11-09 22:10:32,705 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:32,728 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:33,603 DEBUG Query successful
+2024-11-09 22:10:33,606 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:33,629 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:37,742 DEBUG Query successful
+2024-11-09 22:10:37,744 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:37,766 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:39,665 DEBUG Query successful
+2024-11-09 22:10:39,668 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:39,689 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:40,846 DEBUG Query successful
+2024-11-09 22:10:40,850 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:40,872 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:41,002 DEBUG Query successful
+2024-11-09 22:10:41,382 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:41,403 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:41,747 DEBUG Query successful
+2024-11-09 22:10:42,190 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:42,224 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:42,548 DEBUG Query successful
+2024-11-09 22:10:48,725 DEBUG Query successful
+2024-11-09 22:10:48,808 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:48,833 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:49,161 DEBUG Query successful
+2024-11-09 22:10:49,256 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:49,282 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:53,311 DEBUG Query successful
+2024-11-09 22:10:53,314 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:53,340 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:53,564 DEBUG Query successful
+2024-11-09 22:10:53,569 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:53,592 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:10:59,709 DEBUG Query successful
+2024-11-09 22:10:59,711 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:10:59,735 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:01,697 DEBUG Query successful
+2024-11-09 22:11:02,093 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:02,124 DEBUG Query successful
+2024-11-09 22:11:02,127 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:02,159 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:02,168 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:04,242 DEBUG Query successful
+2024-11-09 22:11:04,576 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:04,601 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:09,211 DEBUG Query successful
+2024-11-09 22:11:09,297 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:09,321 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:12,132 DEBUG Query successful
+2024-11-09 22:11:12,212 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:12,236 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:13,466 DEBUG Query successful
+2024-11-09 22:11:13,470 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:13,493 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:15,717 DEBUG Query successful
+2024-11-09 22:11:15,718 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:15,741 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:21,904 DEBUG Query successful
+2024-11-09 22:11:21,907 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:21,929 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:23,757 DEBUG Query successful
+2024-11-09 22:11:23,954 DEBUG Query successful
+2024-11-09 22:11:23,958 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:23,991 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:27,768 DEBUG Query successful
+2024-11-09 22:11:28,085 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:28,109 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:35,849 DEBUG Query successful
+2024-11-09 22:11:35,928 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:35,949 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:40,594 DEBUG Query successful
+2024-11-09 22:11:40,596 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:40,619 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:47,286 DEBUG Query successful
+2024-11-09 22:11:47,291 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 22:11:47,312 DEBUG Model set to: gpt-4o-mini
+2024-11-09 22:11:48,973 DEBUG Query successful
+2024-11-10 13:23:39,915 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:23:41,454 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:23:51,637 DEBUG Query successful
+2024-11-10 13:23:51,727 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:23:51,753 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:23:59,716 DEBUG Query successful
+2024-11-10 13:23:59,721 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:23:59,743 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:24:06,963 DEBUG Query successful
+2024-11-10 13:24:06,966 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:24:06,988 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:24:10,425 DEBUG Query successful
+2024-11-10 13:24:10,978 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:24:11,002 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:24:19,108 DEBUG Query successful
+2024-11-10 13:24:19,187 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:24:19,217 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:24:26,738 DEBUG Query successful
+2024-11-10 13:24:26,747 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:24:26,769 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:24:34,943 DEBUG Query successful
+2024-11-10 13:24:34,946 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:24:34,972 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:24:38,805 DEBUG Query successful
+2024-11-10 13:24:39,412 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:24:39,439 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:24:47,354 DEBUG Query successful
+2024-11-10 13:24:47,433 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:24:47,456 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:24:54,919 DEBUG Query successful
+2024-11-10 13:24:54,920 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:24:54,944 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:25:02,152 DEBUG Query successful
+2024-11-10 13:25:02,155 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:25:02,176 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:25:05,767 DEBUG Query successful
+2024-11-10 13:25:06,231 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:25:06,264 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:25:14,728 DEBUG Query successful
+2024-11-10 13:25:14,861 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:25:14,884 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:25:22,659 DEBUG Query successful
+2024-11-10 13:25:22,664 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:25:22,688 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:25:30,263 DEBUG Query successful
+2024-11-10 13:25:30,267 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:25:30,288 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:25:33,833 DEBUG Query successful
+2024-11-10 13:25:34,297 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:25:34,319 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:25:43,791 DEBUG Query successful
+2024-11-10 13:25:43,878 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:25:43,899 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:25:51,244 DEBUG Query successful
+2024-11-10 13:25:51,245 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:25:51,268 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:25:58,742 DEBUG Query successful
+2024-11-10 13:25:58,744 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:25:58,772 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:26:03,254 DEBUG Query successful
+2024-11-10 13:26:03,716 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:26:03,744 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:26:11,894 DEBUG Query successful
+2024-11-10 13:26:11,974 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:26:11,995 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:26:19,462 DEBUG Query successful
+2024-11-10 13:26:19,466 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:26:19,488 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:26:27,324 DEBUG Query successful
+2024-11-10 13:26:27,325 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:26:27,351 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:26:31,349 DEBUG Query successful
+2024-11-10 13:26:31,795 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:26:31,820 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:26:39,917 DEBUG Query successful
+2024-11-10 13:26:39,992 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:26:40,014 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:26:49,303 DEBUG Query successful
+2024-11-10 13:26:49,307 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:26:49,332 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:26:57,224 DEBUG Query successful
+2024-11-10 13:26:57,226 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:26:57,247 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:27:00,783 DEBUG Query successful
+2024-11-10 13:27:01,259 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:27:01,283 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:27:09,791 DEBUG Query successful
+2024-11-10 13:27:09,875 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:27:09,897 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:27:19,912 DEBUG Query successful
+2024-11-10 13:27:19,913 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:27:19,934 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:27:27,825 DEBUG Query successful
+2024-11-10 13:27:27,828 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:27:27,847 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:27:31,760 DEBUG Query successful
+2024-11-10 13:27:32,167 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:27:32,190 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:27:40,245 DEBUG Query successful
+2024-11-10 13:27:40,357 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:27:40,412 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:27:47,063 DEBUG Query successful
+2024-11-10 13:27:47,065 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:27:47,087 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:27:54,464 DEBUG Query successful
+2024-11-10 13:27:54,468 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:27:54,493 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:27:58,470 DEBUG Query successful
+2024-11-10 13:27:58,879 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:27:58,900 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:28:07,142 DEBUG Query successful
+2024-11-10 13:28:07,225 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:28:07,247 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:28:14,152 DEBUG Query successful
+2024-11-10 13:28:14,154 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:28:14,181 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:28:22,526 DEBUG Query successful
+2024-11-10 13:28:22,531 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:28:22,561 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:28:25,007 DEBUG Query successful
+2024-11-10 13:28:25,421 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:28:25,441 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:28:34,873 DEBUG Query successful
+2024-11-10 13:28:34,948 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:28:34,969 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:28:44,603 DEBUG Query successful
+2024-11-10 13:28:44,608 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:28:44,630 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:28:52,434 DEBUG Query successful
+2024-11-10 13:28:52,437 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:28:52,458 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:28:55,513 DEBUG Query successful
+2024-11-10 13:28:55,925 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:28:55,947 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:29:03,875 DEBUG Query successful
+2024-11-10 13:29:03,950 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:29:03,970 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:29:11,824 DEBUG Query successful
+2024-11-10 13:29:11,828 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:29:11,854 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:29:19,442 DEBUG Query successful
+2024-11-10 13:29:19,444 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:29:19,464 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:29:22,127 DEBUG Query successful
+2024-11-10 13:29:22,533 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:29:22,554 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:29:34,257 DEBUG Query successful
+2024-11-10 13:29:34,327 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:29:34,351 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:29:41,477 DEBUG Query successful
+2024-11-10 13:29:41,478 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:29:41,499 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:29:49,301 DEBUG Query successful
+2024-11-10 13:29:49,304 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:29:49,325 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:29:51,950 DEBUG Query successful
+2024-11-10 13:29:52,367 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:29:52,390 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:30:00,375 DEBUG Query successful
+2024-11-10 13:30:00,449 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:30:00,471 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:30:08,602 DEBUG Query successful
+2024-11-10 13:30:08,603 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:30:08,622 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:30:16,032 DEBUG Query successful
+2024-11-10 13:30:16,036 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:30:16,056 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:30:20,331 DEBUG Query successful
+2024-11-10 13:30:20,715 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:30:20,736 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:30:29,252 DEBUG Query successful
+2024-11-10 13:30:29,325 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:30:29,348 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:30:37,383 DEBUG Query successful
+2024-11-10 13:30:37,386 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:30:37,408 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:30:45,064 DEBUG Query successful
+2024-11-10 13:30:45,066 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:30:45,086 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:30:47,232 DEBUG Query successful
+2024-11-10 13:30:47,617 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:30:47,641 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:30:55,634 DEBUG Query successful
+2024-11-10 13:30:55,707 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:30:55,727 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:31:02,389 DEBUG Query successful
+2024-11-10 13:31:02,394 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:31:02,416 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:31:10,608 DEBUG Query successful
+2024-11-10 13:31:10,612 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:31:10,639 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:31:13,345 DEBUG Query successful
+2024-11-10 13:31:13,743 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:31:13,764 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:31:21,188 DEBUG Query successful
+2024-11-10 13:31:21,264 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:31:21,286 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:31:26,935 DEBUG Query successful
+2024-11-10 13:31:26,939 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:31:26,958 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:31:35,242 DEBUG Query successful
+2024-11-10 13:31:35,244 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:31:35,264 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:31:36,615 DEBUG Query successful
+2024-11-10 13:31:36,990 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:31:37,009 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:31:44,192 DEBUG Query successful
+2024-11-10 13:31:44,266 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:31:44,288 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:31:52,689 DEBUG Query successful
+2024-11-10 13:31:52,694 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:31:52,714 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:32:00,363 DEBUG Query successful
+2024-11-10 13:32:00,364 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:32:00,387 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:32:01,884 DEBUG Query successful
+2024-11-10 13:32:02,258 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:32:02,282 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:32:10,346 DEBUG Query successful
+2024-11-10 13:32:10,419 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:32:10,439 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:32:17,122 DEBUG Query successful
+2024-11-10 13:32:17,127 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:32:17,151 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:32:24,455 DEBUG Query successful
+2024-11-10 13:32:24,456 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:32:24,478 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:32:26,782 DEBUG Query successful
+2024-11-10 13:32:27,164 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:32:27,186 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:32:34,061 DEBUG Query successful
+2024-11-10 13:32:34,134 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:32:34,156 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:32:43,583 DEBUG Query successful
+2024-11-10 13:32:43,588 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:32:43,608 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:33:19,627 DEBUG Query successful
+2024-11-10 13:33:19,629 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:33:19,653 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:33:21,150 DEBUG Query successful
+2024-11-10 13:33:21,536 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:33:21,559 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:33:28,994 DEBUG Query successful
+2024-11-10 13:33:29,070 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:33:29,091 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:33:36,012 DEBUG Query successful
+2024-11-10 13:33:36,017 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:33:36,039 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:33:43,107 DEBUG Query successful
+2024-11-10 13:33:43,109 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:33:43,135 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:33:44,474 DEBUG Query successful
+2024-11-10 13:33:44,936 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:33:44,967 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:33:53,318 DEBUG Query successful
+2024-11-10 13:33:53,397 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:33:53,420 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:34:02,065 DEBUG Query successful
+2024-11-10 13:34:02,066 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:34:02,095 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:34:08,437 DEBUG Query successful
+2024-11-10 13:34:08,441 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:34:08,466 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:34:09,774 DEBUG Query successful
+2024-11-10 13:34:10,217 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:34:10,241 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:34:18,853 DEBUG Query successful
+2024-11-10 13:34:18,929 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:34:18,951 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:34:27,515 DEBUG Query successful
+2024-11-10 13:34:27,519 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:34:27,539 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:34:34,769 DEBUG Query successful
+2024-11-10 13:34:34,772 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:34:34,793 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:34:36,156 DEBUG Query successful
+2024-11-10 13:34:36,827 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:34:36,847 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:34:47,964 DEBUG Query successful
+2024-11-10 13:34:48,043 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:34:48,067 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:34:54,903 DEBUG Query successful
+2024-11-10 13:34:54,904 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:34:54,932 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:35:01,590 DEBUG Query successful
+2024-11-10 13:35:01,592 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:35:01,614 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:35:03,441 DEBUG Query successful
+2024-11-10 13:35:03,956 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:35:03,978 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:35:14,983 DEBUG Query successful
+2024-11-10 13:35:15,083 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:35:15,114 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:35:23,181 DEBUG Query successful
+2024-11-10 13:35:23,186 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:35:23,209 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:35:30,476 DEBUG Query successful
+2024-11-10 13:35:30,480 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:35:30,508 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:35:32,762 DEBUG Query successful
+2024-11-10 13:35:33,152 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:35:33,173 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:35:41,194 DEBUG Query successful
+2024-11-10 13:35:41,274 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:35:41,296 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:35:51,345 DEBUG Query successful
+2024-11-10 13:35:51,350 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:35:51,374 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:35:58,638 DEBUG Query successful
+2024-11-10 13:35:58,640 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:35:58,661 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:36:00,745 DEBUG Query successful
+2024-11-10 13:36:01,139 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:36:01,164 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:36:10,966 DEBUG Query successful
+2024-11-10 13:36:11,054 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:36:11,075 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:36:17,439 DEBUG Query successful
+2024-11-10 13:36:17,440 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:36:17,470 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:36:24,267 DEBUG Query successful
+2024-11-10 13:36:24,270 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:36:24,292 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:36:25,647 DEBUG Query successful
+2024-11-10 13:36:26,035 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:36:26,064 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:36:33,922 DEBUG Query successful
+2024-11-10 13:36:34,012 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:36:34,033 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:36:41,754 DEBUG Query successful
+2024-11-10 13:36:41,758 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:36:41,780 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:36:49,427 DEBUG Query successful
+2024-11-10 13:36:49,429 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:36:49,452 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:36:50,928 DEBUG Query successful
+2024-11-10 13:36:51,312 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:36:51,337 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:37:00,870 DEBUG Query successful
+2024-11-10 13:37:00,951 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:37:00,978 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:37:09,746 DEBUG Query successful
+2024-11-10 13:37:09,748 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:37:09,771 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:37:17,479 DEBUG Query successful
+2024-11-10 13:37:17,482 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:37:17,505 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:37:23,983 DEBUG Query successful
+2024-11-10 13:37:24,430 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:37:24,452 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:37:32,104 DEBUG Query successful
+2024-11-10 13:37:32,188 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:37:32,210 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:37:38,215 DEBUG Query successful
+2024-11-10 13:37:38,216 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:37:38,237 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:37:45,732 DEBUG Query successful
+2024-11-10 13:37:45,734 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:37:45,758 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:37:49,092 DEBUG Query successful
+2024-11-10 13:37:49,500 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:37:49,524 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:37:56,635 DEBUG Query successful
+2024-11-10 13:37:56,712 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:37:56,733 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:02,262 DEBUG Query successful
+2024-11-10 13:38:02,262 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:02,285 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:08,634 DEBUG Query successful
+2024-11-10 13:38:08,635 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:08,658 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:10,324 DEBUG Query successful
+2024-11-10 13:38:10,856 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:10,882 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:17,934 DEBUG Query successful
+2024-11-10 13:38:18,007 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:18,029 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:23,591 DEBUG Query successful
+2024-11-10 13:38:23,592 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:23,614 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:30,510 DEBUG Query successful
+2024-11-10 13:38:30,514 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:30,535 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:31,995 DEBUG Query successful
+2024-11-10 13:38:32,460 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:32,482 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:40,787 DEBUG Query successful
+2024-11-10 13:38:40,862 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:40,886 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:46,422 DEBUG Query successful
+2024-11-10 13:38:46,423 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:46,448 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:53,620 DEBUG Query successful
+2024-11-10 13:38:53,622 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:53,648 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:38:55,131 DEBUG Query successful
+2024-11-10 13:38:55,535 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:38:55,563 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:39:02,830 DEBUG Query successful
+2024-11-10 13:39:02,908 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:39:02,932 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:39:08,311 DEBUG Query successful
+2024-11-10 13:39:08,312 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:39:08,334 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:39:15,708 DEBUG Query successful
+2024-11-10 13:39:15,711 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:39:15,732 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:39:17,213 DEBUG Query successful
+2024-11-10 13:39:17,763 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:39:17,794 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:39:24,649 DEBUG Query successful
+2024-11-10 13:39:24,730 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:39:24,751 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:39:31,100 DEBUG Query successful
+2024-11-10 13:39:31,102 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:39:31,130 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:39:37,918 DEBUG Query successful
+2024-11-10 13:39:37,922 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:39:37,952 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:39:39,420 DEBUG Query successful
+2024-11-10 13:39:39,995 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:39:40,026 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:39:48,668 DEBUG Query successful
+2024-11-10 13:39:48,760 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:39:48,792 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:39:54,815 DEBUG Query successful
+2024-11-10 13:39:54,817 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:39:54,840 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:02,251 DEBUG Query successful
+2024-11-10 13:40:02,253 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:02,277 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:03,806 DEBUG Query successful
+2024-11-10 13:40:04,257 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:04,280 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:11,615 DEBUG Query successful
+2024-11-10 13:40:11,702 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:11,727 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:17,027 DEBUG Query successful
+2024-11-10 13:40:17,028 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:17,049 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:23,945 DEBUG Query successful
+2024-11-10 13:40:23,949 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:23,972 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:25,600 DEBUG Query successful
+2024-11-10 13:40:26,032 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:26,054 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:33,573 DEBUG Query successful
+2024-11-10 13:40:33,666 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:33,687 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:39,022 DEBUG Query successful
+2024-11-10 13:40:39,023 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:39,053 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:46,493 DEBUG Query successful
+2024-11-10 13:40:46,495 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:46,560 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:48,079 DEBUG Query successful
+2024-11-10 13:40:48,500 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:48,525 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:40:55,296 DEBUG Query successful
+2024-11-10 13:40:55,384 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:40:55,426 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:41:00,148 DEBUG Query successful
+2024-11-10 13:41:00,149 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:41:00,208 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:41:07,966 DEBUG Query successful
+2024-11-10 13:41:07,969 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-10 13:41:08,001 DEBUG Model set to: gpt-4o-mini
+2024-11-10 13:41:09,381 DEBUG Query successful

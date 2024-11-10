@@ -6,7 +6,7 @@ from absl import app, flags
 import json
 import cv2
 import numpy as np
-from vlm_attention.run_env.utils import annotate_units_on_image
+from vlm_attention.run_env.utils import _annotate_units_on_image
 from collections import defaultdict
 from datetime import datetime
 
@@ -311,7 +311,7 @@ class TagAnnotationAgent(base_agent.BaseAgent):
 
             try:
                 # 在图像上添加标注
-                annotated_image = annotate_units_on_image(
+                annotated_image = _annotate_units_on_image(
                     screen,
                     units_to_annotate,
                     circle_radius=15,

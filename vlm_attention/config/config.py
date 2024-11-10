@@ -1,10 +1,10 @@
 config = {
     "openai": {
-        "api_key": "sk-hiP_PDdVZTqFkXRZ6YE2FDRHojCl98uO2bxZboHul2T3BlbkFJ5IKXSHi1721jZ8buILxO0kP0KFpLnqyk99wlhqG_gA",
+        "api_key": "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",
         "organization_name": "CAMEL AI",
         "organization_id": "org-YBLeiIenLZxY3ncCUDNLT67O",
-        "llm_model_name": "gpt-4o-mini-2024-07-18",
-        "vlm_model_name":"gpt-4o-mini-2024-07-18"
+        "llm_model_name": "gpt-4o-mini",
+        "vlm_model_name":"gpt-4o-mini"
     },
     "proxy": {
         "port": 7890,

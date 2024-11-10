@@ -1,72 +1,72 @@
 Protoss:
   Archon:
     file_name: Protoss_Archon.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Archon.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Archon.json
   Colossus:
     file_name: Protoss_Colossus.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Colossus.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Colossus.json
   Disruptor:
     file_name: Protoss_Disruptor.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Disruptor.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Disruptor.json
   High Templar:
     file_name: Protoss_High Templar.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_High
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_High
       Templar.json
   Immortal:
     file_name: Protoss_Immortal.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Immortal.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Immortal.json
   Observer:
     file_name: Protoss_Observer.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Observer.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Observer.json
   Oracle:
     file_name: Protoss_Oracle.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Oracle.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Oracle.json
   Phoenix:
     file_name: Protoss_Phoenix.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Phoenix.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Phoenix.json
   Stalker:
     file_name: Protoss_Stalker.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Stalker.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Stalker.json
   Zealot:
     file_name: Protoss_Zealot.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Zealot.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Protoss_Zealot.json
 Terran:
   Banshee:
     file_name: Terran_Banshee.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Banshee.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Banshee.json
   Ghost:
     file_name: Terran_Ghost.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Ghost.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Ghost.json
   Hellbat:
     file_name: Terran_Hellbat.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Hellbat.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Hellbat.json
   Marauder:
     file_name: Terran_Marauder.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Marauder.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Marauder.json
   Marine:
     file_name: Terran_Marine.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Marine.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Marine.json
   Medivac:
     file_name: Terran_Medivac.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Medivac.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Medivac.json
   Reaper:
     file_name: Terran_Reaper.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Reaper.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Reaper.json
   Viking Assault:
     file_name: Terran_Viking Assault.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Viking
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Viking
       Assault.json
   Viking Fighter:
     file_name: Terran_Viking Fighter.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Viking
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Terran_Viking
       Fighter.json
 Zerg:
   Baneling:
     file_name: Zerg_Baneling.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Zerg_Baneling.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Zerg_Baneling.json
   Roach:
     file_name: Zerg_Roach.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Zerg_Roach.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Zerg_Roach.json
   Zergling:
     file_name: Zerg_Zergling.json
-    file_path: F:\python_file\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Zerg_Zergling.json
+    file_path: D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed\Zerg_Zergling.json

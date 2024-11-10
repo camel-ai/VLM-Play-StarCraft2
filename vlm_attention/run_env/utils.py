@@ -3,183 +3,268 @@ import numpy as np
 import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+import math
 
 
-def annotate_units_on_image(image, units_to_annotate, circle_radius=25, font_scale=1, circle_thickness=2):
+def _annotate_units_on_image(image, units_to_annotate, circle_radius=25, font_scale=1, circle_thickness=2):
     """
-    在图像上标注指定的单位，避免重叠，并添加详细的日志。
+    在图像上标注指定的单位，确保标注完整且清晰可读。
 
-    :param image: 原始图像
-    :param units_to_annotate: 要标注的单位列表，每个单位是一个字典，包含 'tag_index', 'position', 'color'
-    :param circle_radius: 圆圈半径
-    :param font_scale: 字体大小
-    :param circle_thickness: 圆圈线条粗细
-    :return: 标注后的图像
+    Args:
+        image: 原始图像
+        units_to_annotate: 要标注的单位列表
+        circle_radius: 圆圈半径 (最小值为15)
+        font_scale: 字体大小 (最小值为0.6)
+        circle_thickness: 圆圈线条粗细
     """
-    # logger.info(f"开始标注图像。图像大小: {image.shape}, 要标注的单位数量: {len(units_to_annotate)}")
-
     if len(units_to_annotate) == 0:
-        # logger.warning("没有要标注的单位！")
         return image
 
     annotated_image = image.copy()
     font = cv2.FONT_HERSHEY_SIMPLEX
     occupied_positions = []
 
-    for i, unit in enumerate(units_to_annotate):
+    # 固定最小值以确保可读性
+    MIN_CIRCLE_RADIUS = 15
+    MIN_FONT_SCALE = 0.6
+
+    # 计算图像边界安全区域
+    safe_margin = circle_radius + 10  # 确保标注不会被切割
+
+    # 计算有效标注区域
+    valid_area = {
+        'min_x': safe_margin,
+        'max_x': image.shape[1] - safe_margin,
+        'min_y': safe_margin,
+        'max_y': image.shape[0] - safe_margin
+    }
+
+    # 计算图像中心
+    center_x = image.shape[1] // 2
+    center_y = image.shape[0] // 2
+
+    # 按距离排序，但给予边缘单位更高优先级
+    def unit_priority(unit):
+        pos = unit['position']
+        # 检查是否接近边缘
+        is_edge = (pos[0] < valid_area['min_x'] or
+                   pos[0] > valid_area['max_x'] or
+                   pos[1] < valid_area['min_y'] or
+                   pos[1] > valid_area['max_y'])
+        # 边缘单位优先，其次按距离中心远近排序
+        return (not is_edge,
+                (pos[0] - center_x) ** 2 + (pos[1] - center_y) ** 2)
+
+    sorted_units = sorted(units_to_annotate, key=unit_priority)
+
+    for unit in sorted_units:
         number = unit['tag_index']
-        original_pos = unit['position']
         color = unit['color']
 
-        # logger.debug(
-        #     f"正在处理第 {i + 1}/{len(units_to_annotate)} 个单位。标签: {number}, 位置: {original_pos}, 颜色: {color}")
+        # 获取原始位置
+        original_x = min(max(int(round(unit['position'][0])), 0), image.shape[1] - 1)
+        original_y = min(max(int(round(unit['position'][1])), 0), image.shape[0] - 1)
+        original_pos = (original_x, original_y)
 
-        # 检查位置是否在图像范围内
-        if not (0 <= original_pos[0] < image.shape[1] and 0 <= original_pos[1] < image.shape[0]):
-            # logger.warning(f"单位 {number} 的位置 {original_pos} 超出图像范围！跳过此单位。")
-            continue
+        # 计算初始标注位置（考虑边界情况）
+        initial_x = min(max(original_x, valid_area['min_x']), valid_area['max_x'])
+        initial_y = min(max(original_y, valid_area['min_y']), valid_area['max_y'])
 
-        # 找到一个不重叠的位置
-        pos = find_non_overlapping_position(original_pos, occupied_positions, circle_radius)
-        # logger.debug(f"找到的非重叠位置: {pos}")
+        # 基于初始位置寻找最优位置
+        pos = find_optimal_position(
+            target_pos=(initial_x, initial_y),
+            original_pos=original_pos,
+            occupied_positions=occupied_positions,
+            circle_radius=max(circle_radius, MIN_CIRCLE_RADIUS),
+            valid_area=valid_area,
+            max_distance=circle_radius * 4
+        )
 
         # 绘制圆圈
-        cv2.circle(annotated_image, pos, circle_radius, color, circle_thickness)
-        # logger.debug(f"已绘制圆圈，中心: {pos}, 半径: {circle_radius}, 颜色: {color}")
+        cv2.circle(annotated_image, pos, max(circle_radius, MIN_CIRCLE_RADIUS),
+                   color, circle_thickness)
 
-        # 绘制数字
+        # 优化文字显示
         text = str(number)
-        (text_width, text_height), _ = cv2.getTextSize(text, font, font_scale, circle_thickness)
+        current_font_scale = max(font_scale, MIN_FONT_SCALE)
+
+        # 计算并调整文字大小，确保在圆圈内
+        (text_width, text_height), _ = cv2.getTextSize(
+            text, font, current_font_scale, circle_thickness
+        )
+
+        # 确保文字位置完全在圆圈内
         text_pos = (
             int(pos[0] - text_width / 2),
-            int(pos[1] + text_height / 2)
+            int(pos[1] + text_height / 3)
         )
-        cv2.putText(annotated_image, text, text_pos, font, font_scale, color, circle_thickness, cv2.LINE_AA)
-        # logger.debug(f"已绘制文本 '{text}'，位置: {text_pos}")
 
-        # 将这个位置添加到已占用列表中
+        # 绘制文字（带描边）
+        cv2.putText(annotated_image, text, text_pos, font, current_font_scale,
+                    (0, 0, 0), circle_thickness + 2, cv2.LINE_AA)
+        cv2.putText(annotated_image, text, text_pos, font, current_font_scale,
+                    color, circle_thickness, cv2.LINE_AA)
+
         occupied_positions.append(pos)
-
-    # logger.info(f"图像标注完成。共标注了 {len(occupied_positions)} 个单位。")
-
-    # 检查标注后的图像是否与原图有差异
-    # if np.array_equal(image, annotated_image):
-    #     logger.warning("警告：标注后的图像与原图相同，可能没有成功添加标注！")
-    # else:
-    #     logger.info("标注后的图像与原图有差异，标注可能已成功添加。")
 
     return annotated_image
 
-def find_non_overlapping_position(original_pos, occupied_positions, circle_radius):
+
+def find_optimal_position(target_pos, original_pos, occupied_positions, circle_radius,
+                          valid_area, max_distance):
     """
-    找到一个不与已有标注重叠的位置。
+    寻找最优标注位置，确保在有效区域内且尽可能靠近目标位置。
     """
-    pos = original_pos
-    offset = circle_radius * 2
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # 上、右、下、左
-    current_direction = 0
-    steps = 1
+    if not is_overlapping(target_pos, occupied_positions, circle_radius):
+        return target_pos
 
-    while is_overlapping(pos, occupied_positions, circle_radius):
-        dx, dy = directions[current_direction]
-        pos = (int(pos[0] + dx * offset), int(pos[1] + dy * offset))
+    # 搜索方向优先级：靠近原始位置的方向
+    dx = target_pos[0] - original_pos[0]
+    dy = target_pos[1] - original_pos[1]
 
-        steps -= 1
-        if steps == 0:
-            current_direction = (current_direction + 1) % 4
-            if current_direction % 2 == 0:
-                steps += 1
+    # 基于原始位置与目标位置的关系确定搜索方向
+    primary_directions = []
+    if abs(dx) > abs(dy):
+        primary_directions = [(1, 0), (-1, 0)] if dx > 0 else [(-1, 0), (1, 0)]
+    else:
+        primary_directions = [(0, 1), (0, -1)] if dy > 0 else [(0, -1), (0, 1)]
 
-    return pos
+    # 添加对角线方向
+    all_directions = primary_directions + [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+
+    best_pos = target_pos
+    min_overlap_count = float('inf')
+    min_distance = float('inf')
+
+    # 在每个方向上搜索
+    step = max(circle_radius // 3, 5)
+    for direction in all_directions:
+        for distance in range(step, max_distance + step, step):
+            new_x = int(target_pos[0] + direction[0] * distance)
+            new_y = int(target_pos[1] + direction[1] * distance)
+
+            # 检查是否在有效区域内
+            if (valid_area['min_x'] <= new_x <= valid_area['max_x'] and
+                    valid_area['min_y'] <= new_y <= valid_area['max_y']):
+
+                current_pos = (new_x, new_y)
+                overlap_count = count_overlaps(current_pos, occupied_positions, circle_radius)
+                dist = ((current_pos[0] - original_pos[0]) ** 2 +
+                        (current_pos[1] - original_pos[1]) ** 2) ** 0.5
+
+                if overlap_count < min_overlap_count or (
+                        overlap_count == min_overlap_count and dist < min_distance
+                ):
+                    min_overlap_count = overlap_count
+                    min_distance = dist
+                    best_pos = current_pos
+
+                if overlap_count == 0:
+                    return best_pos
+
+    return best_pos
+
+
+def count_overlaps(pos, occupied_positions, circle_radius):
+    """统计重叠数量"""
+    return sum(1 for occ_pos in occupied_positions if
+               is_overlapping(pos, [occ_pos], circle_radius))
+
 
 def is_overlapping(pos, occupied_positions, circle_radius):
-    """
-    检查给定位置是否与已有的标注重叠。
-    """
-    for occupied_pos in occupied_positions:
-        distance = np.sqrt((pos[0] - occupied_pos[0])**2 + (pos[1] - occupied_pos[1])**2)
-        if distance < circle_radius * 2:
-            return True
-    return False
+    """检查是否重叠"""
+    min_distance = circle_radius * 2
+    return any((pos[0] - occ[0]) ** 2 + (pos[1] - occ[1]) ** 2 < min_distance ** 2
+               for occ in occupied_positions)
 
-def _annotate_units_on_image(image, units_to_annotate):
+def draw_grid_with_labels(frame: np.ndarray, screen_size: tuple, grid_size: tuple,
+                          grid_color=(200, 200, 200), grid_thickness=2,
+                          grid_opacity=0.8, border_color=(150, 150, 150),
+                          border_thickness=1) -> np.ndarray:
     """
-    在图像上标注指定的单位。
-
-    :param image: 原始图像
-    :param units_to_annotate: 要标注的单位列表，每个单位是一个字典，包含 'tag_index', 'position', 'color'
-    :return: 标注后的图像
-    """
-    return annotate_units_on_image(image, units_to_annotate)
-
-def _draw_grid (frame, screen_size, grid_size):
-    """
-    Draw a grid on the given frame with customizable parameters.
+    在图像上绘制网格和标签。
 
     Parameters:
-    - frame: np.ndarray, the input image on which to draw the grid
-    - screen_size: tuple(int, int), the (width, height) of the frame
-    - grid_size: tuple(int, int), the number of (columns, rows) in the grid
+    - frame: np.ndarray, 输入图像
+    - screen_size: tuple(int, int), 屏幕的(宽度, 高度)
+    - grid_size: tuple(int, int), 网格的(列数, 行数)
+    - grid_color: tuple(int, int, int), 网格线的颜色，默认浅灰色
+    - grid_thickness: int, 网格线的粗细
+    - grid_opacity: float, 网格的不透明度 (0.0 到 1.0)
+    - border_color: tuple(int, int, int), 单元格边框的颜色
+    - border_thickness: int, 单元格边框的粗细
 
     Returns:
-    - np.ndarray, the frame with the grid drawn on it
-
-    frame: 输入的图像帧，我们将在其上绘制网格。
-    screen_size: 包含屏幕宽度和高度的元组。
-    grid_size: 包含网格列数和行数的元组。
-    cell_width 和 cell_height: 根据屏幕尺寸和网格大小计算的单元格宽度和高度。
-    grid_overlay: 原始帧的副本，用于绘制网格线。
-    grid_color: 网格线的颜色，默认为浅灰色。
-    grid_thickness: 网格线的粗细。
-    grid_opacity: 网格的不透明度，范围从 0.0（完全透明）到 1.0（完全不透明）。
-    border_color: 单元格边框的颜色，默认为深灰色。
-    border_thickness: 单元格边框的粗细。
-
-    要调整网格的可见度：
-
-    增加 grid_opacity 的值会使网格更加明显。
-    调整 grid_color 可以改变网格线的颜色。
-    增加 grid_thickness 会使网格线更粗。
-    调整 border_color 和 border_thickness 可以改变单元格边框的外观。
+    - np.ndarray: 添加了网格和标签的图像
     """
-    # Unpack dimensions
+    # 解包尺寸
     screen_width, screen_height = screen_size
     grid_columns, grid_rows = grid_size
 
-    # Calculate cell dimensions
+    # 计算单元格尺寸
     cell_width = screen_width // grid_columns
     cell_height = screen_height // grid_rows
 
-    # Create a copy of the frame for the grid overlay
+    # 创建网格覆盖层
     grid_overlay = frame.copy()
 
-    # Grid line parameters
-    grid_color = (200, 200, 200)  # Light gray color for grid lines
-    grid_thickness = 2  # Thickness of grid lines
-
-    # Draw vertical grid lines
+    # 绘制垂直网格线
     for i in range(1, grid_columns):
         x = i * cell_width
         cv2.line(grid_overlay, (x, 0), (x, screen_height), grid_color, grid_thickness)
 
-    # Draw horizontal grid lines
+    # 绘制水平网格线
     for i in range(1, grid_rows):
         y = i * cell_height
         cv2.line(grid_overlay, (0, y), (screen_width, y), grid_color, grid_thickness)
 
-    # Blend the grid overlay with the original frame
-    grid_opacity = 0.8  # Opacity of the grid (0.0 to 1.0)
+    # 混合网格覆盖层和原始帧
     cv2.addWeighted(grid_overlay, grid_opacity, frame, 1 - grid_opacity, 0, frame)
 
-    # Cell border parameters
-    border_color = (150, 150, 150)  # Darker gray for cell borders
-    border_thickness = 1  # Thickness of cell borders
-
-    # Draw borders for each cell
+    # 绘制单元格边框
     for i in range(grid_columns):
         for j in range(grid_rows):
             x1, y1 = i * cell_width, j * cell_height
             x2, y2 = x1 + cell_width, y1 + cell_height
             cv2.rectangle(frame, (x1, y1), (x2, y2), border_color, border_thickness)
+
+    # 添加标签
+    # 根据图像尺寸动态计算字体大小
+    base_font_scale = min(screen_width, screen_height) / 1920  # 以1920px为基准
+    font_scale = max(0.4, min(1.2, base_font_scale))  # 限制范围
+
+    # 设置字体属性
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_thickness = max(1, int(2 * base_font_scale))
+    font_color = (255, 255, 255)  # 白色
+
+    # 计算文本大小以优化放置位置
+    test_text = "0"
+    (text_w, text_h), baseline = cv2.getTextSize(test_text, font, font_scale, font_thickness)
+
+    # 计算边距
+    margin_top = int(screen_height * 0.03)  # 顶部边距
+    margin_left = int(screen_width * 0.02)  # 左侧边距
+
+    # 绘制横向(x轴)标签
+    for i in range(grid_columns):
+        x = i * cell_width + cell_width // 2
+        label_y = margin_top + text_h
+
+        # 绘制带描边的文字
+        cv2.putText(frame, str(i), (x - text_w // 2, label_y), font, font_scale,
+                    (0, 0, 0), font_thickness + 2)  # 黑色描边
+        cv2.putText(frame, str(i), (x - text_w // 2, label_y), font, font_scale,
+                    font_color, font_thickness)  # 白色文字
+
+    # 绘制纵向(y轴)标签
+    for i in range(grid_rows):
+        y = i * cell_height + cell_height // 2
+
+        # 绘制带描边的文字
+        cv2.putText(frame, str(i), (margin_left, y + text_h // 2), font, font_scale,
+                    (0, 0, 0), font_thickness + 2)  # 黑色描边
+        cv2.putText(frame, str(i), (margin_left, y + text_h // 2), font, font_scale,
+                    font_color, font_thickness)  # 白色文字
 
     return frame

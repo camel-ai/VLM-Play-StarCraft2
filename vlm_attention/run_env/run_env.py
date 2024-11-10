@@ -9,6 +9,7 @@ from typing import Type, Union
 
 from agent.RandomAgent import RandomAgent
 from agent.vlm_agent_without_move_v5 import VLMAgentWithoutMove
+from agent.vlm_agent_v6 import VLMAgent
 from agent.test_agent import TestAgent
 from vlm_attention import ROOT_DIR, CONFIG_FILE_RELATIVE_PATH
 from vlm_attention.env.env_core import SC2MultimodalEnv
@@ -25,11 +26,11 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 
 # Define flags
 FLAGS = flags.FLAGS
-flags.DEFINE_string("map", map_list[2], "Name of the map to use,we can get from map_list")
+flags.DEFINE_string("map", map_list[0], "Name of the map to use,we can get from map_list")
 flags.DEFINE_string("config_path", os.path.join(ROOT_DIR, CONFIG_FILE_RELATIVE_PATH), "Path to the configuration file")
 flags.DEFINE_boolean("draw_grid", False, "Whether to draw grid on screenshots")
 flags.DEFINE_boolean("annotate_units", True, "Whether to annotate units on screenshots")
-flags.DEFINE_string("agent", "TestAgent", "Agent to use:RandomAgent, VLMAgentWithoutMove, TestAgent")
+flags.DEFINE_string("agent", "TestAgent", "Agent to use:RandomAgent, VLMAgentWithoutMove, TestAgent,VLMAgent")
 flags.DEFINE_boolean("use_self_attention", True, "Whether to use self-attention in the agent")
 flags.DEFINE_boolean("use_rag", True, "Whether to use RAG in the agent")
 flags.DEFINE_integer("max_steps", 2000, "Maximum steps per episode")
@@ -60,7 +61,8 @@ def get_agent_class(agent_name: str) -> Type[Union[VLMAgentWithoutMove, RandomAg
     agent_classes = {
         "VLMAgentWithoutMove": VLMAgentWithoutMove,
         "RandomAgent": RandomAgent,
-        "TestAgent": TestAgent
+        "TestAgent": TestAgent,
+        "VLMAgent": VLMAgent
     }
     if agent_name not in agent_classes:
         raise ValueError(f"Unknown agent: {agent_name}. Valid options are: {', '.join(agent_classes.keys())}")
@@ -133,19 +135,6 @@ def main(argv):
                 step += 1
 
                 print(f"Step: {step}, Reward: {reward}, Total Reward: {total_reward}")
-
-                # 如果游戏正常结束，打印结果
-                if done:
-                    result = info.get('game_result')
-                    if result is not None:
-                        result_str = {
-                            1: "Victory",
-                            -1: "Defeat",
-                            0: "Tie"
-                        }.get(result, "Unknown")
-                        print(f"\nGame finished with result: {result_str}")
-                    print(f"Final Score: {info.get('final_score', 0)}")
-                    break
 
             except Exception as e:
                 logging.error(f"Error in game loop: {e}")

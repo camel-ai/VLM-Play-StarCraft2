@@ -1,6 +1,10 @@
+
+import sys
+import os
+
+
 import json
 import logging
-import os
 from typing import List, Tuple, Dict, Any, Optional
 from datetime import datetime
 
@@ -14,19 +18,20 @@ from vlm_attention.run_env.agent.agent_utils import (
     summarize_unit_info, generate_important_units_prompt,
     generate_decision_prompt, format_units_info, parse_vlm_response, parse_vlm_decision,
     format_history_for_prompt, generate_enhanced_unit_selection_prompt,
-    generate_unit_info_summary_prompt, generate_action_normalization_prompt
+    generate_unit_info_summary_prompt, generate_action_normalization_prompt,normalization_system_prompt
 )
-from vlm_attention.run_env.utils import _annotate_units_on_image, _draw_grid
+from vlm_attention.run_env.utils import _annotate_units_on_image,draw_grid_with_labels
 from vlm_attention.utils.call_vlm import MultimodalChatbot, TextChatbot
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class VLMAgentWithoutMove:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
                  annotate_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
-                 use_self_attention: bool = False, use_rag: bool = False):
+                 use_self_attention: bool = False, use_rag: bool = False,history_length:int=3):
         """
         初始化VLMAgentWithoutMove代理。
         :param action_space: 动作空间字典
@@ -39,12 +44,10 @@ class VLMAgentWithoutMove:
         :param use_rag: 是否使用RAG
         """
         self.action_space = action_space
-        self.vlm = MultimodalChatbot(model_name=get_config("openai", "vlm_model_name"))
-        self.text_bot = TextChatbot(model_name=get_config("openai", "llm_model_name"))
         self.important_units: List[int] = []
         self.text_observation: str = ""
         self.save_original_images = True
-        self.history_length = 3
+        self.history_length = history_length
         self.history: List[Dict[str, Any]] = []
         self.draw_grid = draw_grid
         self.annotate_units = annotate_units
@@ -96,7 +99,7 @@ class VLMAgentWithoutMove:
         self.step_count += 1
         self.text_observation = observation["text"]
         logger.info(f"Processing step {self.step_count}")
-        logger.info(f"Text observation: {self.text_observation}")
+        # logger.info(f"Text observation: {self.text_observation}")
 
         # 保存该step的unit info
         self._save_step_data(observation)
@@ -134,28 +137,32 @@ class VLMAgentWithoutMove:
                 # 如果没有启用自注意力，检索所有单位
                 units_to_query = observation['unit_info']
 
-            # 从数据库获取单位信息并生成总结
+            # 从数据库获取单位信息并生成总结 使用camel 框架
             unit_info = self._get_unit_info_from_database(units_to_query)
-            unit_summary_prompt = generate_unit_info_summary_prompt(unit_info)
-            unit_summary = self.text_bot.query(
-                system_prompt="You are a StarCraft 2 expert focusing on Protoss micro-management.",
-                user_input=unit_summary_prompt)
-            self._save_vlm_io(unit_summary_prompt, unit_summary, "unit_summary")
+            """使用camel 框架"""
+            unit_summary_system_prompt = "You are a StarCraft 2 expert focusing on Protoss micro-management."
+            unit_summary_user_prompt = generate_unit_info_summary_prompt(unit_info)
+            unit_summary_bot = TextChatbot(system_prompt=unit_summary_system_prompt, use_proxy=True)
+            unit_summary = unit_summary_bot.query(unit_summary_user_prompt)
+            unit_summary_bot.clear_history()
+            """使用camel 框架结束"""
+            self._save_vlm_io(unit_summary_user_prompt, unit_summary, "unit_summary")
             logger.info(f"单位信息总结：\n{unit_summary}")
 
-        # 生成决策
+        # 生成决策,使用camel 框架
+        """使用camel 框架"""
         decision_system_prompt = generate_decision_prompt()
-        decision_prompt = self._generate_decision_prompt(observation, unit_summary, important_units_response)
-        raw_decision_response = self.vlm.query(system_prompt=decision_system_prompt,
-                                               user_input=decision_prompt,
-                                               image_path=decision_image_path,
-                                               maintain_history=True)
-        self._save_vlm_io(decision_prompt, raw_decision_response, "raw_decision", image_path=decision_image_path)
+        decision_user_prompt = self._generate_decision_prompt(observation, unit_summary, important_units_response)
+        raw_decision_bot = MultimodalChatbot(system_prompt=decision_system_prompt, use_proxy=True)
+        raw_decision_response = raw_decision_bot.query(decision_user_prompt, image_path=decision_image_path)
+        raw_decision_bot.clear_history()
+        """使用camel 框架结束"""
+        self._save_vlm_io(decision_user_prompt, raw_decision_response, "raw_decision", image_path=decision_image_path)
 
         # 解析原始决策并生成规范化提示
         raw_action = parse_vlm_decision(raw_decision_response)
         units_info_str = self.format_units_info_for_prompt(observation['unit_info'])
-        normalization_prompt = generate_action_normalization_prompt(
+        normalization_user_prompt = generate_action_normalization_prompt(
             self.text_observation,
             units_info_str,
             raw_action
@@ -165,23 +172,14 @@ class VLMAgentWithoutMove:
         max_retries = 3
         normalized_action = {'attack': [], 'move': []}
         for attempt in range(max_retries):
-            normalized_action_response = self.text_bot.query(
-                system_prompt="""You are a StarCraft 2 expert tasked with reviewing and normalizing actions. 
-                Your output must strictly follow this format:
-                ## Actions ##
-                Attack: [Attacker Tag] -> [Target Tag]
-                Reasoning: [Brief explanation]
-
-                Repeat this format for each attack action. Ensure all attacker tags are our units and all target tags are enemy units.
-
-                Example output:
-                ## Actions ##
-                Attack: 1 -> 9
-                Reasoning: The Stalker focuses on the Ghost due to its high damage potential and disabling abilities.""",
-                user_input=normalization_prompt
-            )
-            self._save_vlm_io(normalization_prompt, normalized_action_response,
+            """使用camel 框架"""
+            normalized_bot = TextChatbot(system_prompt=normalization_system_prompt(), use_proxy=True)
+            normalized_action_response = normalized_bot.query(normalization_user_prompt)
+            normalized_bot.clear_history()
+            """使用camel 框架结束"""
+            self._save_vlm_io(normalization_user_prompt, normalized_action_response,
                               f"normalized_decision_attempt_{attempt + 1}")
+
 
             normalized_action = parse_vlm_decision(normalized_action_response)
             if normalized_action['attack']:
@@ -308,29 +306,12 @@ class VLMAgentWithoutMove:
         return filename
 
     def _draw_grid_with_labels(self, frame: np.ndarray) -> np.ndarray:
+        """在图像上绘制网格和标签"""
         h, w = frame.shape[:2]
         screen_size = (w, h)
+        return draw_grid_with_labels(frame, screen_size, self.grid_size)
 
-        frame_with_grid = _draw_grid(frame, screen_size, self.grid_size)
 
-        cell_w, cell_h = w // self.grid_size[0], h // self.grid_size[1]
-
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        font_scale = 0.7
-        font_thickness = 2
-        font_color = (255, 255, 255)  # White color
-
-        for i in range(self.grid_size[0]):
-            x = i * cell_w + cell_w // 2
-            cv2.putText(frame_with_grid, str(i), (x - 10, 30), font, font_scale, (0, 0, 0), font_thickness + 1)
-            cv2.putText(frame_with_grid, str(i), (x - 10, 30), font, font_scale, font_color, font_thickness)
-
-        for i in range(self.grid_size[1]):
-            y = i * cell_h + cell_h // 2
-            cv2.putText(frame_with_grid, str(i), (10, y + 10), font, font_scale, (0, 0, 0), font_thickness + 1)
-            cv2.putText(frame_with_grid, str(i), (10, y + 10), font, font_scale, font_color, font_thickness)
-
-        return frame_with_grid
 
 
 
@@ -351,15 +332,19 @@ class VLMAgentWithoutMove:
             {units_info_str}
     
             Previous steps information:
-            {format_history_for_prompt(self.history)}
+            {format_history_for_prompt(self.history,history_length=self.history_length)}
     
             Based on this information, identify and explain the most strategically important enemy units.
             """
-
-        important_units_response = self.vlm.query(system_prompt=system_prompt,
-                                                  user_input=user_input,
-                                                  image_path=image_path,
-                                                  maintain_history=False)
+        """
+        使用camel 框架
+        """
+        important_unit_bot = MultimodalChatbot(system_prompt=system_prompt, use_proxy=True)
+        important_units_response = important_unit_bot.query(user_input, image_path=image_path)
+        important_unit_bot.clear_history()
+        """
+        使用camel 框架结束
+        """
         self._save_vlm_io(user_input, important_units_response, "important_units")
 
         return important_units_response
@@ -394,7 +379,7 @@ class VLMAgentWithoutMove:
 
         prompt += f"""
             Previous steps information:
-            {format_history_for_prompt(self.history)}
+            {format_history_for_prompt(self.history,history_length=self.history_length)}
     
             Based on this information and the micro-management principles, provide attack actions for each of our units.
             """

@@ -58,26 +58,40 @@ def generate_important_units_prompt() -> str:
 
 
 def generate_decision_prompt() -> str:
-    return """You are a StarCraft II expert focusing on unit micro-management. 
-    Analyze the game state and provide attack actions for our units.
+    return """
+    You are an AI assistant specialized in StarCraft II micro-management strategy. Your task is to suggest optimal attack and movement actions for our units based on the current game state.
 
-    Your response MUST use the following format:
+    Your response MUST strictly follow this format:
 
-    ## Actions ##
-    Attack: [Unit Tag Number] -> [Target Tag Number]
+    ## Attack Actions ##
+    Attack: [Tag Number] -> [Tag Number]
     Reasoning: [Brief explanation]
 
-    Example:
-    ## Actions ##
-    Attack: 1 -> 8
-    Reasoning: Targeting the Medivac to eliminate enemy healing capabilities.
+    ## Move Actions ##
+    Move: [Tag Number] -> [x, y]
+    Reasoning: [Brief explanation]
 
-    Important:
-    - Use ONLY unit tag numbers (1, 2, 3, etc), not unit names
-    - Each action must be on a new line
-    - Include the '## Actions ##' header exactly as shown
-    - Provide reasoning for each action
-    - Focus on the most strategically important targets first
+    Critical Format Rules:
+    1. Use ONLY tag numbers (like 1, 2, 3), not unit names (no Zealot_1, Marine_2 etc)
+    2. Each action must be on its own line
+    3. Include both section headers exactly as shown
+    4. Grid coordinates must be integers from 0-9
+    5. Each unit should have exactly ONE action (either attack OR move)
+    6. DO NOT use unit names in the actions, only their tag numbers
+
+    Example Correct Format:
+    ## Attack Actions ##
+    Attack: 1 -> 8
+    Reasoning: Target priority unit to reduce enemy damage output
+
+    ## Move Actions ##
+    Move: 2 -> [3, 4]
+    Reasoning: Reposition to maintain safe attack range
+
+    Remember:
+    - Grid coordinates: [0,0] is top-left, [9,9] is bottom-right
+    - Use ONLY numerical tags, not unit names
+    - Include reasoning for each action
     """
 
 
@@ -144,46 +158,61 @@ def parse_vlm_response(response: str) -> List[int]:
 
 
 def parse_vlm_decision(response: str) -> Dict[str, List[Tuple]]:
-    """Parse VLM response with more flexible format matching"""
+    """解析VLM的决策回复,更严格的格式处理
+
+    Args:
+        response: VLM的原始回复文本
+        期望格式:
+        ## Attack Actions ##
+        Attack: 1 -> 8
+        Reasoning: ...
+
+        ## Move Actions ##
+        Move: 2 -> [3, 4]
+        Reasoning: ...
+
+    Returns:
+        Dict包含两个键:
+        - 'attack': List[Tuple[int, int]] 攻击动作列表 (攻击者tag, 目标tag)
+        - 'move': List[Tuple[int, int, List[int]]] 移动动作列表 (单位tag, move_type, [x, y]坐标)
+    """
     attack_actions = []
+    move_actions = []
 
-    # Define multiple possible section headers
-    action_headers = ["## Actions ##", "## Attack Actions ##"]
-    response_sections = response.split("\n")
+    # 严格检查必需的章节头
+    if not all(header in response for header in ["## Attack Actions ##", "## Move Actions ##"]):
+        logger.warning("Response missing required section headers")
+        return {'attack': attack_actions, 'move': move_actions}
 
-    # Find the action section
-    action_section = []
-    in_action_section = False
-    for line in response_sections:
-        if any(header in line for header in action_headers):
-            in_action_section = True
-            continue
-        if in_action_section and line.strip() and not line.startswith("##"):
-            action_section.append(line)
-        elif in_action_section and line.startswith("##"):
-            break
-
-    if not action_section:
-        logger.warning("VLM response does not contain a valid actions section")
-        return {'attack': attack_actions, 'move': []}
-
-    # Parse actions with more flexible pattern matching
-    attack_pattern = re.compile(r'Attack:[\s\n]*([A-Za-z0-9_]+)[\s\n]*->[\s\n]*([A-Za-z0-9_]+)', re.IGNORECASE)
-    matches = attack_pattern.findall('\n'.join(action_section))
-
-    for attacker, target in matches:
+    # 解析攻击动作
+    attack_pattern = re.compile(r'Attack:\s*(\d+)\s*->\s*(\d+)')
+    for match in attack_pattern.finditer(response):
         try:
-            # Extract tag numbers from unit names or use direct numbers
-            attacker_tag = int(attacker.split('_')[1]) if '_' in attacker else int(attacker)
-            target_tag = int(target.split('_')[1]) if '_' in target else int(target)
+            attacker_tag = int(match.group(1))
+            target_tag = int(match.group(2))
             attack_actions.append((attacker_tag, target_tag))
-            logger.debug(f"Parsed attack action: {attacker}({attacker_tag}) -> {target}({target_tag})")
-        except (ValueError, IndexError) as e:
-            logger.warning(f"Failed to parse attack action: {attacker} -> {target}: {e}")
+            logger.debug(f"Parsed attack action: {attacker_tag} -> {target_tag}")
+        except ValueError as e:
+            logger.warning(f"Failed to parse attack tags: {e}")
+
+    # 解析移动动作
+    move_pattern = re.compile(r'Move:\s*(\d+)\s*->\s*\[(\d+)\s*,\s*(\d+)\]')
+    for match in move_pattern.finditer(response):
+        try:
+            unit_tag = int(match.group(1))
+            x = int(match.group(2))
+            y = int(match.group(3))
+            if 0 <= x <= 9 and 0 <= y <= 9:  # 验证坐标范围
+                move_actions.append((unit_tag, 1, [x, y])) # 1表示基于网格的移动
+                logger.debug(f"Parsed move action: {unit_tag} -> [1, [{x}, {y}]]")
+            else:
+                logger.warning(f"Invalid grid coordinates: [{x}, {y}]")
+        except ValueError as e:
+            logger.warning(f"Failed to parse move action: {e}")
 
     return {
         'attack': attack_actions,
-        'move': []
+        'move': move_actions
     }
 
 
@@ -298,18 +327,36 @@ def generate_action_normalization_prompt(text_observation: str, unit_info: str,
 
     Remember: Grid coordinates [0,0] is top-left, [9,9] is bottom-right.
     """
-def normalization_system_prompt():
+def normalization_system_prompt() -> str:
     return """
-    You are a StarCraft 2 expert tasked with reviewing and normalizing actions. 
-                Your output must strictly follow this format:
-                ## Actions ##
-                Attack: [Attacker Tag] -> [Target Tag]
-                Reasoning: [Brief explanation]
+    You are a StarCraft 2 expert tasked with normalizing unit actions. 
+    Your output MUST strictly follow this exact format:
 
-                Repeat this format for each attack action. Ensure all attacker tags are our units and all target tags are enemy units.
+    ## Attack Actions ##
+    Attack: [Tag Number] -> [Tag Number]
+    Reasoning: [Brief explanation]
 
-                Example output:
-                ## Actions ##
-                Attack: 1 -> 9
-                Reasoning: The Stalker focuses on the Ghost due to its high damage potential and disabling abilities.
-            """
+    ## Move Actions ##
+    Move: [Tag Number] -> [x, y]
+    Reasoning: [Brief explanation]
+
+    Critical Format Rules:
+    1. Use ONLY tag numbers (like 1, 2, 3), NOT unit names
+    2. Attack actions must be in format: "Attack: X -> Y"
+    3. Move actions must be in format: "Move: X -> [x, y]"
+    4. Grid coordinates must be integers from 0-9
+    5. Each unit must have exactly ONE action
+    6. Include both section headers exactly as shown
+    7. DO NOT use unit names like "Zealot_1" or "Marine_2"
+
+    Example Correct Output:
+    ## Attack Actions ##
+    Attack: 1 -> 7
+    Reasoning: Eliminate high-value target
+
+    ## Move Actions ##
+    Move: 2 -> [5, 4]
+    Reasoning: Maintain safe firing position
+
+    Remember: All coordinates must be within 0-9 range.
+    """
