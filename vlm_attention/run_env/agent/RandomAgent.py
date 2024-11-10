@@ -8,83 +8,76 @@ logger = logging.getLogger(__name__)
 
 class RandomAgent:
     """随机动作智能体，用于SC2环境测试"""
-    def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
-                 annotate_units: bool = True, annotate_all_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
-                 use_self_attention: bool = False, use_rag: bool = False):
-        """
-        初始化随机动作智能体
 
-        Args:
-            action_space: 动作空间字典，包含 'attack' 和 'move' 两种动作类型
-        """
+    def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, **kwargs):
         self.action_space = action_space
         self.step_count = 0
 
-        # 获取单位数量上限(来自动作空间)
+        # 获取单位数量上限
         self.num_units = self.action_space['attack'].spaces[0].n
 
         # 动作类型及其概率
-        self.action_types = ['attack', 'move', 'none']
-        self.action_probs = [0.3, 0.3, 0.4]  # 40%概率不执行动作
+        self.action_types = ['attack', 'grid_move', 'smac_move', 'none']
+        self.action_probs = [0.2, 0.3, 0.3, 0.2]  # 60%概率执行移动
+
+        # SMAC移动方向定义
+        self.directions = range(4)  # UP(0), RIGHT(1), DOWN(2), LEFT(3)
 
     def get_action(self, observation: Dict[str, Any]) -> Dict[str, List[Tuple]]:
-        """
-        根据观察生成随机动作
-
-        Args:
-            observation: 包含游戏状态的字典
-
-        Returns:
-            action_dict: 包含attack和move动作列表的字典
-        """
+        """根据观察生成随机动作"""
         self.step_count += 1
 
-        # 初始化返回的动作字典
+        # 初始化动作字典
         action_dict = {
             'attack': [],
-            'move': []
+            'move': []  # 包含grid_move和smac_move
         }
 
-        # 获取当前可用的单位信息
+        # 获取当前可用的己方单位
         available_units = [
             unit for unit in observation['unit_info']
-            if unit['alliance'] == 1  # 只选择己方单位
+            if unit['alliance'] == 1
         ]
 
         if not available_units:
             return action_dict
 
-        # 随机选择动作类型
-        action_type = np.random.choice(self.action_types, p=self.action_probs)
+        # 为每个己方单位生成动作
+        for unit in available_units:
+            # 随机决定是否为该单位生成命令(70%概率)
+            if np.random.random() < 0.7:
+                action_type = np.random.choice(self.action_types, p=self.action_probs)
 
-        if action_type == 'none':
-            return action_dict
+                if action_type == 'attack':
+                    # 随机选择一个目标
+                    target_idx = np.random.randint(0, self.num_units)
+                    action_dict['attack'].append((
+                        unit['simplified_tag'],
+                        target_idx
+                    ))
 
-        # 根据动作类型生成随机动作
-        if action_type == 'attack':
-            # 随机选择攻击者和目标
-            attacker_idx = np.random.randint(0, len(available_units))
-            target_idx = np.random.randint(0, self.num_units)
+                elif action_type == 'grid_move':
+                    # Grid-based移动 (0-9范围内的坐标)
+                    target_position = np.random.randint(0, 9, size=2)
+                    action_dict['move'].append((
+                        1,  # 移动类型1: grid-based移动
+                        unit['simplified_tag'],
+                        target_position.tolist()
+                    ))
 
-            action_dict['attack'].append((
-                available_units[attacker_idx]['simplified_tag'],
-                target_idx
-            ))
-
-        elif action_type == 'move':
-            # 随机选择移动单位和目标位置
-            unit_idx = np.random.randint(0, len(available_units))
-            move_type = np.random.randint(0, 3)  # 随机选择移动类型
-            target_position = np.random.randint(0, 9, size=2)  # 随机选择目标位置
-
-            action_dict['move'].append((
-                move_type,
-                available_units[unit_idx]['simplified_tag'],
-                target_position
-            ))
+                elif action_type == 'smac_move':
+                    # SMAC风格移动 (4个方向之一)
+                    direction = np.random.choice(self.directions)
+                    action_dict['move'].append((
+                        2,  # 移动类型2: SMAC风格移动
+                        unit['simplified_tag'],
+                        [direction, 0]  # direction in [0,1,2,3], 第二个值填充0
+                    ))
 
         # 记录日志
-        logger.debug(f"Step {self.step_count}: Generated {action_type} action")
+        logger.info(f"Step {self.step_count}: Generated actions:")
+        logger.info(f"Attack actions: {action_dict['attack']}")
+        logger.info(f"Move actions: {action_dict['move']}")
 
         return action_dict
 

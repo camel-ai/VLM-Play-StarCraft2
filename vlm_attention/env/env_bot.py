@@ -4,6 +4,13 @@ from pysc2.lib import actions, features
 from collections import defaultdict
 from vlm_attention.env.config import COLORS, get_unit_name
 
+import logging
+# 设置logger
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
 # 玩家类型常量
 _PLAYER_SELF = 1
 _PLAYER_ENEMY = 4
@@ -145,8 +152,12 @@ class Multimodal_bot(base_agent.BaseAgent):
         self.smac_move_commands = []
         self.max_health_shield = {}
 
+        self.logger = logging.getLogger('Multimodal_bot')
+
     def step(self, obs):
         """处理每一步的观察并返回动作列表"""
+        self.logger.info(f"\n=== Step {self.step_count} ===")
+
         # 第一步时记录单位的最大生命值和护盾
         if self.step_count == 1:
             for unit in obs.observation.raw_units:
@@ -165,22 +176,31 @@ class Multimodal_bot(base_agent.BaseAgent):
             action = self.create_attack_action(attacker_simplified_tag, target_simplified_tag)
             if action is not None:
                 actions_list.append(action)
+                self.logger.info(f"Attack: Unit {attacker_simplified_tag} -> Unit {target_simplified_tag}")
 
         # 处理原始移动命令
         for unit_simplified_tag, grid_pos in self.original_move_commands:
-            action = self.create_move_action(unit_simplified_tag, grid_pos)
+            action = self.create_move_action(unit_simplified_tag, grid_pos,obs)
             if action is not None:
                 actions_list.append(action)
+                self.logger.info(f"Move: Unit {unit_simplified_tag} -> Position {grid_pos}")
 
         # 处理SMAC移动命令
         for unit_simplified_tag, direction in self.smac_move_commands:
-            action = self.create_smac_move_action(unit_simplified_tag, direction)
+            action = self.create_smac_move_action(unit_simplified_tag, direction,obs)
             if action is not None:
                 actions_list.append(action)
+                direction_name = ["UP", "RIGHT", "DOWN", "LEFT"][direction]
+                self.logger.info(f"SMAC Move: Unit {unit_simplified_tag} -> {direction_name}")
 
         # 如果没有任何命令，执行空操作
         if not actions_list:
             actions_list.append(actions.RAW_FUNCTIONS.no_op())
+            self.logger.info("No action - executing no_op")
+
+        # 只记录非空操作的动作
+        elif not (len(actions_list) == 1 and actions_list[0].function == actions.RAW_FUNCTIONS.no_op):
+            self.logger.info(f"Step {self.step_count} actions: {actions_list}")
 
         # 清除本轮的命令
         self.attack_commands.clear()
@@ -189,6 +209,9 @@ class Multimodal_bot(base_agent.BaseAgent):
 
         self.step_count += 1
         return actions_list
+
+
+
 
     def reset(self):
         """重置智能体状态"""
@@ -328,45 +351,105 @@ class Multimodal_bot(base_agent.BaseAgent):
 
         return self._simplified_to_original_cache.get(simplified_tag)
 
-    def create_move_action(self, simplified_tag, target_pos):
-        """创建移动动作
-        Args:
-            simplified_tag: 简化的单位ID
-            target_pos: 目标位置坐标 (x, y)
-        """
+    def create_move_action(self, simplified_tag, grid_pos, obs):
+        """基于网格的移动"""
         original_tag = self.get_original_tag(simplified_tag)
         if original_tag is None:
             return None
 
-        map_x = int(target_pos[0] * (self.game_map_size[0] / self.feature_screen_size[0]))
-        map_y = int(target_pos[1] * (self.game_map_size[1] / self.feature_screen_size[1]))
+        unit_info = self.unit_manager.unit_info.get(original_tag)
+        if not unit_info or unit_info.health <= 0:  # 检查单位是否存活
+            return None
 
-        map_x = max(0, min(map_x, self.game_map_size[0] - 1))
-        map_y = max(0, min(map_y, self.game_map_size[1] - 1))
+        # 将10x10网格转换为feature map坐标
+        feature_x = grid_pos[0] * (self.feature_screen_size[0] / 10) + (self.feature_screen_size[0] / 20)
+        feature_y = grid_pos[1] * (self.feature_screen_size[1] / 10) + (self.feature_screen_size[1] / 20)
 
-        return actions.RAW_FUNCTIONS.Move_pt("now", original_tag, (map_x, map_y))
+        # 边界检查
+        feature_x = max(0, min(feature_x, self.feature_screen_size[0] - 1))
+        feature_y = max(0, min(feature_y, self.feature_screen_size[1] - 1))
 
-    def create_smac_move_action(self, simplified_tag, direction):
-        """创建SMAC移动动作
-        Args:
-            simplified_tag: 简化的单位ID
-            direction: 移动方向
-        """
+        # 查找单位的feature位置
+        for feature_unit in obs.observation.feature_units:
+            if feature_unit.tag == original_tag:
+                if feature_unit.x == 0 or feature_unit.y == 0:  # 避免除零错误
+                    return None
+
+                try:
+                    # 计算缩放比例
+                    scale_x = unit_info.x / feature_unit.x
+                    scale_y = unit_info.y / feature_unit.y
+
+                    # 计算目标world坐标
+                    target_world_x = feature_x * scale_x
+                    target_world_y = feature_y * scale_y
+
+                    # 确保目标坐标在地图范围内
+                    target_world_x = max(0, min(target_world_x, self.game_map_size[0] - 1))
+                    target_world_y = max(0, min(target_world_y, self.game_map_size[1] - 1))
+
+                    return actions.RAW_FUNCTIONS.Move_pt("now", original_tag, (target_world_x, target_world_y))
+                except (ZeroDivisionError, ValueError) as e:
+                    self.logger.error(f"Error calculating move position: {e}")
+                    return None
+
+        return None
+
+    def create_smac_move_action(self, simplified_tag, direction, obs):
+        """基于方向的移动"""
         original_tag = self.get_original_tag(simplified_tag)
         if original_tag is None:
             return None
 
-        # 从unit_info获取单位当前位置
-        unit_info = self.unit_manager.unit_info[original_tag]
-        current_pos = (unit_info.x, unit_info.y)
-        new_pos = self.get_new_position(current_pos, direction)
+        unit_info = self.unit_manager.unit_info.get(original_tag)
+        if not unit_info or unit_info.health <= 0:  # 检查单位是否存活
+            return None
 
-        new_pos = (
-            max(0, min(new_pos[0], self.game_map_size[0] - 1)),
-            max(0, min(new_pos[1], self.game_map_size[1] - 1))
-        )
+        # 查找单位的feature位置
+        for feature_unit in obs.observation.feature_units:
+            if feature_unit.tag == original_tag:
+                if feature_unit.x == 0 or feature_unit.y == 0:  # 避免除零错误
+                    return None
 
-        return actions.RAW_FUNCTIONS.Move_pt("now", original_tag, new_pos)
+                try:
+                    # 计算feature map上的移动步长
+                    step_size = self.feature_screen_size[0] / 10
+
+                    # 根据方向计算新位置
+                    new_feature_x = feature_unit.x
+                    new_feature_y = feature_unit.y
+
+                    if direction == UP:
+                        new_feature_y -= step_size
+                    elif direction == RIGHT:
+                        new_feature_x += step_size
+                    elif direction == DOWN:
+                        new_feature_y += step_size
+                    elif direction == LEFT:
+                        new_feature_x -= step_size
+
+                    # 边界检查
+                    new_feature_x = max(0, min(new_feature_x, self.feature_screen_size[0] - 1))
+                    new_feature_y = max(0, min(new_feature_y, self.feature_screen_size[1] - 1))
+
+                    # 计算缩放比例
+                    scale_x = unit_info.x / feature_unit.x
+                    scale_y = unit_info.y / feature_unit.y
+
+                    # 计算目标world坐标
+                    target_world_x = new_feature_x * scale_x
+                    target_world_y = new_feature_y * scale_y
+
+                    # 确保目标坐标在地图范围内
+                    target_world_x = max(0, min(target_world_x, self.game_map_size[0] - 1))
+                    target_world_y = max(0, min(target_world_y, self.game_map_size[1] - 1))
+
+                    return actions.RAW_FUNCTIONS.Move_pt("now", original_tag, (target_world_x, target_world_y))
+                except (ZeroDivisionError, ValueError) as e:
+                    self.logger.error(f"Error calculating move position: {e}")
+                    return None
+
+        return None
 
     def create_attack_action(self, attacker_simplified_tag, target_simplified_tag):
         """创建攻击动作

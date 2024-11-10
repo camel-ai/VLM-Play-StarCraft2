@@ -7,7 +7,7 @@ from datetime import datetime
 import cv2
 import numpy as np
 
-from vlm_attention.run_env.utils import _annotate_units_on_image, _draw_grid
+from vlm_attention.run_env.utils import _annotate_units_on_image, draw_grid_with_labels
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -49,6 +49,15 @@ class TestAgent:
 
         # 初始化用于存储所有step数据的列表
         self.all_steps_data = []
+        # 获取单位数量上限
+        self.num_units = self.action_space['attack'].spaces[0].n
+
+        # 动作类型及其概率
+        self.action_types = ['attack', 'grid_move', 'smac_move', 'none']
+        self.action_probs = [0.2, 0.3, 0.3, 0.2]  # 60%概率执行移动
+
+        # SMAC移动方向定义
+        self.directions = range(4)  # UP(0), RIGHT(1), DOWN(2), LEFT(3)
 
         # logger.info(f"TestAgent initialized. Data will be saved in: {self.save_dir}")
 
@@ -74,11 +83,59 @@ class TestAgent:
         # 保存该step的unit info
         self._save_step_data(observation)
 
-        # 返回空动作（测试用）
-        return {
+        # 初始化动作字典
+        action_dict = {
             'attack': [],
-            'move': []
+            'move': []  # 包含grid_move和smac_move
         }
+
+        # 获取当前可用的己方单位
+        available_units = [
+            unit for unit in observation['unit_info']
+            if unit['alliance'] == 1
+        ]
+
+        if not available_units:
+            return action_dict
+
+        # 为每个己方单位生成动作
+        for unit in available_units:
+            # 随机决定是否为该单位生成命令(70%概率)
+            if np.random.random() < 0.7:
+                action_type = np.random.choice(self.action_types, p=self.action_probs)
+
+                if action_type == 'attack':
+                    # 随机选择一个目标
+                    target_idx = np.random.randint(0, self.num_units)
+                    action_dict['attack'].append((
+                        unit['simplified_tag'],
+                        target_idx
+                    ))
+
+                elif action_type == 'grid_move':
+                    # Grid-based移动 (0-9范围内的坐标)
+                    target_position = np.random.randint(0, 9, size=2)
+                    action_dict['move'].append((
+                        1,  # 移动类型1: grid-based移动
+                        unit['simplified_tag'],
+                        target_position.tolist()
+                    ))
+
+                elif action_type == 'smac_move':
+                    # SMAC风格移动 (4个方向之一)
+                    direction = np.random.choice(self.directions)
+                    action_dict['move'].append((
+                        2,  # 移动类型2: SMAC风格移动
+                        unit['simplified_tag'],
+                        [direction, 0]  # direction in [0,1,2,3], 第二个值填充0
+                    ))
+
+        # 记录日志
+        logger.info(f"Step {self.step_count}: Generated actions:")
+        logger.info(f"Attack actions: {action_dict['attack']}")
+        logger.info(f"Move actions: {action_dict['move']}")
+
+        return action_dict
 
     def _save_step_data(self, observation: Dict[str, Any]):
         """保存每个step的数据"""
@@ -169,27 +226,7 @@ class TestAgent:
         """在图像上绘制网格和标签"""
         h, w = frame.shape[:2]
         screen_size = (w, h)
-
-        frame_with_grid = _draw_grid(frame, screen_size, self.grid_size)
-
-        cell_w, cell_h = w // self.grid_size[0], h // self.grid_size[1]
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        font_scale = 0.7
-        font_thickness = 2
-        font_color = (255, 255, 255)
-
-        # 添加网格标签
-        for i in range(self.grid_size[0]):
-            x = i * cell_w + cell_w // 2
-            cv2.putText(frame_with_grid, str(i), (x - 10, 30), font, font_scale, (0, 0, 0), font_thickness + 1)
-            cv2.putText(frame_with_grid, str(i), (x - 10, 30), font, font_scale, font_color, font_thickness)
-
-        for i in range(self.grid_size[1]):
-            y = i * cell_h + cell_h // 2
-            cv2.putText(frame_with_grid, str(i), (10, y + 10), font, font_scale, (0, 0, 0), font_thickness + 1)
-            cv2.putText(frame_with_grid, str(i), (10, y + 10), font, font_scale, font_color, font_thickness)
-
-        return frame_with_grid
+        return draw_grid_with_labels(frame, screen_size, self.grid_size)
 
     def _save_image(self, image: np.ndarray, directory: str, prefix: str) -> str:
         """保存图像到指定目录"""

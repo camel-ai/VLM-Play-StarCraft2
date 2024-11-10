@@ -203,3 +203,610 @@ FileNotFoundError: [Errno 2] No such file or directory: 'C:\\python_code\\vlm_at
 2024-09-29 15:50:57,658 DEBUG Query successful
 2024-09-29 15:50:57,658 DEBUG Querying model: gpt-4o
 2024-09-29 15:51:05,042 DEBUG Query successful
+2024-11-09 16:45:06,762 DEBUG OpenAI client created
+2024-11-09 16:45:06,762 DEBUG Model set to: gpt-4o
+2024-11-09 16:45:48,502 DEBUG OpenAI client created
+2024-11-09 16:45:48,502 DEBUG Model set to: gpt-4o
+2024-11-09 16:48:13,703 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 16:48:13,728 DEBUG OpenAI client created
+2024-11-09 16:48:13,728 DEBUG Model set to: gpt-4o
+2024-11-09 16:48:13,728 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 16:56:40,319 DEBUG Model set to: gpt-4
+2024-11-09 16:56:46,927 ERROR An error occurred: Connection error.
+Traceback (most recent call last):
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 69, in map_httpcore_exceptions
+    yield
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 233, in handle_request
+    resp = self._pool.handle_request(req)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection_pool.py", line 216, in handle_request
+    raise exc from None
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection_pool.py", line 196, in handle_request
+    response = connection.handle_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\http_proxy.py", line 289, in handle_request
+    connect_response = self._connection.handle_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 99, in handle_request
+    raise exc
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 76, in handle_request
+    stream = self._connect(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 154, in _connect
+    stream = stream.start_tls(**kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_backends\sync.py", line 152, in start_tls
+    with map_exceptions(exc_map):
+  File "E:\anaconda\envs\vlm_attention\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: EOF occurred in violation of protocol (_ssl.c:997)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 973, in _request
+    response = self._client.send(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 1015, in _send_single_request
+    response = transport.handle_request(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 232, in handle_request
+    with map_httpcore_exceptions():
+  File "E:\anaconda\envs\vlm_attention\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 86, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: EOF occurred in violation of protocol (_ssl.c:997)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 98, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1007, in _request
+    raise APIConnectionError(request=request) from err
+openai.APIConnectionError: Connection error.
+2024-11-09 16:56:53,453 ERROR An error occurred: Connection error.
+Traceback (most recent call last):
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 69, in map_httpcore_exceptions
+    yield
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 233, in handle_request
+    resp = self._pool.handle_request(req)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection_pool.py", line 216, in handle_request
+    raise exc from None
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection_pool.py", line 196, in handle_request
+    response = connection.handle_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\http_proxy.py", line 289, in handle_request
+    connect_response = self._connection.handle_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 99, in handle_request
+    raise exc
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 76, in handle_request
+    stream = self._connect(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 154, in _connect
+    stream = stream.start_tls(**kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_backends\sync.py", line 152, in start_tls
+    with map_exceptions(exc_map):
+  File "E:\anaconda\envs\vlm_attention\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: EOF occurred in violation of protocol (_ssl.c:997)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 973, in _request
+    response = self._client.send(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 1015, in _send_single_request
+    response = transport.handle_request(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 232, in handle_request
+    with map_httpcore_exceptions():
+  File "E:\anaconda\envs\vlm_attention\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 86, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: EOF occurred in violation of protocol (_ssl.c:997)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 98, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1007, in _request
+    raise APIConnectionError(request=request) from err
+openai.APIConnectionError: Connection error.
+2024-11-09 16:57:07,891 DEBUG Model set to: gpt-4o
+2024-11-09 16:57:14,246 ERROR An error occurred: Connection error.
+Traceback (most recent call last):
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 69, in map_httpcore_exceptions
+    yield
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 233, in handle_request
+    resp = self._pool.handle_request(req)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection_pool.py", line 216, in handle_request
+    raise exc from None
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection_pool.py", line 196, in handle_request
+    response = connection.handle_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\http_proxy.py", line 289, in handle_request
+    connect_response = self._connection.handle_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 99, in handle_request
+    raise exc
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 76, in handle_request
+    stream = self._connect(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 154, in _connect
+    stream = stream.start_tls(**kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_backends\sync.py", line 152, in start_tls
+    with map_exceptions(exc_map):
+  File "E:\anaconda\envs\vlm_attention\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: EOF occurred in violation of protocol (_ssl.c:997)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 973, in _request
+    response = self._client.send(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 1015, in _send_single_request
+    response = transport.handle_request(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 232, in handle_request
+    with map_httpcore_exceptions():
+  File "E:\anaconda\envs\vlm_attention\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 86, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: EOF occurred in violation of protocol (_ssl.c:997)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 98, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1007, in _request
+    raise APIConnectionError(request=request) from err
+openai.APIConnectionError: Connection error.
+2024-11-09 16:57:20,196 ERROR An error occurred: Connection error.
+Traceback (most recent call last):
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 69, in map_httpcore_exceptions
+    yield
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 233, in handle_request
+    resp = self._pool.handle_request(req)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection_pool.py", line 216, in handle_request
+    raise exc from None
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection_pool.py", line 196, in handle_request
+    response = connection.handle_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\http_proxy.py", line 289, in handle_request
+    connect_response = self._connection.handle_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 99, in handle_request
+    raise exc
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 76, in handle_request
+    stream = self._connect(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_sync\connection.py", line 154, in _connect
+    stream = stream.start_tls(**kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_backends\sync.py", line 152, in start_tls
+    with map_exceptions(exc_map):
+  File "E:\anaconda\envs\vlm_attention\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: EOF occurred in violation of protocol (_ssl.c:997)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 973, in _request
+    response = self._client.send(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_client.py", line 1015, in _send_single_request
+    response = transport.handle_request(request)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 232, in handle_request
+    with map_httpcore_exceptions():
+  File "E:\anaconda\envs\vlm_attention\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\httpx\_transports\default.py", line 86, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: EOF occurred in violation of protocol (_ssl.c:997)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 98, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 997, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1007, in _request
+    raise APIConnectionError(request=request) from err
+openai.APIConnectionError: Connection error.
+2024-11-09 16:57:20,225 DEBUG Model set to: gpt-4o
+2024-11-09 16:57:41,232 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 16:57:41,648 DEBUG Model set to: gpt-4o
+2024-11-09 16:57:42,573 ERROR An error occurred: Error code: 404 - {'error': {'message': 'The model `gpt-4o` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 98, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1041, in _request
+    raise self._make_status_error_from_response(err.response) from None
+openai.NotFoundError: Error code: 404 - {'error': {'message': 'The model `gpt-4o` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2024-11-09 16:57:42,929 ERROR An error occurred: Error code: 404 - {'error': {'message': 'The model `gpt-4o` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 98, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1041, in _request
+    raise self._make_status_error_from_response(err.response) from None
+openai.NotFoundError: Error code: 404 - {'error': {'message': 'The model `gpt-4o` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2024-11-09 16:57:42,930 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 16:57:42,953 DEBUG Model set to: gpt-4o
+2024-11-09 16:57:45,553 ERROR An error occurred: Error code: 404 - {'error': {'message': 'The model `gpt-4o` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 132, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1041, in _request
+    raise self._make_status_error_from_response(err.response) from None
+openai.NotFoundError: Error code: 404 - {'error': {'message': 'The model `gpt-4o` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2024-11-09 16:57:47,686 ERROR An error occurred: Error code: 404 - {'error': {'message': 'The model `gpt-4o` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 132, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1041, in _request
+    raise self._make_status_error_from_response(err.response) from None
+openai.NotFoundError: Error code: 404 - {'error': {'message': 'The model `gpt-4o` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2024-11-09 17:01:17,291 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 17:02:09,996 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 17:02:10,413 DEBUG Model set to: gpt-4o-mini
+2024-11-09 17:02:18,274 ERROR An error occurred: Error code: 429 - {'error': {'message': 'Your account is not active, please check your billing details on our website.', 'type': 'billing_not_active', 'param': None, 'code': 'billing_not_active'}}
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 124, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1041, in _request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Your account is not active, please check your billing details on our website.', 'type': 'billing_not_active', 'param': None, 'code': 'billing_not_active'}}
+2024-11-09 17:02:25,637 ERROR An error occurred: Error code: 429 - {'error': {'message': 'Your account is not active, please check your billing details on our website.', 'type': 'billing_not_active', 'param': None, 'code': 'billing_not_active'}}
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 124, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1041, in _request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Your account is not active, please check your billing details on our website.', 'type': 'billing_not_active', 'param': None, 'code': 'billing_not_active'}}
+2024-11-09 17:02:25,638 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 17:02:25,659 DEBUG Model set to: gpt-4o-mini
+2024-11-09 17:02:38,013 ERROR An error occurred: Error code: 429 - {'error': {'message': 'Your account is not active, please check your billing details on our website.', 'type': 'billing_not_active', 'param': None, 'code': 'billing_not_active'}}
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 173, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1041, in _request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Your account is not active, please check your billing details on our website.', 'type': 'billing_not_active', 'param': None, 'code': 'billing_not_active'}}
+2024-11-09 17:02:49,007 ERROR An error occurred: Error code: 429 - {'error': {'message': 'Your account is not active, please check your billing details on our website.', 'type': 'billing_not_active', 'param': None, 'code': 'billing_not_active'}}
+Traceback (most recent call last):
+  File "D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\utils\call_vlm.py", line 173, in query
+    response: ChatAgentResponse = self.chat_agent.step(user_message)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 373, in step
+    ) = self._step_model_response(openai_messages, num_tokens)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\agents\chat_agent.py", line 664, in _step_model_response
+    response = self.model_backend.run(openai_messages)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\utils\commons.py", line 269, in wrapper
+    return func(self, *args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\camel\models\openai_model.py", line 96, in run
+    response = self._client.chat.completions.create(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_utils\_utils.py", line 274, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\resources\chat\completions.py", line 668, in create
+    return self._post(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1260, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 937, in request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1026, in _request
+    return self._retry_request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1075, in _retry_request
+    return self._request(
+  File "E:\anaconda\envs\vlm_attention\lib\site-packages\openai\_base_client.py", line 1041, in _request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Your account is not active, please check your billing details on our website.', 'type': 'billing_not_active', 'param': None, 'code': 'billing_not_active'}}
+2024-11-09 17:08:18,058 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 17:08:18,518 DEBUG Model set to: gpt-4o-mini
+2024-11-09 17:08:19,853 DEBUG Query successful
+2024-11-09 17:08:21,624 DEBUG Query successful
+2024-11-09 17:08:21,624 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 17:08:21,645 DEBUG Model set to: gpt-4o-mini
+2024-11-09 17:08:30,238 DEBUG Query successful
+2024-11-09 17:08:39,916 DEBUG Query successful
+2024-11-09 17:16:22,154 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 17:19:05,089 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 17:19:05,512 DEBUG Model set to: gpt-4o-mini
+2024-11-09 17:19:06,214 DEBUG Query successful
+2024-11-09 17:19:07,697 DEBUG Query successful
+2024-11-09 17:19:07,697 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 17:19:07,721 DEBUG Model set to: gpt-4o-mini
+2024-11-09 17:19:20,588 DEBUG Query successful
+2024-11-09 17:19:30,471 DEBUG Query successful
+2024-11-09 17:22:46,727 DEBUG Proxy set to: http://127.0.0.1:7890
+2024-11-09 17:22:47,171 DEBUG Model set to: gpt-4o-mini
+2024-11-09 17:22:50,584 DEBUG Query successful
+2024-11-09 17:22:52,147 DEBUG Query successful
+2024-11-09 17:22:57,020 DEBUG Query successful
+2024-11-09 17:22:57,781 DEBUG Query successful

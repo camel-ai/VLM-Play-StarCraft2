@@ -1,10 +1,6 @@
-
-import sys
-import os
-
-
 import json
 import logging
+import os
 from typing import List, Tuple, Dict, Any, Optional
 from datetime import datetime
 
@@ -14,24 +10,23 @@ import numpy as np
 from vlm_attention.config.config import get_config
 from vlm_attention.env.config import COLORS, get_unit_name
 from vlm_attention.knowledge_data.database.sc2_unit_database import SC2UnitDatabase
-from vlm_attention.run_env.agent.agent_utils import (
+from vlm_attention.run_env.agent.agent_move_utils import (
     summarize_unit_info, generate_important_units_prompt,
     generate_decision_prompt, format_units_info, parse_vlm_response, parse_vlm_decision,
     format_history_for_prompt, generate_enhanced_unit_selection_prompt,
-    generate_unit_info_summary_prompt, generate_action_normalization_prompt,normalization_system_prompt
+    generate_unit_info_summary_prompt, generate_action_normalization_prompt, normalization_system_prompt
 )
-from vlm_attention.run_env.utils import _annotate_units_on_image,draw_grid_with_labels
+from vlm_attention.run_env.utils import _annotate_units_on_image, draw_grid_with_labels
 from vlm_attention.utils.call_vlm import MultimodalChatbot, TextChatbot
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
-class VLMAgentWithoutMove:
+class VLMAgent:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
                  annotate_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
-                 use_self_attention: bool = False, use_rag: bool = False,history_length:int=3):
+                 use_self_attention: bool = False, use_rag: bool = False, history_length: int = 3):
         """
         初始化VLMAgentWithoutMove代理。
         :param action_space: 动作空间字典
@@ -47,7 +42,6 @@ class VLMAgentWithoutMove:
         self.important_units: List[int] = []
         self.text_observation: str = ""
         self.save_original_images = True
-        self.history_length = history_length
         self.history: List[Dict[str, Any]] = []
         self.draw_grid = draw_grid
         self.annotate_units = annotate_units
@@ -55,6 +49,7 @@ class VLMAgentWithoutMove:
         self.step_count = 0
         self.use_self_attention = use_self_attention
         self.use_rag = use_rag
+        self.history_length = history_length
 
         # 设置目录
         self.save_dir = save_dir
@@ -89,17 +84,11 @@ class VLMAgentWithoutMove:
         logger.info(f"RAG: {'ON' if self.use_rag else 'OFF'}")
 
     def get_action(self, observation: Dict[str, Any]) -> Dict[str, List[Tuple]]:
-        """获取动作决策
-
-        主要修改:
-        1. 使用_normalize_attack_action规范化攻击动作格式
-        2. 移除所有move相关处理
-        3. 返回规范化的动作字典
-        """
+        """获取动作决策,包含攻击和移动"""
         self.step_count += 1
         self.text_observation = observation["text"]
         logger.info(f"Processing step {self.step_count}")
-        # logger.info(f"Text observation: {self.text_observation}")
+        logger.info(f"Text observation: {self.text_observation}")
 
         # 保存该step的unit info
         self._save_step_data(observation)
@@ -117,8 +106,6 @@ class VLMAgentWithoutMove:
             important_units_response = self._identify_important_units(observation, first_annotation_path)
             self.important_units = parse_vlm_response(important_units_response)
             logger.info(f"Identified important units: {self.important_units}")
-
-            # 处理并保存第二次图像注释（仅包括重要单位）
             decision_image_path = self._process_and_save_image(observation, self.second_annotation_dir,
                                                                "second_annotation", annotate_all=False)
         else:
@@ -129,34 +116,25 @@ class VLMAgentWithoutMove:
         # RAG处理
         unit_summary = ""
         if self.use_rag:
-            if self.use_self_attention:
-                # 如果同时启用了自注意力，使用重要单位进行检索
-                units_to_query = [unit for unit in observation['unit_info']
-                                  if unit['alliance'] == 1 or unit['simplified_tag'] in self.important_units]
-            else:
-                # 如果没有启用自注意力，检索所有单位
-                units_to_query = observation['unit_info']
+            units_to_query = ([unit for unit in observation['unit_info']
+                               if unit['alliance'] == 1 or unit['simplified_tag'] in self.important_units]
+                              if self.use_self_attention else observation['unit_info'])
 
-            # 从数据库获取单位信息并生成总结 使用camel 框架
             unit_info = self._get_unit_info_from_database(units_to_query)
-            """使用camel 框架"""
             unit_summary_system_prompt = "You are a StarCraft 2 expert focusing on Protoss micro-management."
             unit_summary_user_prompt = generate_unit_info_summary_prompt(unit_info)
             unit_summary_bot = TextChatbot(system_prompt=unit_summary_system_prompt, use_proxy=True)
             unit_summary = unit_summary_bot.query(unit_summary_user_prompt)
             unit_summary_bot.clear_history()
-            """使用camel 框架结束"""
             self._save_vlm_io(unit_summary_user_prompt, unit_summary, "unit_summary")
             logger.info(f"单位信息总结：\n{unit_summary}")
 
-        # 生成决策,使用camel 框架
-        """使用camel 框架"""
+        # 生成决策
         decision_system_prompt = generate_decision_prompt()
         decision_user_prompt = self._generate_decision_prompt(observation, unit_summary, important_units_response)
         raw_decision_bot = MultimodalChatbot(system_prompt=decision_system_prompt, use_proxy=True)
         raw_decision_response = raw_decision_bot.query(decision_user_prompt, image_path=decision_image_path)
         raw_decision_bot.clear_history()
-        """使用camel 框架结束"""
         self._save_vlm_io(decision_user_prompt, raw_decision_response, "raw_decision", image_path=decision_image_path)
 
         # 解析原始决策并生成规范化提示
@@ -172,39 +150,26 @@ class VLMAgentWithoutMove:
         max_retries = 3
         normalized_action = {'attack': [], 'move': []}
         for attempt in range(max_retries):
-            """使用camel 框架"""
             normalized_bot = TextChatbot(system_prompt=normalization_system_prompt(), use_proxy=True)
             normalized_action_response = normalized_bot.query(normalization_user_prompt)
             normalized_bot.clear_history()
-            """使用camel 框架结束"""
             self._save_vlm_io(normalization_user_prompt, normalized_action_response,
                               f"normalized_decision_attempt_{attempt + 1}")
 
-
             normalized_action = parse_vlm_decision(normalized_action_response)
-            if normalized_action['attack']:
+            # 只要有任何有效动作就接受
+            if normalized_action['attack'] or normalized_action['move']:
                 break
             elif attempt < max_retries - 1:
                 logger.warning(f"Failed to parse actions on attempt {attempt + 1}. Retrying...")
             else:
                 logger.error("Failed to parse actions after maximum retries. Returning empty actions.")
 
-        # 添加无移动动作
-        friendly_units = [unit['simplified_tag'] for unit in observation['unit_info'] if unit['alliance'] == 1]
-        no_move_actions = [(0, unit, [0, 0]) for unit in friendly_units]
-        normalized_action['move'] = no_move_actions
-
         # 更新历史记录
-        self._update_history(self.important_units, {'attack': normalized_action['attack']})
+        self._update_history(self.important_units, normalized_action)
 
-        # 构建最终决策
-        final_decision = {
-            'attack': normalized_action['attack'],
-            'move': normalized_action['move']
-        }
-        self._save_vlm_io("Final decision", json.dumps(final_decision), "final_decision")
+        return normalized_action
 
-        return final_decision
 
     def _normalize_attack_action(self, raw_attack_actions: List[Tuple], observation: Dict[str, Any]) -> List[Tuple]:
         """规范化攻击动作格式
@@ -230,7 +195,6 @@ class VLMAgentWithoutMove:
                 normalized_attacks.append((attacker_id, target_id))
 
         return normalized_attacks
-
 
     def _save_step_data(self, observation: Dict[str, Any]):
         """保存每个step的数据"""
@@ -311,12 +275,6 @@ class VLMAgentWithoutMove:
         screen_size = (w, h)
         return draw_grid_with_labels(frame, screen_size, self.grid_size)
 
-
-
-
-
-
-
     def _identify_important_units(self, observation: Dict[str, Any], image_path: str) -> str:
         """识别重要单位"""
         system_prompt = generate_important_units_prompt()
@@ -324,18 +282,19 @@ class VLMAgentWithoutMove:
 
         user_input = f"""
             Analyze the current StarCraft II game state based on the following information:
-    
+
             Screenshot observation:
             {observation.get("text", "No text observation available.")}
-    
+
             Units information:
             {units_info_str}
-    
+
             Previous steps information:
-            {format_history_for_prompt(self.history,history_length=self.history_length)}
-    
+            {format_history_for_prompt(self.history, self.history_length)}
+
             Based on this information, identify and explain the most strategically important enemy units.
             """
+
         """
         使用camel 框架
         """
@@ -349,20 +308,39 @@ class VLMAgentWithoutMove:
 
         return important_units_response
 
-
     def _generate_decision_prompt(self, observation: Dict[str, Any], unit_summary: str,
                                   important_units_response: str) -> str:
-        """生成决策提示"""
+        """生成决策提示,包含攻击和移动决策"""
         units_info_str = self.format_units_info_for_prompt(observation['unit_info'])
 
         prompt = f"""
-            Analyze the current StarCraft II game state based on the following information and suggest the best actions for our units:
-    
+            Analyze the current StarCraft II game state and suggest both attack and movement actions for our units:
+
             Screenshot observation:
             {self.text_observation}
-    
+
             Units information:
             {units_info_str}
+
+            Movement System:
+            - The map is divided into a 10x10 grid (0-9 for both x and y coordinates)
+            - Origin (0,0) is at the top-left corner
+            - X increases to the right, Y increases downward
+            - Each unit can either attack an enemy unit or move to a grid position
+
+            Required Output Format:
+            ## Attack Actions ##
+            [Attacker Unit Name (Tag)] attacks [Target Unit Name (Tag)]
+
+            ## Move Actions ##
+            [Unit Name (Tag)] moves to grid [x, y]
+
+            Example:
+            ## Attack Actions ##
+            Stalker_1 (Tag: 1) attacks Zealot_2 (Tag: 8)
+
+            ## Move Actions ##
+            Stalker_2 (Tag: 2) moves to grid [3, 4]
             """
 
         if self.use_self_attention:
@@ -379,13 +357,13 @@ class VLMAgentWithoutMove:
 
         prompt += f"""
             Previous steps information:
-            {format_history_for_prompt(self.history,history_length=self.history_length)}
-    
-            Based on this information and the micro-management principles, provide attack actions for each of our units.
+            {format_history_for_prompt(self.history, self.history_length)}
+
+            Based on this information and micro-management principles, provide BOTH attack and movement actions for our units.
+            Each unit should either attack or move, not both.
             """
 
         return prompt
-
 
     def _get_unit_info_from_database(self, units: List[Dict[str, Any]]) -> Dict[str, Dict]:
         """从数据库获取单位信息"""
@@ -401,7 +379,6 @@ class VLMAgentWithoutMove:
                 logger.warning(f"Can't find unit information for type {unit_type} ({base_name})")
 
         return unit_info
-
 
     def format_units_info_for_prompt(self, unit_info: List[Dict[str, Any]]) -> str:
         """为提示词格式化单位信息"""
@@ -421,7 +398,6 @@ class VLMAgentWithoutMove:
             formatted_info.append(unit_desc)
 
         return "\n\n".join(formatted_info)
-
 
     def _save_vlm_io(self, prompt: str, response: str, prefix: str, image_path: Optional[str] = None) -> None:
         """保存VLM输入输出数据"""
@@ -450,20 +426,19 @@ class VLMAgentWithoutMove:
         except Exception as e:
             logger.error(f"Error saving {prefix} I/O data to {filename}: {e}", exc_info=True)
 
-
     def _save_image(self, image: np.ndarray, directory: str, prefix: str) -> str:
         """保存图像到指定目录"""
         filename = os.path.join(directory, f"{prefix}_{self.step_count:04d}.png")
         cv2.imwrite(filename, image)
         return filename
 
-
-    def _update_history(self, important_units: List[int], action: Dict[str, List[Tuple]]):
-        """更新历史记录"""
+    def _update_history(self, important_units: List[int], actions: Dict[str, List[Tuple]]):
+        """更新包含攻击和移动动作的历史记录"""
         self.history.append({
             "step": self.step_count,
             "important_units": important_units,
-            "attack_actions": action['attack']
+            "attack_actions": actions['attack'],
+            "move_actions": actions['move']
         })
         if len(self.history) > self.history_length:
             self.history.pop(0)

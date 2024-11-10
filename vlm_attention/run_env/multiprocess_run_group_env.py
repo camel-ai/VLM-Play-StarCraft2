@@ -18,7 +18,6 @@ import copy
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-from agent.RandomAgent import FlexibleRandomAgent
 from agent.vlm_agent_without_move_v5 import VLMAgentWithoutMove
 from vlm_attention import ROOT_DIR, CONFIG_FILE_RELATIVE_PATH
 from vlm_attention.env.env_core import SC2MultimodalEnv
