@@ -5,7 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vlm_attention/env/multiprocess_test/sc2_logs" />
       <excludeFolder url="file://$MODULE_DIR$/vlm_attention/run_env/log" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.10 (vlm_attention)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.10 (vlm_sc2) (3)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

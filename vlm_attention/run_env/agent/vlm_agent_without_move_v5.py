@@ -17,7 +17,7 @@ from vlm_attention.knowledge_data.database.sc2_unit_database import SC2UnitDatab
 from vlm_attention.run_env.agent.agent_utils import (
     summarize_unit_info, generate_important_units_prompt,
     generate_decision_prompt, format_units_info, parse_vlm_response, parse_vlm_decision,
-    format_history_for_prompt, generate_enhanced_unit_selection_prompt,
+    format_history_for_prompt, generate_enhanced_unit_selection_prompt,VLMPlanner,
     generate_unit_info_summary_prompt, generate_action_normalization_prompt,normalization_system_prompt
 )
 from vlm_attention.run_env.utils import _annotate_units_on_image,draw_grid_with_labels
@@ -31,7 +31,8 @@ logger.setLevel(logging.INFO)
 class VLMAgentWithoutMove:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
                  annotate_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
-                 use_self_attention: bool = False, use_rag: bool = False,history_length:int=3):
+                 use_self_attention: bool = False, use_rag: bool = False, history_length: int = 3,
+                 replan_each_step: bool = False):
         """
         初始化VLMAgentWithoutMove代理。
         :param action_space: 动作空间字典
@@ -82,7 +83,10 @@ class VLMAgentWithoutMove:
 
         # 初始化用于存储所有step数据的列表
         self.all_steps_data = []
-
+        # 添加planner相关目录和初始化
+        self.planner_dir = os.path.join(self.save_dir, "planner")
+        os.makedirs(self.planner_dir, exist_ok=True)
+        self.planner = VLMPlanner(self.planner_dir, replan_each_step)
         logger.info(f"VLMAgent initialized. Data will be saved in: {self.save_dir}")
         logger.info(f"Using YAML file: {yaml_path}")
         logger.info(f"Self-attention: {'ON' if self.use_self_attention else 'OFF'}")
@@ -111,16 +115,25 @@ class VLMAgentWithoutMove:
         # 处理并保存第一次图像注释
         first_annotation_path = self._process_and_save_image(observation, self.first_annotation_dir, "first_annotation",
                                                              annotate_all=True)
-
+        # 获取微操技能规划
+        planned_skills = self.planner.plan(observation, first_annotation_path)
+        logger.info(f"Planned micro skills: {planned_skills}")
         # 如果启用了自注意力机制，识别重要单位
         if self.use_self_attention:
-            important_units_response = self._identify_important_units(observation, first_annotation_path)
+            important_units_response = self._identify_important_units(
+                observation,
+                first_annotation_path,
+                planned_skills
+            )
             self.important_units = parse_vlm_response(important_units_response)
             logger.info(f"Identified important units: {self.important_units}")
 
-            # 处理并保存第二次图像注释（仅包括重要单位）
-            decision_image_path = self._process_and_save_image(observation, self.second_annotation_dir,
-                                                               "second_annotation", annotate_all=False)
+            decision_image_path = self._process_and_save_image(
+                observation,
+                self.second_annotation_dir,
+                "second_annotation",
+                annotate_all=False
+            )
         else:
             self.important_units = []
             important_units_response = "Self-attention is disabled."
@@ -152,7 +165,12 @@ class VLMAgentWithoutMove:
         # 生成决策,使用camel 框架
         """使用camel 框架"""
         decision_system_prompt = generate_decision_prompt()
-        decision_user_prompt = self._generate_decision_prompt(observation, unit_summary, important_units_response)
+        decision_user_prompt = self._generate_decision_prompt(
+            observation,
+            unit_summary,
+            important_units_response,
+            planned_skills
+        )
         raw_decision_bot = MultimodalChatbot(system_prompt=decision_system_prompt, use_proxy=True)
         raw_decision_response = raw_decision_bot.query(decision_user_prompt, image_path=decision_image_path)
         raw_decision_bot.clear_history()
@@ -195,8 +213,11 @@ class VLMAgentWithoutMove:
         normalized_action['move'] = no_move_actions
 
         # 更新历史记录
-        self._update_history(self.important_units, {'attack': normalized_action['attack']})
-
+        self._update_history(
+            self.important_units,
+            {'attack': normalized_action['attack']},
+            planned_skills
+        )
         # 构建最终决策
         final_decision = {
             'attack': normalized_action['attack'],
@@ -311,77 +332,115 @@ class VLMAgentWithoutMove:
         screen_size = (w, h)
         return draw_grid_with_labels(frame, screen_size, self.grid_size)
 
-
-
-
-
-
-
-    def _identify_important_units(self, observation: Dict[str, Any], image_path: str) -> str:
-        """识别重要单位"""
+    def _identify_important_units(
+            self,
+            observation: Dict[str, Any],
+            image_path: str,
+            planned_skills: Dict[str, Any]
+    ) -> str:
+        """识别重要单位,与planned_skills紧密结合"""
         system_prompt = generate_important_units_prompt()
         units_info_str = self.format_units_info_for_prompt(observation['unit_info'])
 
+        # 提取主要技能信息
+        primary_skill = planned_skills.get('primary', {})
+        skill_name = primary_skill.get('name', 'None')
+        skill_desc = primary_skill.get('description', 'None')
+        skill_steps = primary_skill.get('steps', [])
+
         user_input = f"""
-            Analyze the current StarCraft II game state based on the following information:
-    
-            Screenshot observation:
+            Analyze the current StarCraft II game state and identify important enemy units based on our planned micro skills:
+
+            Primary Micro Skill Plan:
+            Name: {skill_name}
+            Description: {skill_desc}
+            Implementation Steps:
+            {chr(10).join(f"- {step}" for step in skill_steps)}
+
+            Supporting Skills:
+            {chr(10).join([
+            f"- {skill.get('name', 'Unknown')}: {skill.get('description', 'No description')} "
+            f"(Use when: {skill.get('condition', 'No condition specified')})"
+            for skill in planned_skills.get('secondary', [])
+        ])}
+
+            Current Game State:
             {observation.get("text", "No text observation available.")}
-    
-            Units information:
+
+            Units Information:
             {units_info_str}
-    
-            Previous steps information:
-            {format_history_for_prompt(self.history,history_length=self.history_length)}
-    
-            Based on this information, identify and explain the most strategically important enemy units.
+
+            Previous Steps Context:
+            {format_history_for_prompt(self.history, history_length=self.history_length)}
+
+            Based on this information, identify enemy units that are:
+            1. Most relevant to executing our {skill_name} strategy
+            2. Could potentially disrupt our planned implementation steps
+            3. Should be prioritized based on our micro skill requirements
             """
-        """
-        使用camel 框架
-        """
+
         important_unit_bot = MultimodalChatbot(system_prompt=system_prompt, use_proxy=True)
         important_units_response = important_unit_bot.query(user_input, image_path=image_path)
         important_unit_bot.clear_history()
-        """
-        使用camel 框架结束
-        """
-        self._save_vlm_io(user_input, important_units_response, "important_units")
 
+        self._save_vlm_io(user_input, important_units_response, "important_units")
         return important_units_response
 
-
     def _generate_decision_prompt(self, observation: Dict[str, Any], unit_summary: str,
-                                  important_units_response: str) -> str:
+                                  important_units_response: str, planned_skills: Dict[str, Any]) -> str:
         """生成决策提示"""
         units_info_str = self.format_units_info_for_prompt(observation['unit_info'])
 
+        # 获取主要技能信息
+        primary_skill = planned_skills.get('primary', {})
+        skill_name = primary_skill.get('name', 'None')
+        skill_desc = primary_skill.get('description', 'None')
+        skill_steps = primary_skill.get('steps', [])
+
         prompt = f"""
-            Analyze the current StarCraft II game state based on the following information and suggest the best actions for our units:
-    
-            Screenshot observation:
+            CRITICAL INSTRUCTION:
+            Your primary skill is {skill_name}. All actions must implement this skill according to these steps:
+            {chr(10).join(skill_steps)}
+
+            Current Game State Analysis:
             {self.text_observation}
-    
-            Units information:
+
+            Available Units:
             {units_info_str}
+
+            Micro-Management Plan:
+            Primary Skill: {skill_name}
+            Description: {skill_desc}
+            Implementation Steps:
+            {chr(10).join(skill_steps)}
+
+            Supporting Skills:
+            {chr(10).join([
+            f"- {skill.get('name', 'Unknown')}: {skill.get('description', 'No description')} "
+            f"(Use when: {skill.get('condition', 'No condition specified')})"
+            for skill in planned_skills.get('secondary', [])
+        ])}
             """
 
         if self.use_self_attention:
             prompt += f"""
-                Important enemy units analysis:
+                Priority Targets Analysis:
                 {important_units_response}
                 """
 
         if self.use_rag:
             prompt += f"""
-                Unit information summary:
+                Unit Capabilities:
                 {unit_summary}
                 """
 
         prompt += f"""
-            Previous steps information:
-            {format_history_for_prompt(self.history,history_length=self.history_length)}
-    
-            Based on this information and the micro-management principles, provide attack actions for each of our units.
+            Recent History:
+            {format_history_for_prompt(self.history, history_length=self.history_length)}
+
+            FINAL INSTRUCTION:
+            Generate attack actions that STRICTLY implement the {skill_name} skill.
+            Each action's reasoning must explain how it contributes to executing this skill.
             """
 
         return prompt
@@ -457,13 +516,18 @@ class VLMAgentWithoutMove:
         cv2.imwrite(filename, image)
         return filename
 
-
-    def _update_history(self, important_units: List[int], action: Dict[str, List[Tuple]]):
+    def _update_history(
+            self,
+            important_units: List[int],
+            action: Dict[str, List[Tuple]],
+            planned_skills: Dict[str, Any]
+    ):
         """更新历史记录"""
         self.history.append({
             "step": self.step_count,
             "important_units": important_units,
-            "attack_actions": action['attack']
+            "attack_actions": action['attack'],
+            "planned_skills": planned_skills
         })
         if len(self.history) > self.history_length:
             self.history.pop(0)

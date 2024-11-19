@@ -28,7 +28,7 @@ class VLMAgent:
                  annotate_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
                  use_self_attention: bool = False, use_rag: bool = False, history_length: int = 3):
         """
-        初始化VLMAgentWithoutMove代理。
+        初始化VLMAgent代理。
         :param action_space: 动作空间字典
         :param config_path: 配置文件路径
         :param save_dir: 保存目录

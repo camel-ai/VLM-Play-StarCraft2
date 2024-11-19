@@ -28,7 +28,7 @@ def save_to_yaml(data, output_file):
 
 
 def main():
-    folder_path = r"D:\pythoncode\vlm_attention_starcraft2-main\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed"# 处理后的文件夹路径,请设置绝对地址.
+    folder_path = r"C:\python_code\vlm_attention_starcraft2\vlm_attention\knowledge_data\firecrawl_test\sc2_unit_info_processed"# 处理后的文件夹路径,请设置绝对地址.
     """
     Example:
     vlm_attention/knowledge_data/firecrawl_test/sc2_unit_info_processed

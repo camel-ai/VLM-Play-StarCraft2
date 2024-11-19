@@ -1,7 +1,10 @@
 import re
 import logging
 from typing import List, Tuple, Dict, Any, Optional
-
+import os
+from vlm_attention.utils.call_vlm import MultimodalChatbot
+import json
+from datetime import datetime
 logger = logging.getLogger(__name__)
 
 """
@@ -34,24 +37,28 @@ def summarize_unit_info(unit_info: Dict[str, Dict]) -> str:
 def generate_important_units_prompt() -> str:
     return """
     You are an AI assistant specialized in analyzing StarCraft II game states. Your task is to identify and explain 
-    the most strategically important enemy units based on the provided game information and screenshot. 
+    the most strategically important enemy units based on the provided game information, screenshot, and planned micro skills.
 
-    When analyzing, consider the following:
-    1. Focus on units that significantly impact the battle due to their abilities or potential threat.
-    2. Prioritize only those units that are key to the current game dynamics.
-    3. Avoid selecting all enemy units; choose only the most crucial ones.
+    When analyzing, consider:
+    1. Focus on units that are most relevant to executing the planned primary micro skill
+    2. Consider units that could interfere with or counter our planned tactics
+    3. Prioritize targets based on the micro skill's implementation steps
+    4. Select units that align with any supporting/secondary skills if needed
 
     For each important unit you identify, provide:
     - The unit's name
     - Its tag number
-    - A detailed reason explaining its strategic importance in the current scenario
+    - A detailed reason explaining:
+        a) Why this unit is important for our planned micro skill
+        b) How it affects our skill execution
+        c) Any specific considerations for our implementation steps
 
     Use the following format for each unit:
 
     ## Important Units ##
     Unit: [Unit Name]
     Tag: [Tag Number]
-    Reason: [Explanation of why the unit is important]
+    Reason: [Explanation linking to planned skills]
 
     Repeat this format for each important unit. Do not include any other text or explanations outside of this format.
     """
@@ -59,25 +66,25 @@ def generate_important_units_prompt() -> str:
 
 def generate_decision_prompt() -> str:
     return """You are a StarCraft II expert focusing on unit micro-management. 
-    Analyze the game state and provide attack actions for our units.
+    Your task is to generate attack actions that STRICTLY follow the planned micro skills.
+
+    Different skills require different action patterns:
+    - Focus Fire: All units must attack the same target
+    - Kiting: Units should attack while maintaining safe distance
+    - Positioning: Units should attack from optimal positions
+    - Priority Targeting: Attack specific high-value targets first
 
     Your response MUST use the following format:
-
     ## Actions ##
     Attack: [Unit Tag Number] -> [Target Tag Number]
-    Reasoning: [Brief explanation]
+    Reasoning: [Brief explanation that aligns with the current primary skill]
 
-    Example:
-    ## Actions ##
-    Attack: 1 -> 8
-    Reasoning: Targeting the Medivac to eliminate enemy healing capabilities.
-
-    Important:
-    - Use ONLY unit tag numbers (1, 2, 3, etc), not unit names
-    - Each action must be on a new line
-    - Include the '## Actions ##' header exactly as shown
-    - Provide reasoning for each action
-    - Focus on the most strategically important targets first
+    Important Rules:
+    1. Use ONLY unit tag numbers (1, 2, 3, etc)
+    2. Each action must be on a new line
+    3. Include the '## Actions ##' header
+    4. Reasoning must explain how the action implements the primary skill
+    5. Actions MUST align with the primary skill's requirements
     """
 
 
@@ -204,13 +211,6 @@ def format_history_for_prompt(history: List[Dict[str, Any]], history_length: int
             for attack in entry['attack_actions']:
                 step_info += f"  Attack: {attack[0]} -> {attack[1]}\n"
 
-        # 移动动作
-        if 'move_actions' in entry and entry['move_actions']:
-            step_info += "Move Actions:\n"
-            for move_type, unit_tag, target in entry['move_actions']:
-                if move_type == 1:  # grid-based movement
-                    step_info += f"  Move: {unit_tag} -> {target}\n"
-
         formatted_history.append(step_info)
 
     return "\n".join(formatted_history[-history_length:])  # 保持显示最近3步的历史
@@ -263,7 +263,7 @@ def generate_unit_info_summary_prompt(unit_info: Dict[str, Dict]) -> str:
 def generate_action_normalization_prompt(text_observation: str, unit_info: str,
                                          raw_action: Dict[str, List[Tuple]]) -> str:
     return f"""
-    As a StarCraft 2 expert, review the current game state and generate optimal attack and movement actions for our units.
+    As a StarCraft 2 expert, review the current game state and generate optimal attack actions for our units.
 
     Current game state:
     {text_observation}
@@ -271,32 +271,22 @@ def generate_action_normalization_prompt(text_observation: str, unit_info: str,
     Unit information:
     {unit_info}
 
-    Please provide both attack and movement actions for our units using the following format:
+    Please provide both attack actions for our units using the following format:
     ## Attack Actions ##
     Attack: [Attacker Tag] -> [Target Tag]
     Reasoning: [Brief explanation of the strategic choice]
 
-    ## Move Actions ##
-    Move: [Unit Tag] -> [x, y]
-    Reasoning: [Brief explanation of the movement strategy]
+
 
     Ensure that:
-    1. All attacker/moving unit tags correspond to our units.
+    1. All attacker unit tags correspond to our units.
     2. All attack target tags correspond to enemy units.
-    3. Each unit should either attack OR move, not both.
-    4. Movement coordinates must be within the 10x10 grid (0-9 for both x and y).
     5. All actions make strategic sense given the current game state.
 
     Example:
     ## Attack Actions ##
     Attack: 1 -> 9
     Reasoning: The Stalker targets the Ghost to neutralize its high damage potential and disruptive abilities.
-
-    ## Move Actions ##
-    Move: 2 -> [3, 4]
-    Reasoning: The Phoenix repositions to a safer grid position while maintaining attack range.
-
-    Remember: Grid coordinates [0,0] is top-left, [9,9] is bottom-right.
     """
 def normalization_system_prompt():
     return """
@@ -313,3 +303,191 @@ def normalization_system_prompt():
                 Attack: 1 -> 9
                 Reasoning: The Stalker focuses on the Ghost due to its high damage potential and disabling abilities.
             """
+
+
+class VLMPlanner:
+    def __init__(self, save_dir: str, replan_each_step: bool = False):
+        """初始化VLM规划器
+
+        Args:
+            save_dir: 保存目录
+            replan_each_step: 是否每步重新规划
+        """
+        self.save_dir = save_dir
+        self.replan_each_step = replan_each_step
+        self.current_plan = None
+        self.plan_history = []
+        os.makedirs(save_dir, exist_ok=True)
+
+    def _get_planner_system_prompt(self) -> str:
+        return """You are a StarCraft II micro-management expert. Your task is to analyze the current combat situation 
+        and plan appropriate micro-management tactics based on the screenshot and unit information.
+
+        Focus on micro-management skills:
+        1. Focus Fire: Concentrating damage on specific targets
+        2. Kiting: Hit and run tactics
+        3. Shield/Health Management: Managing unit durability
+        4. Formation Control: Unit positioning
+
+        Your response MUST strictly follow this JSON-like format:
+
+        ### MICRO PLAN ###
+        {
+            "primary_skill": {
+                "name": "Focus Fire",
+                "description": "Concentrating damage on specific targets",
+                "implementation_steps": [
+                    "Step 1: Select highest priority target",
+                    "Step 2: Command all units to attack the same target"
+                ]
+            },
+            "secondary_skills": [
+                {
+                    "name": "Kiting",
+                    "description": "Hit and run tactics",
+                    "when_to_use": "When enemy units are approaching"
+                },
+                {
+                    "name": "Formation Control",
+                    "description": "Positioning units strategically",
+                    "when_to_use": "When need to maximize damage output while minimizing damage taken"
+                }
+            ]
+        }
+        ### END PLAN ###
+
+        Ensure your response maintains this exact format with the headers and JSON structure.
+        """
+
+    def plan(self, observation: Dict[str, Any], image_path: str) -> Dict[str, Any]:
+        """生成微操技能规划"""
+        # 如果不是每步重新规划且已有计划,直接返回当前计划
+        if not self.replan_each_step and self.current_plan is not None:
+            return self.current_plan
+
+        # 构建规划提示词
+        planning_prompt = self._generate_planning_prompt(observation)
+
+        # 使用camel框架
+        planner_bot = MultimodalChatbot(
+            system_prompt=self._get_planner_system_prompt(),
+            use_proxy=True
+        )
+        response = planner_bot.query(planning_prompt, image_path=image_path)
+        planner_bot.clear_history()
+
+        # 解析响应获取技能规划
+        skills = self._parse_skills(response)
+
+        # 更新历史
+        self._update_plan_history(skills, observation)
+
+        # 保存规划记录
+        self._save_planning_io(planning_prompt, response, skills, image_path)
+
+        return skills
+
+    def _update_plan_history(self, skills: Dict[str, Any], observation: Dict[str, Any]):
+        """更新规划历史"""
+        history_entry = {
+            'timestamp': datetime.now().isoformat(),
+            'skills': skills,
+            'situation': observation.get('text', ''),
+            'units_count': len([u for u in observation['unit_info'] if u['alliance'] == 1]),
+            'enemy_count': len([u for u in observation['unit_info'] if u['alliance'] != 1])
+        }
+        self.plan_history.append(history_entry)
+        self.current_plan = skills
+
+    def _format_plan_history(self) -> str:
+        """格式化规划历史"""
+        if not self.plan_history:
+            return "No previous planning history."
+
+        history_lines = []
+        for entry in self.plan_history[-3:]:  # 只显示最近3条历史
+            history_lines.append(
+                f"Previous plan ({entry['timestamp']}):\n"
+                f"- Primary Skill: {entry['skills'].get('primary', {}).get('name')}\n"
+                f"- Situation: {entry['situation']}\n"
+                f"- Units: {entry['units_count']} friendly vs {entry['enemy_count']} enemy\n"
+            )
+        return "\n".join(history_lines)
+    def _generate_planning_prompt(self, observation: Dict[str, Any]) -> str:
+        """生成规划提示词"""
+        history_info = self._format_plan_history()
+
+        return f"""Analyze the current StarCraft II combat situation and plan appropriate micro-management skills.
+
+Current situation:
+{observation.get('text', 'No text observation available.')}
+
+Previous planning history:
+{history_info}
+
+Based on the screenshot, situation and planning history:
+1. What should be our primary micro skill?
+2. What supporting skills might be useful?
+3. How should we implement these skills?
+
+Focus only on micro-management skills and tactics, without specifying exact unit targets or movement commands.
+"""
+
+    def _parse_skills(self, response: str) -> Dict[str, Any]:
+        """解析VLM响应中的技能规划"""
+        try:
+            # 提取JSON部分
+            json_match = re.search(r'### MICRO PLAN ###\s*({.*?})\s*### END PLAN ###', response, re.DOTALL)
+
+            if not json_match:
+                logger.warning("Failed to find JSON content in response")
+                return {}
+
+            json_str = json_match.group(1)
+
+            # 解析JSON
+            skills_data = json.loads(json_str)
+
+            # 转换为期望的格式
+            return {
+                'primary': {
+                    'name': skills_data['primary_skill']['name'],
+                    'description': skills_data['primary_skill']['description'],
+                    'steps': skills_data['primary_skill']['implementation_steps']
+                },
+                'secondary': [
+                    {
+                        'name': skill['name'],
+                        'description': skill['description'],
+                        'condition': skill['when_to_use']
+                    }
+                    for skill in skills_data['secondary_skills']
+                ]
+            }
+
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse JSON: {e}")
+            return {}
+        except Exception as e:
+            logger.error(f"Error parsing skills: {e}")
+            return {}
+
+    def _save_planning_io(self, prompt: str, response: str, skills: Dict[str, Any], image_path: str):
+        """保存规划的输入输出"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = os.path.join(self.save_dir, f"planning_io_{timestamp}.json")
+
+        data = {
+            "prompt": prompt,
+            "response": response,
+            "parsed_skills": skills,
+            "image_path": image_path,
+            "timestamp": timestamp,
+            "parsing_success": bool(skills)  # 添加解析是否成功的标志
+        }
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+

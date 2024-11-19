@@ -3,8 +3,8 @@ config = {
         "api_key": "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",
         "organization_name": "CAMEL AI",
         "organization_id": "org-YBLeiIenLZxY3ncCUDNLT67O",
-        "llm_model_name": "gpt-4o-mini",
-        "vlm_model_name":"gpt-4o-mini"
+        "llm_model_name": "gpt-4o",  # gpt-4o-mini
+        "vlm_model_name": "gpt-4o"  # gpt-4o-mini
     },
     "proxy": {
         "port": 7890,

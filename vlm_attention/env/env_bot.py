@@ -20,16 +20,14 @@ UP, RIGHT, DOWN, LEFT = range(4)
 
 
 class UnitInfo:
-    """单位信息类"""
-
-    def __init__(self, unit, alliance, simplified_tag=None):
-        self.original_tag = int(unit.tag)  # 原始tag编号,即unit.tag
+    def __init__(self, unit, alliance, simplified_tag):
+        self.original_tag = int(unit.tag)
         self.alliance = int(alliance)
         self.unit_type = int(unit.unit_type)
-        self.simplified_tag = simplified_tag  # 简化的tag编号,即我们自己定义的编号
-        # 记录单位的最大生命值和护盾
+        self.simplified_tag = simplified_tag
         self.max_health = float(unit.health)
         self.max_shield = float(unit.shield)
+        self.alive = True
         self.update_status(unit)
 
     def update_status(self, unit):
@@ -39,6 +37,7 @@ class UnitInfo:
         self.energy = float(unit.energy)
         self.x = float(unit.x)
         self.y = float(unit.y)
+        self.alive = self.health > 0
 
     def to_dict(self):
         """转换为字典格式"""
@@ -55,19 +54,84 @@ class UnitInfo:
             'position': (self.x, self.y)
         }
 
-
 class UnitManager:
-    """单位管理器"""
-
     def __init__(self):
         self.unit_info = {}  # original_tag -> UnitInfo
         self.alliance_groups = defaultdict(list)  # alliance -> [original_tags]
-        self.simplified_tags = {}  # original_tag -> simplified_tag
+        self.tag_registry = {}  # 新增：保存单位的永久性标识信息 {original_tag -> (simplified_tag, unit_name)}
+        self.type_counters = {}  # 新增：记录每种单位类型的计数 {(unit_type, alliance) -> current_count}
+        self.next_simplified_tag = 1  # 新增：用于生成新的simplified_tag
+        self.initialized = False
 
+    def initialize_units(self, units):
+        """初始化单位注册信息，只在第一次调用时执行"""
+        if self.initialized:
+            return
+
+        # 按阵营和单位类型对单位进行排序
+        sorted_units = []
+        for unit in units:
+            if unit.alliance in (_PLAYER_SELF, _PLAYER_ENEMY):
+                sorted_units.append(unit)
+
+        sorted_units.sort(key=lambda x: (
+            x.alliance != _PLAYER_SELF,  # 己方单位优先
+            x.unit_type,  # 按单位类型
+            x.x,  # 按x坐标
+            x.y,  # 按y坐标
+            x.tag  # 最后按原始tag
+        ))
+
+        # 为每个单位分配永久性标识
+        for unit in sorted_units:
+            original_tag = int(unit.tag)
+            unit_type = int(unit.unit_type)
+            alliance = int(unit.alliance)
+
+            # 获取该类型单位的计数
+            type_key = (unit_type, alliance)
+            if type_key not in self.type_counters:
+                self.type_counters[type_key] = 1
+            else:
+                self.type_counters[type_key] += 1
+
+            # 生成单位名称
+            base_name = get_unit_name(unit_type)
+            unit_name = f"{base_name}_{self.type_counters[type_key]}"
+
+            # 注册单位信息
+            self.tag_registry[original_tag] = (self.next_simplified_tag, unit_name)
+            self.next_simplified_tag += 1
+
+            # 记录日志
+            print(f"Registered unit: {unit_name} (original_tag: {original_tag}, "
+                        f"simplified_tag: {self.next_simplified_tag - 1})")
+
+        self.initialized = True
+
+    def get_simplified_tag(self, original_tag):
+        """获取单位的simplified tag
+
+        Args:
+            original_tag: 原始tag
+
+        Returns:
+            int: simplified tag，如果不存在则返回-1
+        """
+        unit_info = self.tag_registry.get(int(original_tag))
+        if unit_info:
+            return unit_info[0]  # 返回(simplified_tag, unit_name)中的simplified_tag
+        return -1
     def update_units(self, units):
-        """更新单位信息"""
-        # 收集新的单位信息并按alliance分组
-        temp_groups = defaultdict(list)
+        """更新单位状态，保持标识符的一致性"""
+        # 首次更新时初始化
+        if not self.initialized:
+            self.initialize_units(units)
+
+        # 清除当前的alliance分组
+        self.alliance_groups.clear()
+
+        # 更新单位状态
         for unit in units:
             original_tag = int(unit.tag)
             alliance = int(unit.alliance)
@@ -75,44 +139,42 @@ class UnitManager:
             if alliance not in (_PLAYER_SELF, _PLAYER_ENEMY):
                 continue
 
-            # 更新或创建单位信息
+            # 获取已注册的单位信息
+            unit_info = self.tag_registry.get(original_tag)
+            if unit_info is None:
+                # 如果是新出现的单位，为其分配新的标识
+                unit_type = int(unit.unit_type)
+                type_key = (unit_type, alliance)
+
+                if type_key not in self.type_counters:
+                    self.type_counters[type_key] = 1
+                else:
+                    self.type_counters[type_key] += 1
+
+                base_name = get_unit_name(unit_type)
+                unit_name = f"{base_name}_{self.type_counters[type_key]}"
+
+                self.tag_registry[original_tag] = (self.next_simplified_tag, unit_name)
+                unit_info = (self.next_simplified_tag, unit_name)
+                self.next_simplified_tag += 1
+
+                print(f"New unit registered: {unit_name} (original_tag: {original_tag}, "
+                            f"simplified_tag: {unit_info[0]})")
+
+            # 更新或创建UnitInfo对象
             if original_tag not in self.unit_info:
-                self.unit_info[original_tag] = UnitInfo(unit, alliance)
+                self.unit_info[original_tag] = UnitInfo(unit, alliance, unit_info[0])
             else:
                 self.unit_info[original_tag].update_status(unit)
 
-            temp_groups[alliance].append(original_tag)
+            # 更新alliance分组
+            self.alliance_groups[alliance].append(original_tag)
 
-        # 对每个阵营组内的tag排序
-        for alliance in temp_groups:
-            temp_groups[alliance].sort()
-
-        # 更新alliance_groups
-        self.alliance_groups = temp_groups
-
-        # 如果需要，初始化simplified tag
-        if not self.simplified_tags:
-            self.initialize_simplified_tags()
-
-    def initialize_simplified_tags(self):
-        """初始化simplified tag映射"""
-        self.simplified_tags.clear()
-        current_tag = 1
-
-        # 按阵营顺序分配tag（优先处理自己的单位）
-        alliance_order = sorted(self.alliance_groups.keys(),
-                                key=lambda x: (x != _PLAYER_SELF, x))
-
-        for alliance in alliance_order:
-            for original_tag in self.alliance_groups[alliance]:
-                self.simplified_tags[original_tag] = current_tag
-                self.unit_info[original_tag].simplified_tag = current_tag
-                current_tag += 1
-
-    def get_simplified_tag(self, original_tag):
-        """获取simplified tag"""
-        return self.simplified_tags.get(int(original_tag), -1)
-
+        # 对alliance组内的单位按simplified_tag排序
+        for alliance in self.alliance_groups:
+            self.alliance_groups[alliance].sort(
+                key=lambda x: self.tag_registry[x][0]
+            )
 
 class Multimodal_bot(base_agent.BaseAgent):
     """StarCraft II 多模态机器人代理
@@ -254,6 +316,7 @@ class Multimodal_bot(base_agent.BaseAgent):
     def add_smac_move_command(self, unit_simplified_tag, direction):
         """添加SMAC移动命令"""
         self.smac_move_commands.append((unit_simplified_tag, direction))
+
     def get_raw_image_and_unit_info(self, obs):
         """获取原始图像和详细的单位信息"""
         # 更新单位信息
@@ -269,8 +332,11 @@ class Multimodal_bot(base_agent.BaseAgent):
         unit_info = []
         for unit in obs.observation.raw_units:
             if unit.alliance in (_PLAYER_SELF, _PLAYER_ENEMY):
-                simplified_tag = self.unit_manager.get_simplified_tag(unit.tag)
-                if simplified_tag != -1:
+                original_tag = int(unit.tag)
+                unit_registry = self.unit_manager.tag_registry.get(original_tag)
+
+                if unit_registry:
+                    simplified_tag = unit_registry[0]  # 获取simplified_tag
                     for feature_unit in obs.observation.feature_units:
                         if feature_unit.tag == unit.tag:
                             # 转换坐标
@@ -280,7 +346,7 @@ class Multimodal_bot(base_agent.BaseAgent):
                             color = self.self_color if unit.alliance == _PLAYER_SELF else self.enemy_color
 
                             # 获取单位详细信息
-                            unit_data = self.unit_manager.unit_info[unit.tag].to_dict()
+                            unit_data = self.unit_manager.unit_info[original_tag].to_dict()
                             unit_data.update({
                                 'position': (screen_x, screen_y),
                                 'map_position': (unit.x, unit.y),
@@ -295,33 +361,15 @@ class Multimodal_bot(base_agent.BaseAgent):
         """获取游戏状态的文字描述"""
         description = "Current game state:\n\n"
 
-        # 用于跟踪单位类型计数
-        type_alliance_count = {}
-
         # 按alliance分组输出单位信息
         for alliance in sorted(self.unit_manager.alliance_groups.keys()):
             is_self = alliance == _PLAYER_SELF
             description += "Our units:\n" if is_self else "Enemy units:\n"
 
-            # 获取该alliance的所有单位，并按simplified_tag排序以保持稳定性
-            units = [(tag, self.unit_manager.unit_info[tag]) for tag in self.unit_manager.alliance_groups[alliance]]
-            units.sort(key=lambda x: x[1].simplified_tag)
-
-            for original_tag, unit_info in units:
-                # 获取基础单位名称
-                base_unit_name = get_unit_name(unit_info.unit_type)
-
-                # 使用(unit_type, alliance)作为计数器的键
-                counter_key = (unit_info.unit_type, alliance)
-
-                # 获取并更新该类型的计数
-                if counter_key not in type_alliance_count:
-                    type_alliance_count[counter_key] = 1
-                else:
-                    type_alliance_count[counter_key] += 1
-
-                # 生成单位名称
-                unit_name = f"{base_unit_name}_{type_alliance_count[counter_key]}"
+            # 获取该alliance的所有单位
+            for original_tag in self.unit_manager.alliance_groups[alliance]:
+                unit_info = self.unit_manager.unit_info[original_tag]
+                _, unit_name = self.unit_manager.tag_registry[original_tag]
 
                 # 构建状态信息
                 health_info = f"Health: {unit_info.health:.1f}/{unit_info.max_health:.1f}"

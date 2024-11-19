@@ -393,6 +393,12 @@ class SC2MultimodalEnv(gym.Env):
             self.bot.setup(self.sc2_env.observation_spec(), self.sc2_env.action_spec())
             self.bot.reset()
 
+            # 确保UnitManager的初始化状态被重置
+            self.bot.unit_manager.initialized = False
+            self.bot.unit_manager.tag_registry.clear()
+            self.bot.unit_manager.type_counters.clear()
+            self.bot.unit_manager.next_simplified_tag = 1
+
             # 重置状态
             self.previous_score = None
             return self._get_observation(obs[0])
@@ -411,43 +417,34 @@ class SC2MultimodalEnv(gym.Env):
     def __del__(self):
         self.close()
 
+
     def _get_observation(self, obs):
         """获取观察信息"""
         try:
             raw_image, unit_info = self.bot.get_raw_image_and_unit_info(obs)
             text_description = self.bot.get_text_description(obs)
 
-            # 处理单位信息，按alliance和unit_type分组进行编号
+            # 处理单位信息，使用UnitManager中的永久性标识
             processed_unit_info = []
 
-            # 首先按simplified_tag排序，确保编号顺序一致
+            # 按simplified_tag排序，确保顺序一致
             sorted_units = sorted(unit_info, key=lambda x: x['simplified_tag'])
 
-            # 用于跟踪当前处理的单位类型
-            type_alliance_count = {}
-
             for unit in sorted_units:
-                # 获取基础单位名称
-                base_unit_name = get_unit_name(unit['unit_type'])
+                original_tag = unit['original_tag']
+                # 从UnitManager获取永久性标识信息
+                _, unit_name = self.bot.unit_manager.tag_registry.get(original_tag, (None, None))
 
-                # 使用(unit_type, alliance)作为计数器的键
-                counter_key = (unit['unit_type'], unit['alliance'])
-
-                # 获取并更新该类型的计数
-                if counter_key not in type_alliance_count:
-                    type_alliance_count[counter_key] = 1
-                else:
-                    type_alliance_count[counter_key] += 1
-
-                # 生成单位名称，使用simplified_tag确保稳定性
-                numbered_unit_name = f"{base_unit_name}_{type_alliance_count[counter_key]}"
+                if unit_name is None:
+                    logger.warning(f"Unit with original_tag {original_tag} not found in tag_registry")
+                    continue
 
                 unit_data = {
-                    'original_tag': unit['original_tag'],
+                    'original_tag': original_tag,
                     'simplified_tag': unit['simplified_tag'],
                     'alliance': unit['alliance'],
                     'unit_type': unit['unit_type'],
-                    'unit_name': numbered_unit_name,
+                    'unit_name': unit_name,  # 使用永久性标识中的名称
                     'health': unit['health'],
                     'max_health': unit['max_health'],
                     'shield': unit['shield'],
