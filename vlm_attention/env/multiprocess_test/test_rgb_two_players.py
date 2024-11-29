@@ -7,6 +7,7 @@ from absl import app, flags
 import cv2
 import numpy as np
 import json
+import datetime
 
 FLAGS = flags.FLAGS
 map_list = ["vlm_attention_1",
@@ -16,6 +17,7 @@ map_list = ["vlm_attention_1",
             "2s3z_vlm_attention",
             "3m_vlm_attention",
             "3s_vs_3z_vlm_attention"]
+
 
 class SimpleAgent(base_agent.BaseAgent):
     def __init__(self):
@@ -35,16 +37,13 @@ class SimpleAgent(base_agent.BaseAgent):
         if not self.map_info_printed:
             print("\n=== Map Information ===")
 
-            # 使用 feature_minimap 的 height_map 或 visibility_map 获取真实地图尺寸
             if 'feature_minimap' in obs.observation:
                 minimap_layers = obs.observation['feature_minimap']
-                # heightmap 是第一层，通过它来获取真实地图尺寸
-                height_map = minimap_layers[0]  # height_map layer
+                height_map = minimap_layers[0]
                 real_map_size = height_map.shape
                 print(f"Real Map Size: {real_map_size[0]} x {real_map_size[1]}")
 
-                # visibility_map 在第二层
-                visibility_map = minimap_layers[1]  # visibility_map layer
+                visibility_map = minimap_layers[1]
                 playable_areas = np.where(visibility_map > 0)
                 if len(playable_areas[0]) > 0 and len(playable_areas[1]) > 0:
                     min_y, max_y = np.min(playable_areas[0]), np.max(playable_areas[0])
@@ -52,7 +51,6 @@ class SimpleAgent(base_agent.BaseAgent):
                     print(f"Playable Area: from ({min_x}, {min_y}) to ({max_x}, {max_y})")
                     print(f"Playable Area Size: {max_x - min_x + 1} x {max_y - min_y + 1}")
 
-            # 显示分辨率信息
             if 'feature_screen' in obs.observation:
                 feature_screen = obs.observation['feature_screen']
                 print(f"\nFeature Screen Resolution: {feature_screen.shape[1]} x {feature_screen.shape[2]}")
@@ -61,7 +59,6 @@ class SimpleAgent(base_agent.BaseAgent):
                 rgb_screen = obs.observation['rgb_screen']
                 print(f"RGB Screen Resolution: {rgb_screen.shape[1]} x {rgb_screen.shape[0]}")
 
-            # 相机信息
             if 'camera_position' in obs.observation:
                 cam_pos = obs.observation['camera_position']
                 print(f"Camera Position: ({cam_pos[0]}, {cam_pos[1]})")
@@ -70,14 +67,12 @@ class SimpleAgent(base_agent.BaseAgent):
                 cam_size = obs.observation['camera_size']
                 print(f"Camera View Size: {cam_size[0]} x {cam_size[1]}")
 
-            # 获取高度信息
             if 'feature_minimap' in obs.observation:
-                height_map = obs.observation['feature_minimap'][0]  # height_map layer
+                height_map = obs.observation['feature_minimap'][0]
                 min_height = np.min(height_map)
                 max_height = np.max(height_map)
                 print(f"\nTerrain Height Range: {min_height} to {max_height}")
 
-            # 地图名称
             if 'map_name' in obs.observation:
                 print(f"Map Name: {obs.observation['map_name']}")
 
@@ -90,6 +85,14 @@ class SimpleAgent(base_agent.BaseAgent):
 def ensure_dir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
+
+
+def get_log_path(episode, agent_id):
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    base_log_dir = os.path.join("logs", f"episode_{episode}_{timestamp}")
+    agent_log_dir = os.path.join(base_log_dir, f"agent_{agent_id}")
+    ensure_dir(agent_log_dir)
+    return agent_log_dir
 
 
 def save_rgb_image(image, directory, filename):
@@ -111,14 +114,14 @@ def get_structure(obj):
         return type(obj).__name__
 
 
-def save_obs_structure(obs, episode):
-    obs_structure = get_structure(obs[0].observation)
-    with open(f'obs_structure_episode_{episode}.json', 'w') as f:
+def save_obs_structure(obs, episode, agent_id, log_dir):
+    obs_structure = get_structure(obs.observation)
+    structure_file = os.path.join(log_dir, f'obs_structure_agent_{agent_id}.json')
+    with open(structure_file, 'w') as f:
         json.dump(obs_structure, f, indent=2)
 
 
 def print_score(score):
-    """打印分数信息"""
     score_names = [
         "Total Score",
         "Collected Minerals",
@@ -141,12 +144,13 @@ def print_score(score):
 
 
 def run_episode(episode):
-    agent = SimpleAgent()
+    agent1 = SimpleAgent()
+    agent2 = SimpleAgent()
 
     with sc2_env.SC2Env(
-            map_name="vlm_attention_1",
+            map_name="vlm_attention_1_new",
             players=[sc2_env.Agent(sc2_env.Race.terran),
-                     sc2_env.Bot(sc2_env.Race.random, sc2_env.Difficulty.very_easy)],
+                     sc2_env.Agent(sc2_env.Race.terran)],
             agent_interface_format=features.AgentInterfaceFormat(
                 feature_dimensions=features.Dimensions(screen=256, minimap=64),
                 rgb_dimensions=features.Dimensions(screen=(1920, 1080), minimap=(64, 64)),
@@ -165,50 +169,76 @@ def run_episode(episode):
             game_steps_per_episode=1000,
             visualize=True) as env:
 
-        agent.setup(env.observation_spec(), env.action_spec())
+        agent1.setup(env.observation_spec(), env.action_spec())
+        agent2.setup(env.observation_spec(), env.action_spec())
 
         print(f"Starting episode {episode + 1}")
         obs = env.reset()
-        agent.reset()
+        agent1.reset()
+        agent2.reset()
 
-        save_obs_structure(obs, episode)
+        log_dir_agent1 = get_log_path(episode, 1)
+        log_dir_agent2 = get_log_path(episode, 2)
 
-        total_reward = 0
+        save_obs_structure(obs[0], episode, 1, log_dir_agent1)
+        save_obs_structure(obs[1], episode, 2, log_dir_agent2)
+
+        total_reward1 = 0
+        total_reward2 = 0
         step_count = 0
-        while True:
-            step_actions = [agent.step(obs[0])]
 
+        while True:
+            step_actions = [
+                agent1.step(obs[0]),
+                agent2.step(obs[1])
+            ]
+
+            # Save Agent 1 observations
             if 'rgb_screen' in obs[0].observation:
                 rgb_screen = obs[0].observation['rgb_screen']
                 rgb_screen = np.clip(rgb_screen, 0, 255).astype(np.uint8)
                 save_rgb_image(rgb_screen,
-                               f'log_screen_episode_{episode}',
+                               os.path.join(log_dir_agent1, 'screens'),
                                f'screen_step{obs[0].observation["game_loop"][0]}.png')
 
             if 'rgb_minimap' in obs[0].observation:
                 rgb_minimap = obs[0].observation['rgb_minimap']
                 rgb_minimap = np.clip(rgb_minimap, 0, 255).astype(np.uint8)
                 save_rgb_image(rgb_minimap,
-                               f'log_minimap_episode_{episode}',
+                               os.path.join(log_dir_agent1, 'minimaps'),
                                f'minimap_step{obs[0].observation["game_loop"][0]}.png')
 
+            # Save Agent 2 observations
+            if 'rgb_screen' in obs[1].observation:
+                rgb_screen = obs[1].observation['rgb_screen']
+                rgb_screen = np.clip(rgb_screen, 0, 255).astype(np.uint8)
+                save_rgb_image(rgb_screen,
+                               os.path.join(log_dir_agent2, 'screens'),
+                               f'screen_step{obs[1].observation["game_loop"][0]}.png')
+
+            if 'rgb_minimap' in obs[1].observation:
+                rgb_minimap = obs[1].observation['rgb_minimap']
+                rgb_minimap = np.clip(rgb_minimap, 0, 255).astype(np.uint8)
+                save_rgb_image(rgb_minimap,
+                               os.path.join(log_dir_agent2, 'minimaps'),
+                               f'minimap_step{obs[1].observation["game_loop"][0]}.png')
+
             step_count += 1
-            total_reward += obs[0].reward
+            total_reward1 += obs[0].reward
+            total_reward2 += obs[1].reward
 
             if obs[0].last():
-                score = obs[0].observation["score_cumulative"]
-                print(f"\nEpisode {episode + 1} Results:")
-                print(f"  Steps: {step_count}")
-                print(f"  Total Reward: {total_reward}")
-                print_score(score)
+                for agent_id, agent_obs, total_reward in [
+                    (1, obs[0], total_reward1),
+                    (2, obs[1], total_reward2)
+                ]:
+                    print(f"\nAgent {agent_id} Episode {episode + 1} Results:")
+                    print(f"  Steps: {step_count}")
+                    print(f"  Total Reward: {total_reward}")
+                    print_score(agent_obs.observation["score_cumulative"])
 
-                if obs[0].reward > 0:
-                    result = "Victory"
-                elif obs[0].reward < 0:
-                    result = "Defeat"
-                else:
-                    result = "Tie"
-                print(f"  Result: {result}")
+                    result = "Victory" if agent_obs.reward > 0 else "Defeat" if agent_obs.reward < 0 else "Tie"
+                    print(f"  Result: {result}")
                 break
 
             obs = env.step(step_actions)
@@ -224,9 +254,9 @@ def main(argv):
     flags.FLAGS(argv)
     num_episodes = 1
 
-    with multiprocessing.Pool(num_episodes, initializer=init_worker) as pool:
-        pool.map(run_episode, range(num_episodes))
-
+    # 直接循环运行episodes，不使用多进程
+    for episode in range(num_episodes):
+        run_episode(episode)
 
 if __name__ == "__main__":
     app.run(main)

@@ -10,21 +10,11 @@ from typing import Type, Union
 from agent.RandomAgent import RandomAgent
 from agent.vlm_agent_without_move_v5 import VLMAgentWithoutMove
 from agent.vlm_agent_v6 import VLMAgent
-from agent.test_agent import TestAgent
+from agent.test_agent_with_ability import TestAgent
 from vlm_attention import ROOT_DIR, CONFIG_FILE_RELATIVE_PATH
-from vlm_attention.env.env_core import SC2MultimodalEnv
+from vlm_attention.env.env_core_with_ability import SC2MultimodalEnv
 
-map_list = ["vlm_attention_1",
-            "2c_vs_64zg_vlm_attention",
-            "2m_vs_1z_vlm_attention",
-            "2s_vs_1sc_vlm_attention",
-            "2s3z_vlm_attention",
-            "3m_vlm_attention",
-            "3s_vs_3z_vlm_attention",
-            "6reaper_vs8zealot_vlm_attention",
-            "8marine_2tank_vs_zerglings_banelings_vlm_attention",
-            "2bc1prism_vs_8m_vlm_attention",
-            "8marine_1medvac_vs_2tank"]
+map_list = ["ability_8stalker_vs_8marine_3marauder_1medivac_tank"]
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -123,40 +113,42 @@ def main(argv):
         time.sleep(5)
 
         while not done and step < FLAGS.max_steps:
-            try:
-                if step > 0:
-                    time.sleep(0.1)
+            if step > 0:
+                time.sleep(0.1)
 
-                action = agent.get_action(observation)
-                observation, reward, done, info = env.step(action)
+            action = agent.get_action(observation)
+            observation, reward, done, info = env.step(action)
 
-                # 检查是否有环境错误
-                if info.get("error"):
-                    logging.error(f"Environment error: {info['error']}")
-                    break
-
-                total_reward += reward
-                step += 1
-
-                print(f"Step: {step}, Reward: {reward}, Total Reward: {total_reward}")
-
-            except Exception as e:
-                logging.error(f"Error in game loop: {e}")
+            # 检查是否有环境错误
+            if info.get("error"):
+                import traceback
+                logging.error(f"Environment error: {info['error']}")
+                logging.error(f"Full traceback:\n{traceback.format_exc()}")
                 break
+
+            total_reward += reward
+            step += 1
+
+            print(f"Step: {step}, Reward: {reward}, Total Reward: {total_reward}")
 
         print(f"\nEpisode finished. Total Steps: {step}, Total Reward: {total_reward}")
 
     except Exception as e:
-        logging.error(f"Critical error occurred: {e}")
+        import traceback
+        logging.error(f"Critical error occurred: {str(e)}")
+        logging.error(f"Full traceback:\n{traceback.format_exc()}")
+        raise  # 重新抛出异常以显示完整的堆栈跟踪
 
     finally:
         # 清理资源
         if env is not None:
             try:
                 env.close()
-                time.sleep(2)  # 等待环境完全关闭
+                time.sleep(2)
             except Exception as e:
-                logging.error(f"Error closing environment: {e}")
+                import traceback
+                logging.error(f"Error closing environment: {str(e)}")
+                logging.error(f"Close environment traceback:\n{traceback.format_exc()}")
 
         terminate_sc2_processes()
 

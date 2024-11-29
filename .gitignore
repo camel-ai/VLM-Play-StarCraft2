@@ -2,3 +2,4 @@
 *_pb2.py
 /vlm_attention/run_env/log/
 /vlm_attention/env/multiprocess_test/replays/
+/vlm_attention/env/multiprocess_test/logs/
