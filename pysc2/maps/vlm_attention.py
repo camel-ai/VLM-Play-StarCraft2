@@ -9,7 +9,6 @@ class VLM_ATTENTION(lib.Map):
 
 
 vlm_attention_maps = [
-    # "Empty128",  # Not really playable, but may be useful in the future.
     "1c3s5z",
   "2c_vs_64zg_vlm_attention",
   "2m_vs_1z_vlm_attention",
@@ -38,7 +37,13 @@ vlm_attention_maps = [
   "test_for_cluster",
   "test_for_cluster_version2",
   "test_for_cluster_8_22",
-  "vlm_attention_1"
+  "vlm_attention_1",
+  "vlm_attention_1_two_players",
+  "vlm_attention_2_terran_vs_terran_two_players",
+  "pvz_task6_level3",
+  "MMM_vlm_attention_two_players",
+  "ability_test_map"
+
 ]
 
 for name in vlm_attention_maps:

@@ -325,4 +325,6 @@ class Builder(object):
         args.update(feature_unit.as_dict())
         obs.raw_data.units.add(**args)
 
-    return response_observation
+    return
+
+
