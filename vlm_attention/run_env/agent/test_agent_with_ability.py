@@ -20,7 +20,8 @@ COLOR_ENEMY = (0, 0, 255)  # 红色 (BGR)
 class TestAgent:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
                  annotate_units: bool = True, annotate_all_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
-                 use_self_attention: bool = False, use_rag: bool = False):
+                 use_self_attention: bool = False, use_rag: bool = False, use_proxy: bool = False,
+                 model_name: str = "qwen"):
         self.action_space = action_space
 
         self.text_observation: str = ""
@@ -87,7 +88,7 @@ class TestAgent:
         action_dict = {
             'attack': [],
             'move': [],  # 包含grid_move和smac_move
-            'ability': [] # 新增技能命令列表
+            'ability': []  # 新增技能命令列表
         }
 
         # 获取当前可用的己方单位

@@ -231,11 +231,11 @@ def draw_grid_with_labels(frame: np.ndarray, screen_size: tuple, grid_size: tupl
     # 添加标签
     # 根据图像尺寸动态计算字体大小
     base_font_scale = min(screen_width, screen_height) / 1920  # 以1920px为基准
-    font_scale = max(0.4, min(1.2, base_font_scale))  # 限制范围
+    font_scale = max(0.6, min(1.5, base_font_scale))  # 限制范围
 
     # 设置字体属性
     font = cv2.FONT_HERSHEY_SIMPLEX
-    font_thickness = max(1, int(2 * base_font_scale))
+    font_thickness = max(2, int(3 * base_font_scale))
     font_color = (255, 255, 255)  # 白色
 
     # 计算文本大小以优化放置位置
