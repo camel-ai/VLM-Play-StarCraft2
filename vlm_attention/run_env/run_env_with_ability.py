@@ -14,7 +14,7 @@ from agent.test_agent_with_ability import TestAgent
 from vlm_attention import ROOT_DIR, CONFIG_FILE_RELATIVE_PATH
 from vlm_attention.env.env_core_with_ability import SC2MultimodalEnv
 
-map_list = ["ability_8stalker_vs_8marine_3marauder_1medivac_tank"]
+map_list = ["ability_map_8marine_3marauder_1medivac_1tank"]
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 

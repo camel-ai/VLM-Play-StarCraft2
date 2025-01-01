@@ -1,26 +1,21 @@
-
-import sys
-import os
-
-
 import json
 import logging
-from typing import List, Tuple, Dict, Any, Optional
+import os
 from datetime import datetime
+from typing import List, Tuple, Dict, Any, Optional
 
 import cv2
 import numpy as np
 
-from vlm_attention.config.config import get_config
 from vlm_attention.env.config import COLORS, get_unit_name
 from vlm_attention.knowledge_data.database.sc2_unit_database import SC2UnitDatabase
 from vlm_attention.run_env.agent.agent_utils import (
-    summarize_unit_info, generate_important_units_prompt,
-    generate_decision_prompt, format_units_info, parse_vlm_response, parse_vlm_decision,
-    format_history_for_prompt, generate_enhanced_unit_selection_prompt,VLMPlanner,
-    generate_unit_info_summary_prompt, generate_action_normalization_prompt,normalization_system_prompt
+    generate_important_units_prompt,
+    generate_decision_prompt, parse_vlm_response, parse_vlm_decision,
+    format_history_for_prompt, VLMPlanner,
+    generate_unit_info_summary_prompt, generate_action_normalization_prompt, normalization_system_prompt
 )
-from vlm_attention.run_env.utils import _annotate_units_on_image,draw_grid_with_labels
+from vlm_attention.run_env.utils import _annotate_units_on_image, draw_grid_with_labels
 from vlm_attention.utils.call_vlm import MultimodalChatbot, TextChatbot
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -32,7 +27,7 @@ class VLMAgentWithoutMove:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
                  annotate_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
                  use_self_attention: bool = False, use_rag: bool = False, history_length: int = 3,
-                 replan_each_step: bool = False):
+                 replan_each_step: bool = False, use_proxy: bool = False):
         """
         初始化VLMAgentWithoutMove代理。
         :param action_space: 动作空间字典
@@ -56,7 +51,7 @@ class VLMAgentWithoutMove:
         self.step_count = 0
         self.use_self_attention = use_self_attention
         self.use_rag = use_rag
-
+        self.use_proxy = use_proxy
         # 设置目录
         self.save_dir = save_dir
         self.original_images_dir = os.path.join(self.save_dir, "original_images")
@@ -116,7 +111,7 @@ class VLMAgentWithoutMove:
         first_annotation_path = self._process_and_save_image(observation, self.first_annotation_dir, "first_annotation",
                                                              annotate_all=True)
         # 获取微操技能规划
-        planned_skills = self.planner.plan(observation, first_annotation_path)
+        planned_skills = self.planner.plan(observation, first_annotation_path, use_proxy=self.use_proxy)
         logger.info(f"Planned micro skills: {planned_skills}")
         # 如果启用了自注意力机制，识别重要单位
         if self.use_self_attention:
@@ -153,9 +148,9 @@ class VLMAgentWithoutMove:
             # 从数据库获取单位信息并生成总结 使用camel 框架
             unit_info = self._get_unit_info_from_database(units_to_query)
             """使用camel 框架"""
-            unit_summary_system_prompt = "You are a StarCraft 2 expert focusing on Protoss micro-management."
+            unit_summary_system_prompt = "You are a StarCraft 2 expert focusing on micro-management."
             unit_summary_user_prompt = generate_unit_info_summary_prompt(unit_info)
-            unit_summary_bot = TextChatbot(system_prompt=unit_summary_system_prompt, use_proxy=True)
+            unit_summary_bot = TextChatbot(system_prompt=unit_summary_system_prompt, use_proxy=self.use_proxy)
             unit_summary = unit_summary_bot.query(unit_summary_user_prompt)
             unit_summary_bot.clear_history()
             """使用camel 框架结束"""
@@ -171,7 +166,7 @@ class VLMAgentWithoutMove:
             important_units_response,
             planned_skills
         )
-        raw_decision_bot = MultimodalChatbot(system_prompt=decision_system_prompt, use_proxy=True)
+        raw_decision_bot = MultimodalChatbot(system_prompt=decision_system_prompt, use_proxy=self.use_proxy)
         raw_decision_response = raw_decision_bot.query(decision_user_prompt, image_path=decision_image_path)
         raw_decision_bot.clear_history()
         """使用camel 框架结束"""
@@ -191,13 +186,12 @@ class VLMAgentWithoutMove:
         normalized_action = {'attack': [], 'move': []}
         for attempt in range(max_retries):
             """使用camel 框架"""
-            normalized_bot = TextChatbot(system_prompt=normalization_system_prompt(), use_proxy=True)
+            normalized_bot = TextChatbot(system_prompt=normalization_system_prompt(), use_proxy=self.use_proxy)
             normalized_action_response = normalized_bot.query(normalization_user_prompt)
             normalized_bot.clear_history()
             """使用camel 框架结束"""
             self._save_vlm_io(normalization_user_prompt, normalized_action_response,
                               f"normalized_decision_attempt_{attempt + 1}")
-
 
             normalized_action = parse_vlm_decision(normalized_action_response)
             if normalized_action['attack']:
@@ -251,7 +245,6 @@ class VLMAgentWithoutMove:
                 normalized_attacks.append((attacker_id, target_id))
 
         return normalized_attacks
-
 
     def _save_step_data(self, observation: Dict[str, Any]):
         """保存每个step的数据"""
@@ -379,7 +372,7 @@ class VLMAgentWithoutMove:
             3. Should be prioritized based on our micro skill requirements
             """
 
-        important_unit_bot = MultimodalChatbot(system_prompt=system_prompt, use_proxy=True)
+        important_unit_bot = MultimodalChatbot(system_prompt=system_prompt, use_proxy=self.use_proxy)
         important_units_response = important_unit_bot.query(user_input, image_path=image_path)
         important_unit_bot.clear_history()
 
@@ -445,7 +438,6 @@ class VLMAgentWithoutMove:
 
         return prompt
 
-
     def _get_unit_info_from_database(self, units: List[Dict[str, Any]]) -> Dict[str, Dict]:
         """从数据库获取单位信息"""
         unit_info = {}
@@ -460,7 +452,6 @@ class VLMAgentWithoutMove:
                 logger.warning(f"Can't find unit information for type {unit_type} ({base_name})")
 
         return unit_info
-
 
     def format_units_info_for_prompt(self, unit_info: List[Dict[str, Any]]) -> str:
         """为提示词格式化单位信息"""
@@ -480,7 +471,6 @@ class VLMAgentWithoutMove:
             formatted_info.append(unit_desc)
 
         return "\n\n".join(formatted_info)
-
 
     def _save_vlm_io(self, prompt: str, response: str, prefix: str, image_path: Optional[str] = None) -> None:
         """保存VLM输入输出数据"""
@@ -508,7 +498,6 @@ class VLMAgentWithoutMove:
             logger.info(f"Saved {prefix} I/O data to {filename}")
         except Exception as e:
             logger.error(f"Error saving {prefix} I/O data to {filename}: {e}", exc_info=True)
-
 
     def _save_image(self, image: np.ndarray, directory: str, prefix: str) -> str:
         """保存图像到指定目录"""
