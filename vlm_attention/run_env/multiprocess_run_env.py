@@ -34,7 +34,7 @@ map_list = ["vlm_attention_1",
             "3s_vs_3z_vlm_attention"]
 # Define flags
 FLAGS = flags.FLAGS
-flags.DEFINE_string("map", map_list[4], "Name of the map to use")
+flags.DEFINE_string("map", map_list[-2], "Name of the map to use")
 flags.DEFINE_string("config_path", os.path.join(ROOT_DIR, CONFIG_FILE_RELATIVE_PATH), "Path to the configuration file")
 flags.DEFINE_boolean("draw_grid", False, "Whether to draw grid on screenshots")
 flags.DEFINE_boolean("annotate_units", True, "Whether to annotate units on screenshots")
@@ -42,6 +42,7 @@ flags.DEFINE_string("agent", "VLMAgentWithoutMove", "Agent to use:RandomAgent, V
 flags.DEFINE_integer("num_processes", 4, "Number of parallel processes to use")
 flags.DEFINE_boolean("use_self_attention", True, "Whether to use self-attention in the agent")
 flags.DEFINE_boolean("use_rag", True, "Whether to use RAG in the agent")
+flags.DEFINE_boolean("use_proxy", False, "Whether to use proxy in the agent, in china, gpt models need proxy")
 
 # Screen and map size flags
 flags.DEFINE_integer('feature_screen_width', 256, 'Width of feature screen')
@@ -50,6 +51,8 @@ flags.DEFINE_integer('rgb_screen_width', 1920, 'Width of RGB screen')
 flags.DEFINE_integer('rgb_screen_height', 1080, 'Height of RGB screen')
 flags.DEFINE_integer('map_size_width', 64, 'Width of the map')
 flags.DEFINE_integer('map_size_height', 64, 'Height of the map')
+
+flags.DEFINE_string('model_name', default="qwen", help="which model we used ")
 
 
 def terminate_process_safely(pid: int):
@@ -63,9 +66,6 @@ def terminate_process_safely(pid: int):
             os.kill(pid, signal.SIGTERM)
         except:
             pass
-
-
-
 
 
 def run_episode(config: dict) -> dict:
@@ -141,11 +141,14 @@ def run_episode(config: dict) -> dict:
         if env is not None:
             env.close()
 
+
 def init_worker():
     """Initialize worker process"""
     import sys
     sys.argv = sys.argv[:1]
     flags.FLAGS(sys.argv)
+
+
 def main(argv):
     # 保持原有的flag定义和配置
     flags.FLAGS(argv)
@@ -155,7 +158,7 @@ def main(argv):
     base_log_dir = os.path.abspath(os.path.join(
         "log",
         FLAGS.agent,
-        f"{timestamp}_{FLAGS.map}"  # 在时间戳后添加地图名称
+        f"{FLAGS.model_name}_{timestamp}_{FLAGS.map}"  # 在时间戳后添加地图名称
     ))
     os.makedirs(base_log_dir, exist_ok=True)
 

@@ -46,7 +46,7 @@ vlm_attention_maps = [
   "ability_map_8marine_3marauder_1medivac_1tank_2_players",
   "ability_8stalker_vs_8marine_3marauder_1medivac_tank_map_2_players",
   "ability_7stalker_vs_11marine_1medivac_1tank_map_2_players",
-  "ability_8stalker_vs_8marine_3marauder_1medivac_tank"
+  "ability_map_8marine_3marauder_1medivac_1tank"
 
 ]
 

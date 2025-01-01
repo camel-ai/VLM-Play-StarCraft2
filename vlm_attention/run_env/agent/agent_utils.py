@@ -219,7 +219,7 @@ def format_history_for_prompt(history: List[Dict[str, Any]], history_length: int
 def generate_enhanced_unit_selection_prompt(available_units: List[str], important_units_response: str,
                                             text_observation: str) -> str:
     return f"""
-    You are a StarCraft 2 strategist specializing in micro-management tasks for the Protoss race. 
+    You are a StarCraft 2 strategist specializing in micro-management tasks. 
     We are currently in a micro-management scenario where all units are visible (no fog of war).
 
     Based on the image analysis and the available units in our database, select the most relevant units to query for more information. 
@@ -238,7 +238,7 @@ def generate_enhanced_unit_selection_prompt(available_units: List[str], importan
 
 def generate_unit_info_summary_prompt(unit_info: Dict[str, Dict]) -> str:
     summary_prompt = """
-    You are a StarCraft 2 expert focusing on Protoss micro-management. 
+    You are a StarCraft 2 expert focusing on micro-management. 
     Summarize the key information for the following units, emphasizing aspects crucial for micro-management decision-making.
     Keep the summary concise and directly applicable to our current micro-management task.
 
@@ -359,7 +359,7 @@ class VLMPlanner:
         Ensure your response maintains this exact format with the headers and JSON structure.
         """
 
-    def plan(self, observation: Dict[str, Any], image_path: str) -> Dict[str, Any]:
+    def plan(self, observation: Dict[str, Any], image_path: str,use_proxy:bool=False) -> Dict[str, Any]:
         """生成微操技能规划"""
         # 如果不是每步重新规划且已有计划,直接返回当前计划
         if not self.replan_each_step and self.current_plan is not None:
@@ -371,7 +371,7 @@ class VLMPlanner:
         # 使用camel框架
         planner_bot = MultimodalChatbot(
             system_prompt=self._get_planner_system_prompt(),
-            use_proxy=True
+            use_proxy=use_proxy
         )
         response = planner_bot.query(planning_prompt, image_path=image_path)
         planner_bot.clear_history()
