@@ -73,7 +73,7 @@ setup(
         'mpyq',
         'numpy>=1.10',
         'portpicker>=1.2.0',
-        'protobuf>=2.6',
+        'protobuf==3.20.0',
         'pygame',
         'requests',
         's2clientprotocol>=4.10.1.75800.0',
@@ -81,7 +81,7 @@ setup(
         'sk-video',
         'websocket-client',
         'pre-commit',
-        'camel-ai=0.2.6',
+        'camel-ai=0.2.14',
         'pillow',
     ],
     entry_points={
