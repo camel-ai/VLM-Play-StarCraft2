@@ -81,7 +81,7 @@ setup(
         'sk-video',
         'websocket-client',
         'pre-commit',
-        'camel-ai=0.2.14',
+        'camel-ai==0.2.14',
         'pillow',
     ],
     entry_points={
