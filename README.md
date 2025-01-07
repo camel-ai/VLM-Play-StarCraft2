@@ -29,11 +29,15 @@
 
 
 ## 地图
-1. 单个玩家且没有技能释放的(single player without ability)
-   `[2bc1prism_vs_8m_vlm_attention.SC2Map]`
-3. 两个玩家且没有技能的(2 player without ability)
-4. 单个玩家且有技能的(single player ability)
-5. 两个玩家且有技能的(2 player ability)
+1. 单个玩家且没有技能释放的(single player without ability), 运行：`vlm_attention/run_env/multiprocess_run_env.py`
+   
+地图为：`[2bc1prism_vs_8m_vlm_attention,2c_vs_64zg_vlm_attention,2m_vs_1z_vlm_attention,2s3z_vlm_attention,2s_vs_1sc_vlm_attention,3m_vlm_attention.SC2Map,3s_vs_3z_vlm_attention,6reaper_vs8zealot_vlm_attention,8marine_1medvac_vs_2tank,8marine_2tank_vs_zerglings_banelings_vlm_attention,vlm_attention_1.SC2Map]`
+2. 两个玩家且没有技能的(2 player without ability),运行`vlm_attention/run_env/run_env_two_players.py`
+ 地图为：`[vlm_attention_1_two_players,vlm_attention_2_terran_vs_terran_two_players,MMM_vlm_attention_two_players]`  
+3. 单个玩家且有技能的(single player ability) 运行：`vlm_attention/run_env/run_env_with_ability.py`
+   地图为：`[ability_map_8marine_3marauder_1medivac_1tank]`
+4. 两个玩家且有技能的(2 player ability),运行`vlm_attention/run_env/run_env_two_players_with_ability.py`
+  地图为： `[ability_7stalker_vs_11marine_1medivac_1tank_map_2_players,ability_8stalker_vs_8marine_3marauder_1medivac_tank_map_2_players,ability_map_8marine_3marauder_1medivac_1tank_2_players]`
 ## 配置
 
 项目使用 `vlm_attention/env/config.py` 文件进行配置。主要配置项包括：
