@@ -28,7 +28,12 @@
 4. 如果你想使用自定义地图，你需要在查看该文件`pysc2/maps/readme.md`
 
 
-
+## 地图
+1. 单个玩家且没有技能释放的(single player without ability)
+   `[2bc1prism_vs_8m_vlm_attention.SC2Map]`
+3. 两个玩家且没有技能的(2 player without ability)
+4. 单个玩家且有技能的(single player ability)
+5. 两个玩家且有技能的(2 player ability)
 ## 配置
 
 项目使用 `vlm_attention/env/config.py` 文件进行配置。主要配置项包括：
