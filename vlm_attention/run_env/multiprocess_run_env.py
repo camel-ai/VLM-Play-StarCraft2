@@ -34,11 +34,11 @@ map_list = ["vlm_attention_1",
             "3s_vs_3z_vlm_attention"]
 # Define flags
 FLAGS = flags.FLAGS
-flags.DEFINE_string("map", map_list[-2], "Name of the map to use")
+flags.DEFINE_string("map", map_list[0], "Name of the map to use")
 flags.DEFINE_string("config_path", os.path.join(ROOT_DIR, CONFIG_FILE_RELATIVE_PATH), "Path to the configuration file")
-flags.DEFINE_boolean("draw_grid", False, "Whether to draw grid on screenshots")
+flags.DEFINE_boolean("draw_grid", True, "Whether to draw grid on screenshots")
 flags.DEFINE_boolean("annotate_units", True, "Whether to annotate units on screenshots")
-flags.DEFINE_string("agent", "VLMAgentWithoutMove", "Agent to use:RandomAgent, VLMAgentWithoutMove, TestAgent")
+flags.DEFINE_string("agent", "TestAgent", "Agent to use:RandomAgent, VLMAgentWithoutMove, TestAgent")
 flags.DEFINE_integer("num_processes", 4, "Number of parallel processes to use")
 flags.DEFINE_boolean("use_self_attention", True, "Whether to use self-attention in the agent")
 flags.DEFINE_boolean("use_rag", True, "Whether to use RAG in the agent")

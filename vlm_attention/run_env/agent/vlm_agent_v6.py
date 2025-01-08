@@ -7,7 +7,7 @@ from datetime import datetime
 import cv2
 import numpy as np
 
-from vlm_attention.config.config import get_config
+
 from vlm_attention.env.config import COLORS, get_unit_name
 from vlm_attention.knowledge_data.database.sc2_unit_database import SC2UnitDatabase
 from vlm_attention.run_env.agent.agent_move_utils import (

@@ -20,7 +20,7 @@ COLOR_ENEMY = (0, 0, 255)  # 红色 (BGR)
 class TestAgent:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
                  annotate_units: bool = True, annotate_all_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
-                 use_self_attention: bool = False, use_rag: bool = False):
+                 use_self_attention: bool = False, use_rag: bool = False, use_proxy: bool = False,model_name: str = "qwen"):
         self.action_space = action_space
 
         self.text_observation: str = ""
