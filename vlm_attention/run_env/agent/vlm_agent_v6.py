@@ -18,6 +18,7 @@ from vlm_attention.run_env.agent.agent_move_utils import (
 )
 from vlm_attention.run_env.utils import _annotate_units_on_image, draw_grid_with_labels
 from vlm_attention.utils.call_vlm import MultimodalChatbot, TextChatbot
+from vlm_attention.run_env.agent.role_assignment import RoleAssignment
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -77,6 +78,10 @@ class VLMAgent:
 
         # 初始化用于存储所有step数据的列表
         self.all_steps_data = []
+
+        # 初始化角色分配模块
+        self.role_assignment = RoleAssignment(config_path)
+        self.current_assignments = {}
 
         logger.info(f"VLMAgent initialized. Data will be saved in: {self.save_dir}")
         logger.info(f"Using YAML file: {yaml_path}")
@@ -167,6 +172,23 @@ class VLMAgent:
 
         # 更新历史记录
         self._update_history(self.important_units, normalized_action)
+
+        # 在合适的时机更新角色分配
+        if self._should_update_assignments(observation):
+            # 生成初始分配方案
+            new_assignments = self.role_assignment.initial_assignment(observation)
+            
+            # 执行对比学习
+            tasks = list(new_assignments.values())
+            task_similarities = self.role_assignment.contrastive_learning(tasks)
+            
+            # 根据战斗结果进行反思和调整
+            battle_outcome = self._evaluate_battle_outcome(observation)
+            adjusted_assignments = self.role_assignment.reflect_and_adjust(
+                new_assignments, battle_outcome
+            )
+            
+            self.current_assignments = adjusted_assignments
 
         return normalized_action
 
@@ -442,3 +464,141 @@ class VLMAgent:
         })
         if len(self.history) > self.history_length:
             self.history.pop(0)
+
+    def _should_update_assignments(self, observation) -> bool:
+        """判断是否需要更新角色分配"""
+        system_prompt = """You are a StarCraft II battle analyzer focusing on tactical situation assessment. 
+        You need to determine if the current battlefield situation requires a role reassignment for units.
+        Consider unit count changes, health status changes, and positional changes.
+        Respond with 'true' if reassignment is needed, 'false' if not, followed by a brief explanation."""
+        
+        # 准备当前状态信息
+        current_state = {
+            'current_units': observation['unit_info'],
+            'step_count': self.step_count,
+            'current_assignments': self.current_assignments
+        }
+        
+        user_prompt = f"""Current battlefield state:
+        Step: {self.step_count}
+        Units: {self._format_units_for_prompt(observation['unit_info'])}
+        Current assignments: {self.current_assignments}
+        
+        Previous state (if available):
+        Units: {self._format_units_for_prompt(getattr(self, 'previous_units', []))}
+        
+        Determine if role reassignment is needed based on:
+        1. Unit count changes
+        2. Significant health/shield changes
+        3. Major positional changes
+        4. Time since last update (consider updating every 30 steps)
+        """
+        
+        update_decision_bot = TextChatbot(system_prompt=system_prompt, use_proxy=True)
+        response = update_decision_bot.query(user_prompt)
+        update_decision_bot.clear_history()
+        
+        # 解析响应
+        should_update = response.lower().startswith('true')
+        if should_update:
+            self.previous_units = observation['unit_info']
+        
+        return should_update
+
+    def _evaluate_battle_outcome(self, observation) -> Dict:
+        """使用LLM评估当前战斗效果"""
+        system_prompt = """You are a StarCraft II battle analyst specializing in combat effectiveness evaluation.
+        Analyze the current battle situation and provide a detailed assessment in JSON format covering:
+        1. Survival assessment (unit counts and health status)
+        2. Combat efficiency (resource trades and unit exchanges)
+        3. Objective completion (map control and mission goals)"""
+        
+        user_prompt = f"""Analyze the current battle situation:
+        
+        Friendly Units:
+        {self._format_units_for_prompt([u for u in observation['unit_info'] if u['alliance'] == 1])}
+        
+        Enemy Units:
+        {self._format_units_for_prompt([u for u in observation['unit_info'] if u['alliance'] != 1])}
+        
+        Current Assignments:
+        {self.current_assignments}
+        
+        Previous State:
+        {self._format_previous_state()}
+        
+        Provide a comprehensive battle assessment in the following JSON format:
+        {{
+            "survival_assessment": {{
+                "friendly_units_count": <int>,
+                "enemy_units_count": <int>,
+                "friendly_health_percentage": <float>,
+                "enemy_health_percentage": <float>
+            }},
+            "efficiency_assessment": {{
+                "resource_efficiency": <float>,
+                "exchange_ratio": <float>
+            }},
+            "objective_assessment": {{
+                "map_control": <float>,
+                "key_positions_control": <float>,
+                "task_completion": <float>
+            }}
+        }}
+        """
+        
+        assessment_bot = TextChatbot(system_prompt=system_prompt, use_proxy=True)
+        response = assessment_bot.query(user_prompt)
+        assessment_bot.clear_history()
+        
+        try:
+            # 解析JSON响应
+            assessment = json.loads(response)
+            assessment['timestamp'] = self.step_count
+            return assessment
+        except json.JSONDecodeError:
+            logger.error("Failed to parse battle assessment response")
+            return self._generate_default_assessment()
+
+    def _format_units_for_prompt(self, units: List[Dict]) -> str:
+        """格式化单位信息用于prompt"""
+        formatted_units = []
+        for unit in units:
+            unit_info = (
+                f"{unit['unit_name']} (Tag: {unit['simplified_tag']}):\n"
+                f"- Health: {unit['health']}/{unit['max_health']}\n"
+                f"- Shield: {unit['shield']}/{unit['max_shield']}\n"
+                f"- Position: [{unit['position'][0]:.1f}, {unit['position'][1]:.1f}]"
+            )
+            formatted_units.append(unit_info)
+        return "\n".join(formatted_units)
+
+    def _format_previous_state(self) -> str:
+        """格式化上一个状态的信息"""
+        if not hasattr(self, 'previous_units'):
+            return "No previous state available"
+        
+        return f"""Previous unit counts:
+        Friendly: {len([u for u in self.previous_units if u['alliance'] == 1])}
+        Enemy: {len([u for u in self.previous_units if u['alliance'] != 1])}"""
+
+    def _generate_default_assessment(self) -> Dict:
+        """生成默认的评估结果"""
+        return {
+            'survival_assessment': {
+                'friendly_units_count': 0,
+                'enemy_units_count': 0,
+                'friendly_health_percentage': 0.0,
+                'enemy_health_percentage': 0.0
+            },
+            'efficiency_assessment': {
+                'resource_efficiency': 1.0,
+                'exchange_ratio': 1.0
+            },
+            'objective_assessment': {
+                'map_control': 0.5,
+                'key_positions_control': 0.0,
+                'task_completion': 0.0
+            },
+            'timestamp': self.step_count
+        }
