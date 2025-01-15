@@ -312,10 +312,14 @@ class SC2MultimodalEnv(gym.Env):
                 for move_command in action.get('move', []):
                     if len(move_command) == 3:
                         move_type, unit_index, move_target = move_command
-                        if move_type == 1:  # 原始移动
+                        if move_type == 0:
+                            continue
+                        elif move_type == 1:  # 原始移动
                             self.bot.original_move_commands.append((unit_index, tuple(move_target)))
                         elif move_type == 2:  # SMAC移动
                             self.bot.smac_move_commands.append((unit_index, move_target[0]))
+                        else:
+                            raise ValueError(f"Invalid move type: {move_type}")
             except Exception as e:
                 return None, 0, True, {"error": f"Bot command setting error: {str(e)}"}
 
@@ -450,7 +454,8 @@ class SC2MultimodalEnv(gym.Env):
                     'shield': unit['shield'],
                     'max_shield': unit['max_shield'],
                     'energy': unit['energy'],
-                    'position': unit['position']
+                    'position': unit['position'],
+                    "grid_position":unit["grid_position"]
                 }
                 processed_unit_info.append(unit_data)
 

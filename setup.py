@@ -15,7 +15,7 @@
 
 import distutils.command.build
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 description = """PySC2 - StarCraft II Learning Environment
 
