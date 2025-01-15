@@ -810,6 +810,23 @@ openai.RateLimitError: Error code: 429 - {'error': {'message': 'Your account is 
 2024-11-09 17:22:52,147 DEBUG Query successful
 2024-11-09 17:22:57,020 DEBUG Query successful
 2024-11-09 17:22:57,781 DEBUG Query successful
+2024-12-31 13:48:35,821 DEBUG Using model: qwen-plus on platform ModelPlatformType.QWEN
+2024-12-31 13:48:36,773 DEBUG Query successful
+2024-12-31 13:48:38,368 DEBUG Query successful
+2024-12-31 13:48:38,376 DEBUG Using model: qwen-vl-plus on platform ModelPlatformType.QWEN
+2024-12-31 13:48:44,569 DEBUG Query successful
+2024-12-31 13:48:52,655 DEBUG Query successful
+2024-12-31 13:49:13,819 DEBUG Using model: qwen-plus on platform ModelPlatformType.QWEN
+2024-12-31 13:49:14,367 DEBUG Query successful
+2024-12-31 13:49:16,254 DEBUG Query successful
+2024-12-31 13:49:16,262 DEBUG Using model: qwen-vl-plus on platform ModelPlatformType.QWEN
+2024-12-31 13:49:23,049 DEBUG Query successful
+2024-12-31 13:51:44,898 DEBUG Using model: qwen-plus on platform ModelPlatformType.QWEN
+2024-12-31 13:51:45,353 DEBUG Query successful: The capital of France is Paris....
+2024-12-31 13:51:47,696 DEBUG Query successful: As of 2023, the population of Paris is estimated to be around 2.1 million people within the city lim...
+2024-12-31 13:51:47,706 DEBUG Using model: qwen-vl-plus on platform ModelPlatformType.QWEN
+2024-12-31 13:51:53,699 DEBUG Query successful
+2024-12-31 13:52:03,144 DEBUG Query successful
 2024-12-31 13:59:12,542 DEBUG Using model: qwen-plus on platform ModelPlatformType.QWEN
 2024-12-31 13:59:13,438 DEBUG Query successful: The capital of France is Paris....
 2024-12-31 13:59:17,711 DEBUG Query successful: As of the latest estimates, the population of Paris is approximately 2.1 million people within the c...

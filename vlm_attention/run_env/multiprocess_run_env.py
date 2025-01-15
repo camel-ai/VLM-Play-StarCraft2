@@ -23,6 +23,7 @@ from agent.RandomAgent import RandomAgent
 from agent.vlm_agent_without_move_v5 import VLMAgentWithoutMove
 from vlm_attention import ROOT_DIR, CONFIG_FILE_RELATIVE_PATH
 from vlm_attention.env.env_core import SC2MultimodalEnv
+from agent.vlm_agent_v6 import VLMAgent
 from agent.test_agent import TestAgent
 
 map_list = ["vlm_attention_1",
@@ -38,7 +39,7 @@ flags.DEFINE_string("map", map_list[0], "Name of the map to use")
 flags.DEFINE_string("config_path", os.path.join(ROOT_DIR, CONFIG_FILE_RELATIVE_PATH), "Path to the configuration file")
 flags.DEFINE_boolean("draw_grid", True, "Whether to draw grid on screenshots")
 flags.DEFINE_boolean("annotate_units", True, "Whether to annotate units on screenshots")
-flags.DEFINE_string("agent", "TestAgent", "Agent to use:RandomAgent, VLMAgentWithoutMove, TestAgent")
+flags.DEFINE_string("agent", "VLMAgentWithoutMove", "Agent to use:RandomAgent, VLMAgentWithoutMove, TestAgent,VLMAgent")
 flags.DEFINE_integer("num_processes", 4, "Number of parallel processes to use")
 flags.DEFINE_boolean("use_self_attention", True, "Whether to use self-attention in the agent")
 flags.DEFINE_boolean("use_rag", True, "Whether to use RAG in the agent")
@@ -92,12 +93,15 @@ def run_episode(config: dict) -> dict:
             'replay_dir': replay_dir,
         })
 
-        # 创建环境和智能体
+        logger.info(f"Creating environment with config: {env_config}")
         env = SC2MultimodalEnv(**env_config)
+
+        # 创建智能体
         agent_class = {
             "VLMAgentWithoutMove": VLMAgentWithoutMove,
             "RandomAgent": RandomAgent,
-            "TestAgent": TestAgent
+            "TestAgent": TestAgent,
+            "VLMAgent": VLMAgent
         }[agent_name]
 
         agent_args = copy.deepcopy(agent_args)
@@ -105,22 +109,32 @@ def run_episode(config: dict) -> dict:
             'save_dir': save_dir,
             'action_space': env.action_space
         })
+        
+        logger.info(f"Creating agent {agent_name} with args: {agent_args}")
         agent = agent_class(**agent_args)
 
         # 运行episode
+        logger.info(f"Starting episode {episode_id}")
         observation = env.reset()
         total_reward = 0
         done = False
 
         while not done:
-            action = agent.get_action(observation)
-            observation, reward, done, info = env.step(action)
+            try:
+                action = agent.get_action(observation)
+                observation, reward, done, info = env.step(action)
 
-            if info.get("error"):
-                raise RuntimeError(f"Environment error: {info['error']}")
+                if info.get("error"):
+                    logger.error(f"Environment error in episode {episode_id}: {info['error']}")
+                    raise RuntimeError(f"Environment error: {info['error']}")
 
-            total_reward += reward
-            logger.info(f"Episode {episode_id}, Reward: {reward}, Total: {total_reward}")
+                total_reward += reward
+                logger.info(f"Episode {episode_id}, Reward: {reward}, Total: {total_reward}")
+
+            except Exception as step_error:
+                logger.error(f"Error during step in episode {episode_id}:")
+                logger.error(traceback.format_exc())  # 打印完整的错误堆栈
+                raise step_error
 
         return {
             'episode_id': episode_id,
@@ -129,16 +143,18 @@ def run_episode(config: dict) -> dict:
         }
 
     except Exception as e:
-        logger.error(f"Error in episode {episode_id}: {str(e)}")
+        error_msg = f"Error in episode {episode_id}:\n{traceback.format_exc()}"
+        logger.error(error_msg)
         return {
             'episode_id': episode_id,
             'reward': None,
             'success': False,
-            'error': str(e)
+            'error': error_msg
         }
 
     finally:
         if env is not None:
+            logger.info(f"Closing environment for episode {episode_id}")
             env.close()
 
 
@@ -196,11 +212,22 @@ def main(argv):
         results = pool.map(run_episode, configs)
 
     # 处理结果
+    success_count = 0
+    failure_count = 0
     for result in results:
         if result['success']:
+            success_count += 1
             logger.info(f"Episode {result['episode_id']} completed with reward {result['reward']}")
         else:
-            logger.error(f"Episode {result['episode_id']} failed: {result.get('error', 'Unknown error')}")
+            failure_count += 1
+            logger.error(f"Episode {result['episode_id']} failed:")
+            logger.error(result['error'])  # 这里会显示完整的错误堆栈
+
+    logger.info(f"Run completed. Successful episodes: {success_count}, Failed episodes: {failure_count}")
+
+    # 如果有失败的episode，返回非零退出码
+    if failure_count > 0:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

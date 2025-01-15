@@ -466,7 +466,6 @@ class VLMAgentWithoutMove:
                 f"{unit['unit_name']} ({alliance}, Tag: {unit['simplified_tag']})\n"
                 f"Health: {health_info}, Shields: {shield_info}\n"
                 f"{energy_info}\n"
-                f"Position: [{unit['position'][0]:.1f}, {unit['position'][1]:.1f}]"
             )
             formatted_info.append(unit_desc)
 

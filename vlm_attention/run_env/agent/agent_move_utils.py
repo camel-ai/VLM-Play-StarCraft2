@@ -1,8 +1,12 @@
 import re
 import logging
 from typing import List, Tuple, Dict, Any, Optional
+import json
+from vlm_attention.utils.call_vlm import MultimodalChatbot
 
+from datetime import datetime
 logger = logging.getLogger(__name__)
+import os
 
 """
 
@@ -58,26 +62,30 @@ def generate_important_units_prompt() -> str:
 
 
 def generate_decision_prompt() -> str:
-    return """
-    You are an AI assistant specialized in StarCraft II micro-management strategy. Your task is to suggest optimal attack and movement actions for our units based on the current game state.
+    return """You are a StarCraft II expert focusing on unit micro-management. 
+    Your task is to generate both attack and movement actions that follow the planned micro skills.
+
+    CRITICAL RULES:
+    1. Use ONLY valid unit tags provided in the unit information
+    2. Friendly units can only attack enemy units
+    3. Only friendly units can be given move commands
+    4. Each unit can have only ONE action (either attack OR move)
 
     Your response MUST strictly follow this format:
 
     ## Attack Actions ##
-    Attack: [Tag Number] -> [Tag Number]
+    Attack: [Friendly Unit Tag] -> [Enemy Unit Tag]
     Reasoning: [Brief explanation]
 
     ## Move Actions ##
-    Move: [Tag Number] -> [x, y]
+    Move: [Friendly Unit Tag] -> [x, y]
     Reasoning: [Brief explanation]
 
     Critical Format Rules:
-    1. Use ONLY tag numbers (like 1, 2, 3), not unit names (no Zealot_1, Marine_2 etc)
-    2. Each action must be on its own line
-    3. Include both section headers exactly as shown
-    4. Grid coordinates must be integers from 0-9
-    5. Each unit should have exactly ONE action (either attack OR move)
-    6. DO NOT use unit names in the actions, only their tag numbers
+    1. Use ONLY valid unit tags as shown in the unit information
+    2. Grid coordinates must be integers from 0-9 (NOT pixel coordinates)
+    3. Each unit should have exactly ONE action (either attack OR move)
+    4. DO NOT use unit names in the actions, only their tag numbers
 
     Example Correct Format:
     ## Attack Actions ##
@@ -90,8 +98,8 @@ def generate_decision_prompt() -> str:
 
     Remember:
     - Grid coordinates: [0,0] is top-left, [9,9] is bottom-right
-    - Use ONLY numerical tags, not unit names
-    - Include reasoning for each action
+    - Use ONLY grid coordinates (0-9), NOT pixel coordinates
+    - Use ONLY numerical tags from the provided unit information
     """
 
 
@@ -157,32 +165,10 @@ def parse_vlm_response(response: str) -> List[int]:
     return important_units
 
 
-def parse_vlm_decision(response: str) -> Dict[str, List[Tuple]]:
-    """解析VLM的决策回复,更严格的格式处理
-
-    Args:
-        response: VLM的原始回复文本
-        期望格式:
-        ## Attack Actions ##
-        Attack: 1 -> 8
-        Reasoning: ...
-
-        ## Move Actions ##
-        Move: 2 -> [3, 4]
-        Reasoning: ...
-
-    Returns:
-        Dict包含两个键:
-        - 'attack': List[Tuple[int, int]] 攻击动作列表 (攻击者tag, 目标tag)
-        - 'move': List[Tuple[int, int, List[int]]] 移动动作列表 (单位tag, move_type, [x, y]坐标)
-    """
+def parse_vlm_decision(response: str, move_type: str = 'grid') -> Dict[str, List[Tuple]]:
+    """解析VLM的决策回复"""
     attack_actions = []
     move_actions = []
-
-    # 严格检查必需的章节头
-    if not all(header in response for header in ["## Attack Actions ##", "## Move Actions ##"]):
-        logger.warning("Response missing required section headers")
-        return {'attack': attack_actions, 'move': move_actions}
 
     # 解析攻击动作
     attack_pattern = re.compile(r'Attack:\s*(\d+)\s*->\s*(\d+)')
@@ -191,24 +177,44 @@ def parse_vlm_decision(response: str) -> Dict[str, List[Tuple]]:
             attacker_tag = int(match.group(1))
             target_tag = int(match.group(2))
             attack_actions.append((attacker_tag, target_tag))
-            logger.debug(f"Parsed attack action: {attacker_tag} -> {target_tag}")
         except ValueError as e:
             logger.warning(f"Failed to parse attack tags: {e}")
 
-    # 解析移动动作
-    move_pattern = re.compile(r'Move:\s*(\d+)\s*->\s*\[(\d+)\s*,\s*(\d+)\]')
-    for match in move_pattern.finditer(response):
-        try:
-            unit_tag = int(match.group(1))
-            x = int(match.group(2))
-            y = int(match.group(3))
-            if 0 <= x <= 9 and 0 <= y <= 9:  # 验证坐标范围
-                move_actions.append((unit_tag, 1, [x, y])) # 1表示基于网格的移动
-                logger.debug(f"Parsed move action: {unit_tag} -> [1, [{x}, {y}]]")
-            else:
-                logger.warning(f"Invalid grid coordinates: [{x}, {y}]")
-        except ValueError as e:
-            logger.warning(f"Failed to parse move action: {e}")
+    # 解析网格移动命令
+    if move_type == 'grid':
+        move_pattern = re.compile(r'Move:\s*(\d+)\s*->\s*\[(\d+)\s*,\s*(\d+)\]')
+        for match in move_pattern.finditer(response):
+            try:
+                unit_tag = int(match.group(1))
+                x = int(match.group(2))
+                y = int(match.group(3))
+
+                # 验证网格坐标是否在有效范围内
+                if 0 <= x <= 9 and 0 <= y <= 9:
+                    # 返回 (unit_tag, target) 格式
+                    move_actions.append((unit_tag, [x, y]))
+                else:
+                    logger.warning(f"Invalid grid coordinates: [{x}, {y}]")
+            except ValueError as e:
+                logger.warning(f"Failed to parse grid move: {e}")
+
+    else:  # SMAC movement
+        move_pattern = re.compile(r'Move:\s*(\d+)\s*->\s*\[(\d+)\]')
+        for match in move_pattern.finditer(response):
+            try:
+                unit_tag = int(match.group(1))
+                direction = int(match.group(2))
+
+                if 0 <= direction <= 3:
+                    # 返回 (unit_tag, target) 格式
+                    move_actions.append((unit_tag, [direction, 0]))
+                else:
+                    logger.warning(f"Invalid SMAC direction: {direction}")
+            except ValueError as e:
+                logger.warning(f"Failed to parse SMAC move: {e}")
+
+    logger.info(f"Parsed attack actions: {attack_actions}")
+    logger.info(f"Parsed move actions: {move_actions}")
 
     return {
         'attack': attack_actions,
@@ -233,22 +239,27 @@ def format_history_for_prompt(history: List[Dict[str, Any]], history_length: int
             for attack in entry['attack_actions']:
                 step_info += f"  Attack: {attack[0]} -> {attack[1]}\n"
 
-        # 移动动作
+        # 移动动作 - 修改这部分以适应新的格式
         if 'move_actions' in entry and entry['move_actions']:
             step_info += "Move Actions:\n"
-            for move_type, unit_tag, target in entry['move_actions']:
-                if move_type == 1:  # grid-based movement
+            for move in entry['move_actions']:
+                # 检查移动动作的格式
+                if len(move) == 3:  # 如果是 (unit_tag, move_type, target) 格式
+                    unit_tag, move_type, target = move
+                    step_info += f"  Move: {unit_tag} -> {target}\n"
+                elif len(move) == 2:  # 如果是 (unit_tag, target) 格式
+                    unit_tag, target = move
                     step_info += f"  Move: {unit_tag} -> {target}\n"
 
         formatted_history.append(step_info)
 
-    return "\n".join(formatted_history[-history_length:])  # 保持显示最近3步的历史
+    return "\n".join(formatted_history[-history_length:])
 
 
 def generate_enhanced_unit_selection_prompt(available_units: List[str], important_units_response: str,
                                             text_observation: str) -> str:
     return f"""
-    You are a StarCraft 2 strategist specializing in micro-management tasks for the Protoss race. 
+    You are a StarCraft 2 strategist specializing in micro-management tasks. 
     We are currently in a micro-management scenario where all units are visible (no fog of war).
 
     Based on the image analysis and the available units in our database, select the most relevant units to query for more information. 
@@ -267,7 +278,7 @@ def generate_enhanced_unit_selection_prompt(available_units: List[str], importan
 
 def generate_unit_info_summary_prompt(unit_info: Dict[str, Dict]) -> str:
     summary_prompt = """
-    You are a StarCraft 2 expert focusing on Protoss micro-management. 
+    You are a StarCraft 2 expert focusing on micro-management. 
     Summarize the key information for the following units, emphasizing aspects crucial for micro-management decision-making.
     Keep the summary concise and directly applicable to our current micro-management task.
 
@@ -360,3 +371,211 @@ def normalization_system_prompt() -> str:
 
     Remember: All coordinates must be within 0-9 range.
     """
+
+class VLMPlanner:
+    def __init__(self, save_dir: str, replan_each_step: bool = False):
+        """初始化VLM规划器
+
+        Args:
+            save_dir: 保存目录
+            replan_each_step: 是否每步重新规划
+        """
+        self.save_dir = save_dir
+        self.replan_each_step = replan_each_step
+        self.current_plan = None
+        self.plan_history = []
+        os.makedirs(save_dir, exist_ok=True)
+
+    def _get_planner_system_prompt(self) -> str:
+        return """You are a StarCraft II micro-management expert. Your task is to analyze the current combat situation 
+        and plan appropriate micro-management tactics based on the screenshot and unit information.
+
+        Focus on micro-management skills:
+        1. Focus Fire: Concentrating damage on specific targets
+        2. Kiting: Hit and run tactics
+        3. Shield/Health Management: Managing unit durability
+        4. Formation Control: Unit positioning
+
+        Your response MUST strictly follow this JSON-like format:
+
+        ### MICRO PLAN ###
+        {
+            "primary_skill": {
+                "name": "Focus Fire",
+                "description": "Concentrating damage on specific targets",
+                "implementation_steps": [
+                    "Step 1: Select highest priority target",
+                    "Step 2: Command all units to attack the same target"
+                ]
+            },
+            "secondary_skills": [
+                {
+                    "name": "Kiting",
+                    "description": "Hit and run tactics",
+                    "when_to_use": "When enemy units are approaching"
+                },
+                {
+                    "name": "Formation Control",
+                    "description": "Positioning units strategically",
+                    "when_to_use": "When need to maximize damage output while minimizing damage taken"
+                }
+            ]
+        }
+        ### END PLAN ###
+
+        Ensure your response maintains this exact format with the headers and JSON structure.
+        """
+
+    def plan(self, observation: Dict[str, Any], image_path: str,use_proxy:bool=False) -> Dict[str, Any]:
+        """生成微操技能规划"""
+        # 如果不是每步重新规划且已有计划,直接返回当前计划
+        if not self.replan_each_step and self.current_plan is not None:
+            return self.current_plan
+
+        # 构建规划提示词
+        planning_prompt = self._generate_planning_prompt(observation)
+
+        # 使用camel框架
+        planner_bot = MultimodalChatbot(
+            system_prompt=self._get_planner_system_prompt(),
+            use_proxy=use_proxy
+        )
+        response = planner_bot.query(planning_prompt, image_path=image_path)
+        planner_bot.clear_history()
+
+        # 解析响应获取技能规划
+        skills = self._parse_skills(response)
+
+        # 更新历史
+        self._update_plan_history(skills, observation)
+
+        # 保存规划记录
+        self._save_planning_io(planning_prompt, response, skills, image_path)
+
+        return skills
+
+    def _update_plan_history(self, skills: Dict[str, Any], observation: Dict[str, Any]):
+        """更新规划历史"""
+        history_entry = {
+            'timestamp': datetime.now().isoformat(),
+            'skills': skills,
+            'situation': observation.get('text', ''),
+            'units_count': len([u for u in observation['unit_info'] if u['alliance'] == 1]),
+            'enemy_count': len([u for u in observation['unit_info'] if u['alliance'] != 1])
+        }
+        self.plan_history.append(history_entry)
+        self.current_plan = skills
+
+    def _format_plan_history(self) -> str:
+        """格式化规划历史"""
+        if not self.plan_history:
+            return "No previous planning history."
+
+        history_lines = []
+        for entry in self.plan_history[-3:]:  # 只显示最近3条历史
+            history_lines.append(
+                f"Previous plan ({entry['timestamp']}):\n"
+                f"- Primary Skill: {entry['skills'].get('primary', {}).get('name')}\n"
+                f"- Situation: {entry['situation']}\n"
+                f"- Units: {entry['units_count']} friendly vs {entry['enemy_count']} enemy\n"
+            )
+        return "\n".join(history_lines)
+    def _generate_planning_prompt(self, observation: Dict[str, Any]) -> str:
+        """生成规划提示词"""
+        history_info = self._format_plan_history()
+
+        return f"""Analyze the current StarCraft II combat situation and plan appropriate micro-management skills.
+
+Current situation:
+{observation.get('text', 'No text observation available.')}
+
+Previous planning history:
+{history_info}
+
+Based on the screenshot, situation and planning history:
+1. What should be our primary micro skill?
+2. What supporting skills might be useful?
+3. How should we implement these skills?
+
+Focus only on micro-management skills and tactics, without specifying exact unit targets or movement commands.
+"""
+
+    def _parse_skills(self, response: str) -> Dict[str, Any]:
+        """解析VLM响应中的技能规划"""
+        try:
+            # 提取JSON部分
+            json_match = re.search(r'### MICRO PLAN ###\s*({.*?})\s*### END PLAN ###', response, re.DOTALL)
+
+            if not json_match:
+                logger.warning("Failed to find JSON content in response")
+                return {}
+
+            json_str = json_match.group(1)
+
+            # 解析JSON
+            skills_data = json.loads(json_str)
+
+            # 转换为期望的格式
+            return {
+                'primary': {
+                    'name': skills_data['primary_skill']['name'],
+                    'description': skills_data['primary_skill']['description'],
+                    'steps': skills_data['primary_skill']['implementation_steps']
+                },
+                'secondary': [
+                    {
+                        'name': skill['name'],
+                        'description': skill['description'],
+                        'condition': skill['when_to_use']
+                    }
+                    for skill in skills_data['secondary_skills']
+                ]
+            }
+
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse JSON: {e}")
+            return {}
+        except Exception as e:
+            logger.error(f"Error parsing skills: {e}")
+            return {}
+
+    def _save_planning_io(self, prompt: str, response: str, skills: Dict[str, Any], image_path: str):
+        """保存规划的输入输出"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = os.path.join(self.save_dir, f"planning_io_{timestamp}.json")
+
+        data = {
+            "prompt": prompt,
+            "response": response,
+            "parsed_skills": skills,
+            "image_path": image_path,
+            "timestamp": timestamp,
+            "parsing_success": bool(skills)  # 添加解析是否成功的标志
+        }
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+    def format_units_info_for_prompt(self, unit_info: List[Dict[str, Any]]) -> str:
+        formatted_info = []
+        for unit in unit_info:
+            alliance = "Friendly" if unit['alliance'] == 1 else "Enemy"
+            health_info = f"{unit['health']}/{unit['max_health']}"
+            shield_info = f"{unit['shield']}/{unit['max_shield']}" if unit['max_shield'] > 0 else "No shields"
+            energy_info = f"Energy: {unit['energy']}" if unit['energy'] > 0 else ""
+
+            # 直接使用grid_position
+            grid_pos = unit['grid_position']
+
+            unit_desc = (
+                f"{unit['unit_name']} ({alliance}, Tag: {unit['simplified_tag']})\n"
+                f"Health: {health_info}, Shields: {shield_info}\n"
+                f"{energy_info}\n"
+                f"Grid Position: [{grid_pos[0]}, {grid_pos[1]}]"
+            )
+            formatted_info.append(unit_desc)
+
+        return "\n\n".join(formatted_info)
+
+
+

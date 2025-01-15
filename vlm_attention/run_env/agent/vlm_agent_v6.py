@@ -13,7 +13,7 @@ from vlm_attention.knowledge_data.database.sc2_unit_database import SC2UnitDatab
 from vlm_attention.run_env.agent.agent_move_utils import (
     summarize_unit_info, generate_important_units_prompt,
     generate_decision_prompt, format_units_info, parse_vlm_response, parse_vlm_decision,
-    format_history_for_prompt, generate_enhanced_unit_selection_prompt,
+    format_history_for_prompt, generate_enhanced_unit_selection_prompt,VLMPlanner,
     generate_unit_info_summary_prompt, generate_action_normalization_prompt, normalization_system_prompt
 )
 from vlm_attention.run_env.utils import _annotate_units_on_image, draw_grid_with_labels
@@ -26,7 +26,9 @@ logger = logging.getLogger(__name__)
 class VLMAgent:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
                  annotate_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
-                 use_self_attention: bool = False, use_rag: bool = False, history_length: int = 3):
+                 use_self_attention: bool = False, use_rag: bool = False, history_length: int = 3,
+                 replan_each_step: bool = False, use_proxy: bool = False, move_type: str = 'grid',
+                 rgb_screen_width:int=1920,rgb_screen_height:int=1080):
         """
         初始化VLMAgent代理。
         :param action_space: 动作空间字典
@@ -37,11 +39,14 @@ class VLMAgent:
         :param grid_size: 网格大小
         :param use_self_attention: 是否使用自注意力
         :param use_rag: 是否使用RAG
+        :param move_type: 移动方式 ('grid' 或 'smac')
         """
+
         self.action_space = action_space
         self.important_units: List[int] = []
         self.text_observation: str = ""
         self.save_original_images = True
+        self.history_length = history_length
         self.history: List[Dict[str, Any]] = []
         self.draw_grid = draw_grid
         self.annotate_units = annotate_units
@@ -49,15 +54,20 @@ class VLMAgent:
         self.step_count = 0
         self.use_self_attention = use_self_attention
         self.use_rag = use_rag
-        self.history_length = history_length
-
-        # 设置目录
+        self.use_proxy = use_proxy
+        self.image_size = (rgb_screen_width, rgb_screen_height)
+        # 设置目录结构
         self.save_dir = save_dir
         self.original_images_dir = os.path.join(self.save_dir, "original_images")
         self.first_annotation_dir = os.path.join(self.save_dir, "first_annotation")
         self.second_annotation_dir = os.path.join(self.save_dir, "second_annotation")
         self.vlm_io_dir = os.path.join(self.save_dir, "vlm_io")
         self.unit_info_dir = os.path.join(self.save_dir, "unit_info")
+
+        # 新增: Planner相关目录和初始化
+        self.planner_dir = os.path.join(self.save_dir, "planner")
+        os.makedirs(self.planner_dir, exist_ok=True)
+        self.planner = VLMPlanner(self.planner_dir, replan_each_step)
 
         # 初始化数据库
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -78,17 +88,19 @@ class VLMAgent:
         # 初始化用于存储所有step数据的列表
         self.all_steps_data = []
 
-        logger.info(f"VLMAgent initialized. Data will be saved in: {self.save_dir}")
-        logger.info(f"Using YAML file: {yaml_path}")
-        logger.info(f"Self-attention: {'ON' if self.use_self_attention else 'OFF'}")
-        logger.info(f"RAG: {'ON' if self.use_rag else 'OFF'}")
+        # 添加移动方式设置
+        self.move_type = move_type
+        if move_type not in ['grid', 'smac']:
+            raise ValueError("move_type must be either 'grid' or 'smac'")
+        
+        # 根据移动方式设置相应的move_type_id
+        self.move_type_id = 1 if move_type == 'grid' else 2
 
     def get_action(self, observation: Dict[str, Any]) -> Dict[str, List[Tuple]]:
-        """获取动作决策,包含攻击和移动"""
+        """获取动作决策,整合了技能规划"""
         self.step_count += 1
         self.text_observation = observation["text"]
         logger.info(f"Processing step {self.step_count}")
-        logger.info(f"Text observation: {self.text_observation}")
 
         # 保存该step的unit info
         self._save_step_data(observation)
@@ -101,13 +113,25 @@ class VLMAgent:
         first_annotation_path = self._process_and_save_image(observation, self.first_annotation_dir, "first_annotation",
                                                              annotate_all=True)
 
+        # 获取微操技能规划
+        planned_skills = self.planner.plan(observation, first_annotation_path, use_proxy=self.use_proxy)
+        logger.info(f"Planned micro skills: {planned_skills}")
+
         # 如果启用了自注意力机制，识别重要单位
         if self.use_self_attention:
-            important_units_response = self._identify_important_units(observation, first_annotation_path)
+            important_units_response = self._identify_important_units(
+                observation,
+                first_annotation_path,
+                planned_skills
+            )
             self.important_units = parse_vlm_response(important_units_response)
             logger.info(f"Identified important units: {self.important_units}")
-            decision_image_path = self._process_and_save_image(observation, self.second_annotation_dir,
-                                                               "second_annotation", annotate_all=False)
+            decision_image_path = self._process_and_save_image(
+                observation,
+                self.second_annotation_dir,
+                "second_annotation",
+                annotate_all=False
+            )
         else:
             self.important_units = []
             important_units_response = "Self-attention is disabled."
@@ -116,23 +140,29 @@ class VLMAgent:
         # RAG处理
         unit_summary = ""
         if self.use_rag:
-            units_to_query = ([unit for unit in observation['unit_info']
-                               if unit['alliance'] == 1 or unit['simplified_tag'] in self.important_units]
-                              if self.use_self_attention else observation['unit_info'])
+            if self.use_self_attention:
+                units_to_query = [unit for unit in observation['unit_info']
+                                  if unit['alliance'] == 1 or unit['simplified_tag'] in self.important_units]
+            else:
+                units_to_query = observation['unit_info']
 
             unit_info = self._get_unit_info_from_database(units_to_query)
-            unit_summary_system_prompt = "You are a StarCraft 2 expert focusing on Protoss micro-management."
+            unit_summary_system_prompt = "You are a StarCraft 2 expert focusing on micro-management."
             unit_summary_user_prompt = generate_unit_info_summary_prompt(unit_info)
-            unit_summary_bot = TextChatbot(system_prompt=unit_summary_system_prompt, use_proxy=True)
+            unit_summary_bot = TextChatbot(system_prompt=unit_summary_system_prompt, use_proxy=self.use_proxy)
             unit_summary = unit_summary_bot.query(unit_summary_user_prompt)
             unit_summary_bot.clear_history()
             self._save_vlm_io(unit_summary_user_prompt, unit_summary, "unit_summary")
-            logger.info(f"单位信息总结：\n{unit_summary}")
 
         # 生成决策
         decision_system_prompt = generate_decision_prompt()
-        decision_user_prompt = self._generate_decision_prompt(observation, unit_summary, important_units_response)
-        raw_decision_bot = MultimodalChatbot(system_prompt=decision_system_prompt, use_proxy=True)
+        decision_user_prompt = self._generate_decision_prompt(
+            observation,
+            unit_summary,
+            important_units_response,
+            planned_skills
+        )
+        raw_decision_bot = MultimodalChatbot(system_prompt=decision_system_prompt, use_proxy=self.use_proxy)
         raw_decision_response = raw_decision_bot.query(decision_user_prompt, image_path=decision_image_path)
         raw_decision_bot.clear_history()
         self._save_vlm_io(decision_user_prompt, raw_decision_response, "raw_decision", image_path=decision_image_path)
@@ -150,14 +180,14 @@ class VLMAgent:
         max_retries = 3
         normalized_action = {'attack': [], 'move': []}
         for attempt in range(max_retries):
-            normalized_bot = TextChatbot(system_prompt=normalization_system_prompt(), use_proxy=True)
+            normalized_bot = TextChatbot(system_prompt=normalization_system_prompt(), use_proxy=self.use_proxy)
             normalized_action_response = normalized_bot.query(normalization_user_prompt)
             normalized_bot.clear_history()
             self._save_vlm_io(normalization_user_prompt, normalized_action_response,
                               f"normalized_decision_attempt_{attempt + 1}")
 
-            normalized_action = parse_vlm_decision(normalized_action_response)
-            # 只要有任何有效动作就接受
+            # 使用move_type解析动作
+            normalized_action = parse_vlm_decision(normalized_action_response, self.move_type)
             if normalized_action['attack'] or normalized_action['move']:
                 break
             elif attempt < max_retries - 1:
@@ -166,10 +196,58 @@ class VLMAgent:
                 logger.error("Failed to parse actions after maximum retries. Returning empty actions.")
 
         # 更新历史记录
-        self._update_history(self.important_units, normalized_action)
+        self._update_history(
+            self.important_units,
+            normalized_action,
+            planned_skills
+        )
 
+        # 获取有效的单位tag
+        valid_friendly_tags = [unit['simplified_tag'] for unit in observation['unit_info'] 
+                              if unit['alliance'] == 1]
+        valid_enemy_tags = [unit['simplified_tag'] for unit in observation['unit_info'] 
+                           if unit['alliance'] != 1]
+
+        logger.info(f"Valid friendly tags: {valid_friendly_tags}")
+        logger.info(f"Valid enemy tags: {valid_enemy_tags}")
+
+        # 验证攻击动作
+        if normalized_action['attack']:
+            attack_actions = []
+            for attacker_tag, target_tag in normalized_action['attack']:
+                # 确保tag是有效的整数且在有效范围内
+                if (isinstance(attacker_tag, int) and isinstance(target_tag, int) and
+                    attacker_tag in valid_friendly_tags and target_tag in valid_enemy_tags):
+                    attack_actions.append((attacker_tag, target_tag))
+                else:
+                    logger.warning(f"Invalid attack action: attacker={attacker_tag}, target={target_tag}")
+            normalized_action['attack'] = attack_actions
+
+        # 验证移动动作
+        if normalized_action['move']:
+            move_actions = []
+            for move_action in normalized_action['move']:
+                if len(move_action) == 2:  # 格式应该是 (unit_tag, target)
+                    unit_tag, target = move_action
+                    if unit_tag not in valid_friendly_tags:
+                        logger.warning(f"Invalid unit tag for move: {unit_tag}")
+                        continue
+                    
+                    if isinstance(target, list):
+                        if self.move_type == 'grid' and len(target) == 2:
+                            x, y = target
+                            if 0 <= x <= 9 and 0 <= y <= 9:
+                                # 添加move_type=1表示grid move
+                                move_actions.append((1, unit_tag, [x, y]))
+                        elif self.move_type == 'smac' and len(target) == 2:
+                            direction = target[0]
+                            if 0 <= direction <= 3:
+                                # 添加move_type=2表示smac move
+                                move_actions.append((2, unit_tag, [direction, 0]))
+            normalized_action['move'] = move_actions
+
+        logger.info(f"Final normalized actions: {normalized_action}")
         return normalized_action
-
 
     def _normalize_attack_action(self, raw_attack_actions: List[Tuple], observation: Dict[str, Any]) -> List[Tuple]:
         """规范化攻击动作格式
@@ -219,7 +297,8 @@ class VLMAgent:
                 'shield': float(unit['shield']),
                 'max_shield': float(unit['max_shield']),
                 'energy': float(unit['energy']),
-                'position': [float(x) for x in unit['position']]
+                'position': [float(x) for x in unit['position']],
+                'grid_position': unit['grid_position']
             }
             step_data['unit_info'].append(unit_data)
 
@@ -275,95 +354,206 @@ class VLMAgent:
         screen_size = (w, h)
         return draw_grid_with_labels(frame, screen_size, self.grid_size)
 
-    def _identify_important_units(self, observation: Dict[str, Any], image_path: str) -> str:
-        """识别重要单位"""
+    def _identify_important_units(
+            self,
+            observation: Dict[str, Any],
+            image_path: str,
+            planned_skills: Dict[str, Any]
+    ) -> str:
+        """识别重要单位,与planned_skills紧密结合"""
         system_prompt = generate_important_units_prompt()
         units_info_str = self.format_units_info_for_prompt(observation['unit_info'])
 
-        user_input = f"""
-            Analyze the current StarCraft II game state based on the following information:
+        # 提取主要技能信息
+        primary_skill = planned_skills.get('primary', {})
+        skill_name = primary_skill.get('name', 'None')
+        skill_desc = primary_skill.get('description', 'None')
+        skill_steps = primary_skill.get('steps', [])
 
-            Screenshot observation:
+        user_input = f"""
+            Analyze the current StarCraft II game state and identify important enemy units based on our planned micro skills:
+
+            Primary Micro Skill Plan:
+            Name: {skill_name}
+            Description: {skill_desc}
+            Implementation Steps:
+            {chr(10).join(f"- {step}" for step in skill_steps)}
+
+            Supporting Skills:
+            {chr(10).join([
+                f"- {skill.get('name', 'Unknown')}: {skill.get('description', 'No description')} "
+                f"(Use when: {skill.get('condition', 'No condition specified')})"
+                for skill in planned_skills.get('secondary', [])
+            ])}
+
+            Current Game State:
             {observation.get("text", "No text observation available.")}
 
-            Units information:
+            Units Information:
             {units_info_str}
 
-            Previous steps information:
-            {format_history_for_prompt(self.history, self.history_length)}
+            Previous Steps Context:
+            {format_history_for_prompt(self.history, history_length=self.history_length)}
 
-            Based on this information, identify and explain the most strategically important enemy units.
+            Based on this information, identify enemy units that are:
+            1. Most relevant to executing our {skill_name} strategy
+            2. Could potentially disrupt our planned implementation steps
+            3. Should be prioritized based on our micro skill requirements
             """
 
-        """
-        使用camel 框架
-        """
-        important_unit_bot = MultimodalChatbot(system_prompt=system_prompt, use_proxy=True)
+        important_unit_bot = MultimodalChatbot(system_prompt=system_prompt, use_proxy=self.use_proxy)
         important_units_response = important_unit_bot.query(user_input, image_path=image_path)
         important_unit_bot.clear_history()
-        """
-        使用camel 框架结束
-        """
-        self._save_vlm_io(user_input, important_units_response, "important_units")
 
+        self._save_vlm_io(user_input, important_units_response, "important_units")
         return important_units_response
 
     def _generate_decision_prompt(self, observation: Dict[str, Any], unit_summary: str,
-                                  important_units_response: str) -> str:
-        """生成决策提示,包含攻击和移动决策"""
+                              important_units_response: str, planned_skills: Dict[str, Any]) -> str:
+        """生成决策提示,整合了技能规划信息"""
+        # 提取主要技能信息
+        primary_skill = planned_skills.get('primary', {})
+        skill_name = primary_skill.get('name', 'None')
+        skill_desc = primary_skill.get('description', 'None')
+        skill_steps = primary_skill.get('steps', [])
+
+        # 直接使用包含grid_position的单位信息
         units_info_str = self.format_units_info_for_prompt(observation['unit_info'])
+        
+        # 根据移动方式生成不同的移动系统说明
+        if self.move_type == 'grid':
+            movement_system = f"""
+            MOVEMENT SYSTEM (CRITICAL):
+            1. Use ONLY grid coordinates (0-9), NOT pixel or game coordinates
+            2. Map is divided into a 10x10 grid:
+               - [0,0] is top-left corner
+               - [9,9] is bottom-right
+               - Each unit's position is given in grid coordinates
+            3. Movement Format:
+               Move: [Unit Tag] -> [x, y]
+               where x and y are integers between 0 and 9
+            4. EXAMPLES:
+               CORRECT: Move: 1 -> [5, 3]
+               INCORRECT: Move: 1 -> [855, 518]
+               INCORRECT: Move: 1 -> [x + 10, y + sqrt(2)]
+            """
+        else:  # SMAC movement
+            movement_system = f"""
+            MOVEMENT SYSTEM (CRITICAL):
+            1. Use ONLY cardinal directions (0-3):
+               0: UP (move up)
+               1: RIGHT (move right)
+               2: DOWN (move down)
+               3: LEFT (move left)
+            2. Movement Format:
+               Move: [Unit Tag] -> [direction]
+            3. EXAMPLES:
+               CORRECT: Move: 1 -> [0]  (move up)
+               CORRECT: Move: 2 -> [1]  (move right)
+               INCORRECT: Move: 1 -> [5, 3]
+               INCORRECT: Move: 2 -> [4]
+            """
 
         prompt = f"""
-            Analyze the current StarCraft II game state and suggest both attack and movement actions for our units:
+            CRITICAL INSTRUCTION:
+            Your primary skill is {skill_name}. All actions must implement this skill according to these steps:
+            {chr(10).join(skill_steps)}
 
-            Screenshot observation:
+            Current Game State Analysis:
             {self.text_observation}
 
-            Units information:
+            Units Information (WITH COORDINATES):
             {units_info_str}
 
-            Movement System:
-            - The map is divided into a 10x10 grid (0-9 for both x and y coordinates)
-            - Origin (0,0) is at the top-left corner
-            - X increases to the right, Y increases downward
-            - Each unit can either attack an enemy unit or move to a grid position
+            {movement_system}
 
-            Required Output Format:
-            ## Attack Actions ##
-            [Attacker Unit Name (Tag)] attacks [Target Unit Name (Tag)]
-
-            ## Move Actions ##
-            [Unit Name (Tag)] moves to grid [x, y]
-
-            Example:
-            ## Attack Actions ##
-            Stalker_1 (Tag: 1) attacks Zealot_2 (Tag: 8)
-
-            ## Move Actions ##
-            Stalker_2 (Tag: 2) moves to grid [3, 4]
+            DO NOT USE:
+            - Pixel coordinates
+            - Mathematical expressions
+            - Invalid directions/coordinates
             """
 
         if self.use_self_attention:
             prompt += f"""
-                Important enemy units analysis:
+                Priority Targets Analysis:
                 {important_units_response}
                 """
 
         if self.use_rag:
             prompt += f"""
-                Unit information summary:
+                Unit Capabilities:
                 {unit_summary}
                 """
 
         prompt += f"""
-            Previous steps information:
-            {format_history_for_prompt(self.history, self.history_length)}
+            Recent History:
+            {format_history_for_prompt(self.history, history_length=self.history_length)}
 
-            Based on this information and micro-management principles, provide BOTH attack and movement actions for our units.
-            Each unit should either attack or move, not both.
+            FINAL INSTRUCTION:
+            Generate BOTH attack and movement actions that STRICTLY implement the {skill_name} skill.
+            Each action's reasoning must explain how it contributes to executing this skill.
             """
 
+        # 根据移动方式添加不同的格式说明
+        if self.move_type == 'grid':
+            prompt += """
+            Use this format:
+            ## Attack Actions ##
+            Attack: [Unit Tag] -> [Target Tag]
+            Reasoning: [Brief explanation]
+
+            ## Move Actions ##
+            Move: [Unit Tag] -> [x, y]
+            Reasoning: [Brief explanation]
+            where x and y are grid coordinates between 0 and 9
+            """
+        else:
+            prompt += """
+            Use this format:
+            ## Attack Actions ##
+            Attack: [Unit Tag] -> [Target Tag]
+            Reasoning: [Brief explanation]
+
+            ## Move Actions ##
+            Move: [Unit Tag] -> [direction]
+            Reasoning: [Brief explanation]
+            where direction is:
+            0: UP, 1: RIGHT, 2: DOWN, 3: LEFT
+            """
+
+        prompt += f"""
+            CRITICAL COORDINATE SYSTEM RULES:
+            1. Current unit positions in grid coordinates (NOT pixel coordinates):
+            {units_info_str}
+            
+            2. ALL movement commands MUST use grid coordinates:
+               - Grid is 10x10
+               - [0,0] is top-left corner
+               - [9,9] is bottom-right corner
+               - Example: Move: 1 -> [5, 3]  (NOT pixel coordinates like [800, 600])
+            
+            3. INVALID EXAMPLES (DO NOT USE):
+               - Move: 1 -> [1920, 1080]  (pixel coordinates)
+               - Move: 1 -> [12, 15]      (out of grid range)
+               - Move: 1 -> [x+2, y-1]    (expressions)
+            """
+
+        # 添加有效tag信息
+        friendly_tags = [unit['simplified_tag'] for unit in observation['unit_info'] 
+                        if unit['alliance'] == 1]
+        enemy_tags = [unit['simplified_tag'] for unit in observation['unit_info'] 
+                     if unit['alliance'] != 1]
+
+        prompt += f"""
+        VALID UNIT TAGS:
+        Friendly units: {friendly_tags}
+        Enemy units: {enemy_tags}
+
+        IMPORTANT: Use ONLY these valid tags in your actions!
+        """
+
         return prompt
+
 
     def _get_unit_info_from_database(self, units: List[Dict[str, Any]]) -> Dict[str, Dict]:
         """从数据库获取单位信息"""
@@ -393,7 +583,6 @@ class VLMAgent:
                 f"{unit['unit_name']} ({alliance}, Tag: {unit['simplified_tag']})\n"
                 f"Health: {health_info}, Shields: {shield_info}\n"
                 f"{energy_info}\n"
-                f"Position: [{unit['position'][0]:.1f}, {unit['position'][1]:.1f}]"
             )
             formatted_info.append(unit_desc)
 
@@ -432,13 +621,37 @@ class VLMAgent:
         cv2.imwrite(filename, image)
         return filename
 
-    def _update_history(self, important_units: List[int], actions: Dict[str, List[Tuple]]):
-        """更新包含攻击和移动动作的历史记录"""
+    def _update_history(
+            self,
+            important_units: List[int],
+            action: Dict[str, List[Tuple]],
+            planned_skills: Dict[str, Any]
+    ):
+        """更新历史记录,包含技能规划信息"""
+        # 确保移动动作格式一致
+        move_actions = []
+        if action['move']:
+            for move in action['move']:
+                if len(move) == 3:  # 如果是 (unit_tag, move_type, target) 格式
+                    unit_tag, _, target = move
+                    move_actions.append((unit_tag, target))
+                elif len(move) == 2:  # 如果是 (unit_tag, target) 格式
+                    move_actions.append(move)
+
         self.history.append({
             "step": self.step_count,
             "important_units": important_units,
-            "attack_actions": actions['attack'],
-            "move_actions": actions['move']
+            "attack_actions": action['attack'],
+            "move_actions": move_actions,  # 使用处理后的移动动作
+            "planned_skills": planned_skills,
+            "move_type": self.move_type
         })
+        
         if len(self.history) > self.history_length:
             self.history.pop(0)
+
+    def _validate_and_convert_coordinates(self, x: int, y: int) -> Optional[Tuple[int, int]]:
+        """验证坐标是否在有效范围内"""
+        if 0 <= x <= 9 and 0 <= y <= 9:
+            return (x, y)
+        return None
