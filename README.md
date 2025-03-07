@@ -2,6 +2,27 @@
 
 [English](READMEEN.md) | [中文](READMECN.md)
 
+<div align="center">
+
+🐫 Part of [CAMEL-AI.org](https://www.camel-ai.org/) Projects
+
+*Building AI Society with Agents* 🤖
+
+[CAMEL-AI Website](https://www.camel-ai.org/) | [CAMEL GitHub](https://github.com/camel-ai/camel)
+
+</div>
+
+---
+
+## About CAMEL-AI.org
+
+We are proud to be part of 🐫 CAMEL-AI.org, the pioneer of large language model-based multi-agent frameworks. CAMEL-AI.org is inspired by the research paper "CAMEL: Communicative Agents for 'Mind' Exploration of Large Language Model Society," and aims to explore scalable techniques for autonomous cooperation among communicative agents and their cognitive processes.
+
+This project aligns with CAMEL's mission by:
+- Implementing a novel multi-agent system in the StarCraft II environment
+- Exploring agent cooperation and decision-making through multimodal interactions
+- Contributing to the advancement of practical AI applications
+
 ## Overview
 
 This project develops a multimodal agent for StarCraft II that processes both visual information and text descriptions to make strategic decisions. The agent leverages vision-language models and reinforcement learning techniques to understand and interact with the game environment.
