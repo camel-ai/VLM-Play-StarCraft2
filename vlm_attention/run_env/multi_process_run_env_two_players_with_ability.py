@@ -11,9 +11,17 @@ from typing import Type, Union
 from agent.RandomAgent import RandomAgent
 from agent.vlm_agent_without_move_v5 import VLMAgentWithoutMove
 from agent.vlm_agent_v6 import VLMAgent
-from agent.test_agent_with_ability import TestAgent
+from agent.test_agent_with_ability import TestAgent_With_Ability
 from vlm_attention import ROOT_DIR, CONFIG_FILE_RELATIVE_PATH
 from vlm_attention.env.two_players_with_ability_env_core import SC2MultimodalTwoPlayerEnv
+
+
+"""
+multi process run the environment with two players and ability support
+
+"""
+
+
 
 # Available maps
 map_list = [
@@ -66,12 +74,12 @@ flags.DEFINE_integer('map_size_height', 64, 'Height of the map')
 
 
 
-def get_agent_class(agent_name: str) -> Type[Union[VLMAgentWithoutMove, RandomAgent, TestAgent, VLMAgent]]:
+def get_agent_class(agent_name: str) -> Type[Union[VLMAgentWithoutMove, RandomAgent, TestAgent_With_Ability, VLMAgent]]:
     """Get the agent class based on the agent name"""
     agent_classes = {
         "VLMAgentWithoutMove": VLMAgentWithoutMove,
         "RandomAgent": RandomAgent,
-        "TestAgent": TestAgent,
+        "TestAgent": TestAgent_With_Ability,
         "VLMAgent": VLMAgent
     }
     if agent_name not in agent_classes:

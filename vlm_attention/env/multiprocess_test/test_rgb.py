@@ -7,7 +7,12 @@ from absl import app, flags
 import cv2
 import numpy as np
 import json
+"""
+get&save rgb image test code for starcraft 2
 
+this code is used to get the rgb image of the given unit
+
+"""
 FLAGS = flags.FLAGS
 map_list = ["vlm_attention_1",
             "2c_vs_64zg_vlm_attention",

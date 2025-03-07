@@ -21,7 +21,14 @@ from vlm_attention.utils.call_vlm import MultimodalChatbot, TextChatbot
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+"""
+old version of the agent, without move
 
+It`s action space is :
+
+attack
+
+"""
 
 class VLMAgentWithoutMove:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
@@ -325,12 +332,7 @@ class VLMAgentWithoutMove:
         screen_size = (w, h)
         return draw_grid_with_labels(frame, screen_size, self.grid_size)
 
-    def _identify_important_units(
-            self,
-            observation: Dict[str, Any],
-            image_path: str,
-            planned_skills: Dict[str, Any]
-    ) -> str:
+    def _identify_important_units(self, observation: Dict[str, Any], image_path: str, planned_skills: Dict[str, Any]) -> str:
         """识别重要单位,与planned_skills紧密结合"""
         system_prompt = generate_important_units_prompt()
         units_info_str = self.format_units_info_for_prompt(observation['unit_info'])
@@ -352,10 +354,10 @@ class VLMAgentWithoutMove:
 
             Supporting Skills:
             {chr(10).join([
-            f"- {skill.get('name', 'Unknown')}: {skill.get('description', 'No description')} "
-            f"(Use when: {skill.get('condition', 'No condition specified')})"
-            for skill in planned_skills.get('secondary', [])
-        ])}
+                f"- {skill.get('name', 'Unknown')}: {skill.get('description', 'No description')} "
+                f"(Use when: {skill.get('condition', 'No condition specified')})"
+                for skill in planned_skills.get('secondary', [])
+            ])}
 
             Current Game State:
             {observation.get("text", "No text observation available.")}
@@ -376,7 +378,27 @@ class VLMAgentWithoutMove:
         important_units_response = important_unit_bot.query(user_input, image_path=image_path)
         important_unit_bot.clear_history()
 
+        # 解析响应并验证
+        important_units = parse_vlm_response(important_units_response)
+        
+        # 如果没有足够的重要单位，重试一次
+        if len(important_units) < 2:
+            logger.warning("First attempt didn't identify enough important units, retrying...")
+            important_units_response = important_unit_bot.query(user_input, image_path=image_path)
+            important_unit_bot.clear_history()
+            important_units = parse_vlm_response(important_units_response)
+            
+            # 如果仍然没有足够的单位，选择一些敌方单位作为默认值
+            if len(important_units) < 2:
+                logger.warning("Still not enough important units, selecting default enemy units...")
+                enemy_units = [unit['simplified_tag'] for unit in observation['unit_info'] 
+                             if unit['alliance'] != 1][:3]  # 取前3个敌方单位
+                important_units.extend(enemy_units)
+                important_units = list(set(important_units))  # 去重
+        
+        self.important_units = important_units
         self._save_vlm_io(user_input, important_units_response, "important_units")
+        
         return important_units_response
 
     def _generate_decision_prompt(self, observation: Dict[str, Any], unit_summary: str,

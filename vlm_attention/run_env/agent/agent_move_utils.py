@@ -2,7 +2,7 @@ import re
 import logging
 from typing import List, Tuple, Dict, Any, Optional
 import json
-from vlm_attention.utils.call_vlm import MultimodalChatbot
+from vlm_attention.utils.call_vlm import MultimodalChatbot,TextChatbot
 
 from datetime import datetime
 logger = logging.getLogger(__name__)
@@ -36,28 +36,49 @@ def summarize_unit_info(unit_info: Dict[str, Dict]) -> str:
 
 
 def generate_important_units_prompt() -> str:
-    return """
-    You are an AI assistant specialized in analyzing StarCraft II game states. Your task is to identify and explain 
+    return """You are an AI assistant specialized in analyzing StarCraft II game states. Your task is to identify and explain 
     the most strategically important enemy units based on the provided game information and screenshot. 
 
-    When analyzing, consider the following:
-    1. Focus on units that significantly impact the battle due to their abilities or potential threat.
-    2. Prioritize only those units that are key to the current game dynamics.
-    3. Avoid selecting all enemy units; choose only the most crucial ones.
-
-    For each important unit you identify, provide:
-    - The unit's name
-    - Its tag number
-    - A detailed reason explaining its strategic importance in the current scenario
-
-    Use the following format for each unit:
+    CRITICAL RULES:
+    1. You MUST identify at least 2-3 important enemy units
+    2. For each important unit, you MUST provide:
+       - Unit name
+       - Tag number
+       - Detailed reason for importance
+    3. Focus on units that:
+       - Have tactical advantages (high health/shields, special abilities)
+       - Are in threatening positions
+       - Could disrupt our planned strategy
+    4. Your response MUST strictly follow this format:
 
     ## Important Units ##
     Unit: [Unit Name]
     Tag: [Tag Number]
-    Reason: [Explanation of why the unit is important]
+    Reason: [Detailed tactical explanation]
 
-    Repeat this format for each important unit. Do not include any other text or explanations outside of this format.
+    ## Important Units ##
+    Unit: [Unit Name]
+    Tag: [Tag Number]
+    Reason: [Detailed tactical explanation]
+
+    [Repeat for each important unit]
+
+    EXAMPLE RESPONSE:
+    ## Important Units ##
+    Unit: Zealot
+    Tag: 7
+    Reason: Highest shield value (50/50) and positioned closest to our units at [0,1], immediate threat to our Reapers
+
+    ## Important Units ##
+    Unit: Zealot
+    Tag: 12
+    Reason: Full shields and blocking key escape route at [1,1], could trap our units if not dealt with
+
+    Remember:
+    - ALWAYS include the exact tag numbers
+    - ALWAYS explain tactical importance
+    - ALWAYS identify at least 2-3 units
+    - ALWAYS use the exact format with headers
     """
 
 
@@ -135,9 +156,14 @@ def format_units_info(unit_info: List[Dict[str, Any]], predefined_tags: Dict[str
 
 
 def parse_vlm_response(response: str) -> List[int]:
+    """Parse VLM response to extract important unit tags"""
     important_units = []
     unit_blocks = re.findall(r'## Important Units ##(.*?)(?=## Important Units ##|\Z)', response, re.DOTALL)
-
+    
+    if not unit_blocks:
+        logger.warning("No important units found in response")
+        return important_units
+        
     for block in unit_blocks:
         lines = block.strip().split('\n')
         unit_name = ""
@@ -148,20 +174,21 @@ def parse_vlm_response(response: str) -> List[int]:
             elif line.startswith("Tag:"):
                 tag_str = line.split(":")[1].strip()
                 try:
-                    # 尝试从字符串中提取数字
                     tag_match = re.search(r'\d+', tag_str)
                     if tag_match:
                         tag = int(tag_match.group())
                         important_units.append(tag)
-                        logger.info(f"Successfully parsed tag {tag} for unit {unit_name}")
+                        logger.info(f"Found important unit: {unit_name} with tag {tag}")
                     else:
                         logger.warning(f"No valid tag found in string: '{tag_str}' for unit {unit_name}")
                 except ValueError as e:
                     logger.warning(f"Failed to parse tag for unit {unit_name}. Tag string: '{tag_str}'. Error: {e}")
 
-        if tag is None:
-            logger.warning(f"No valid tag found for unit: {unit_name}")
-
+    if not important_units:
+        logger.warning("No valid unit tags found in response")
+    else:
+        logger.info(f"Total important units found: {len(important_units)}")
+        
     return important_units
 
 
@@ -577,5 +604,68 @@ Focus only on micro-management skills and tactics, without specifying exact unit
 
         return "\n\n".join(formatted_info)
 
+def generate_important_units_normalization_prompt() -> str:
+    """生成用于规范化important units响应的系统提示词"""
+    return """You are a StarCraft II combat analyzer specializing in standardizing unit importance assessments.
+    Your task is to take raw analysis and convert it into a properly formatted list of important units.
 
+    CRITICAL FORMAT RULES:
+    1. You MUST identify exactly 2-3 important enemy units
+    2. You MUST use the exact format:
+       ## Important Units ##
+       Unit: [Unit Name]
+       Tag: [Tag Number]
+       Reason: [Detailed tactical explanation]
+    3. Each reason MUST include:
+       - Unit's current status (health/shields)
+       - Position-based threat assessment
+       - Tactical importance
+    4. You MUST only use valid unit tags from the provided information
 
+    EXAMPLE CORRECT FORMAT:
+    ## Important Units ##
+    Unit: Zealot
+    Tag: 7
+    Reason: Highest shield value (50/50) and positioned at [0,1], immediate threat to our Reapers
+
+    ## Important Units ##
+    Unit: Zealot
+    Tag: 12
+    Reason: Full shields and blocking key escape route at [1,1], could trap our units
+
+    DO NOT include any other text or explanations outside this format."""
+
+def normalize_important_units(raw_response: str, observation: Dict[str, Any], use_proxy: bool = False) -> str:
+    """规范化important units的响应格式"""
+    system_prompt = generate_important_units_normalization_prompt()
+    
+    # 准备单位信息
+    enemy_units = [unit for unit in observation['unit_info'] if unit['alliance'] != 1]
+    enemy_info = "\n".join([
+        f"Enemy {unit['unit_name']} (Tag: {unit['simplified_tag']}):\n"
+        f"- Health: {unit['health']}/{unit['max_health']}\n"
+        f"- Shields: {unit.get('shield', 0)}/{unit.get('max_shield', 0)}\n"
+        f"- Position: [{unit['grid_position'][0]}, {unit['grid_position'][1]}]"
+        for unit in enemy_units
+    ])
+
+    user_prompt = f"""Normalize the following unit importance analysis into the required format.
+
+Available Enemy Units:
+{enemy_info}
+
+Raw Analysis:
+{raw_response}
+
+Requirements:
+1. Select 2-3 most important units from the available enemies
+2. Use exact format from system prompt
+3. Include detailed tactical reasons
+4. Use only valid unit tags
+5. Focus on units with tactical advantages"""
+
+    normalization_bot = TextChatbot(system_prompt=system_prompt, use_proxy=use_proxy)
+    normalized_response = normalization_bot.query(user_prompt)
+    normalization_bot.clear_history()
+
+    return normalized_response

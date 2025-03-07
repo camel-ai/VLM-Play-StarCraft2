@@ -2,6 +2,10 @@ from openai import OpenAI
 import os
 from vlm_attention.config.config import get_config
 ## Set the API key and model name
+
+"""
+simple test the openai api
+"""
 MODEL="gpt-4o-mini"
 proxy_url = get_config("proxy", "url")
 

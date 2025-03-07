@@ -26,24 +26,37 @@ from vlm_attention.env.env_core import SC2MultimodalEnv
 from agent.vlm_agent_v6 import VLMAgent
 from agent.test_agent import TestAgent
 
-map_list = ["vlm_attention_1",
-            "2c_vs_64zg_vlm_attention",
+
+
+"""
+multi process run the environment with one player, without ability support
+
+"""
+
+
+map_list = ["2c_vs_64zg_vlm_attention",
             "2m_vs_1z_vlm_attention",
             "2s_vs_1sc_vlm_attention",
+            "3s_vs_3z_vlm_attention",
+            "6reaper_vs8zealot_vlm_attention",
+            "8marine_1medvac_vs_2tank",
+            "8marine_2tank_vs_zerglings_banelings_vlm_attention",
+            "2bc1prism_vs_8m_vlm_attention",
             "2s3z_vlm_attention",
             "3m_vlm_attention",
-            "3s_vs_3z_vlm_attention"]
+            "vlm_attention_1",
+            "ability_map_8marine_3marauder_1medivac_1tank"]
 # Define flags
 FLAGS = flags.FLAGS
-flags.DEFINE_string("map", map_list[0], "Name of the map to use")
+flags.DEFINE_string("map", map_list[6], "Name of the map to use")
 flags.DEFINE_string("config_path", os.path.join(ROOT_DIR, CONFIG_FILE_RELATIVE_PATH), "Path to the configuration file")
 flags.DEFINE_boolean("draw_grid", True, "Whether to draw grid on screenshots")
 flags.DEFINE_boolean("annotate_units", True, "Whether to annotate units on screenshots")
-flags.DEFINE_string("agent", "VLMAgentWithoutMove", "Agent to use:RandomAgent, VLMAgentWithoutMove, TestAgent,VLMAgent")
+flags.DEFINE_string("agent", "VLMAgent", "Agent to use:RandomAgent, VLMAgentWithoutMove, TestAgent,VLMAgent")
 flags.DEFINE_integer("num_processes", 4, "Number of parallel processes to use")
 flags.DEFINE_boolean("use_self_attention", True, "Whether to use self-attention in the agent")
 flags.DEFINE_boolean("use_rag", True, "Whether to use RAG in the agent")
-flags.DEFINE_boolean("use_proxy", False, "Whether to use proxy in the agent, in china, gpt models need proxy")
+flags.DEFINE_boolean("use_proxy", True, "Whether to use proxy in the agent, in china, gpt models need proxy")
 
 # Screen and map size flags
 flags.DEFINE_integer('feature_screen_width', 256, 'Width of feature screen')
@@ -53,7 +66,7 @@ flags.DEFINE_integer('rgb_screen_height', 1080, 'Height of RGB screen')
 flags.DEFINE_integer('map_size_width', 64, 'Width of the map')
 flags.DEFINE_integer('map_size_height', 64, 'Height of the map')
 
-flags.DEFINE_string('model_name', default="qwen", help="which model we used ")
+flags.DEFINE_string('model_name', default="openai", help="which model we used ")
 
 
 def terminate_process_safely(pid: int):
@@ -192,7 +205,8 @@ def main(argv):
         'draw_grid': FLAGS.draw_grid,
         'annotate_units': FLAGS.annotate_units,
         'use_self_attention': FLAGS.use_self_attention,
-        'use_rag': FLAGS.use_rag
+        'use_rag': FLAGS.use_rag,
+        'use_proxy': FLAGS.use_proxy
     }
 
     # 准备每个进程的配置

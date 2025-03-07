@@ -3,6 +3,11 @@ import shutil
 from typing import List, Dict
 
 
+"""
+check the unit name in the json file from the firecrawl_test,
+and standardize the unit name to the pysc2 standard name
+"""
+
 def ensure_dir(directory):
     """确保目录存在，如果不存在则创建"""
     if not os.path.exists(directory):

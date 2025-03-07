@@ -6,6 +6,13 @@ import cv2
 from vlm_attention.env.env_core import SC2MultimodalEnv
 from vlm_attention import ROOT_DIR, CONFIG_FILE_RELATIVE_PATH
 
+
+"""
+Run the environment with pure image, 
+Just test the pure image, without any real agent decision making
+
+"""
+
 FLAGS = flags.FLAGS
 flags.DEFINE_string("map", "test_for_cluster", "Name of the map to use")
 flags.DEFINE_string("replay_dir", "./replays", "Directory to save replays")

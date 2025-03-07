@@ -15,7 +15,14 @@ logger = logging.getLogger(__name__)
 # 定义颜色常量 (BGR 格式)
 COLOR_SELF = (0, 255, 0)  # 绿色 (BGR)
 COLOR_ENEMY = (0, 0, 255)  # 红色 (BGR)
+"""
 
+test agent for the environment
+
+It`s action space is :
+
+move, attack
+"""
 
 class TestAgent:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,

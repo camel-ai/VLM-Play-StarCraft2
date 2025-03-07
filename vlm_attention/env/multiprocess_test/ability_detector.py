@@ -3,7 +3,19 @@ from pysc2.lib import upgrades
 from typing import List, Dict, Set
 import numpy as np
 
+"""
+ability detector for starcraft 2
 
+this class is used to detect the available abilities for the given unit
+
+it is used in the ability_manager class
+
+
+技能检测器，由于在pysc2 中，我们无法在raw action space 下检测到技能，因此需要使用这个类来检测技能
+
+实际上我们可以在feature action space 下检测到所有可行的动作，但该action space 在attack，ability usage 方面存在缺陷，
+且alphastar 等工作都基于raw action space，因此我们选择使用raw action space 来检测技能
+"""
 class AbilityDetector:
     def __init__(self):
         # 定义微操相关的技能ID映射

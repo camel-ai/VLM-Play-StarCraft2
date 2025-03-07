@@ -15,6 +15,14 @@ from vlm_attention.env.env_bot import Multimodal_bot
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+
+"""
+environment with two players, without ability support
+
+this environment provide an easier interface for building the environment with two players without ability support
+
+based on this environment, we can directly interact with agent through out text and image
+"""
 class SC2MultimodalTwoPlayerEnv(gym.Env):
     MAX_RETRY_ATTEMPTS = 3
     RETRY_DELAY = 2
@@ -69,7 +77,92 @@ class SC2MultimodalTwoPlayerEnv(gym.Env):
         self._define_spaces()
 
     def _define_spaces(self):
-        """定义观察和动作空间，与单玩家版本相同"""
+        """定义观察和动作空间，与单玩家版本相同
+
+        Observation Space 包含三个主要部分:
+        1. Text Observation
+           - 游戏状态的文字描述
+           - 包含所有单位的生命值、护盾值等状态信息
+           - 按阵营(己方/敌方)分组组织
+
+        2. Image Observation
+           - RGB格式的游戏画面截图
+           - 形状: (height, width, 3)
+           - 像素值范围: [0, 255]
+           - 包含所有单位的可视化表示
+
+        3. Unit Information
+           - original_tag: PySC2原生单位标识符 (0 ~ 999999)
+           - simplified_tag: 简化的单位标识符 (1 ~ 99)
+           - alliance: 单位阵营 (1:己方, 4:敌方)
+           - unit_type: 单位类型编号 (0 ~ 999)
+           - unit_name: 单位类型名称
+           - health/shield/energy: 单位状态值
+           - position: 单位在屏幕上的坐标 (x, y)
+
+        Action Space 包含两种动作类型:
+        1. Attack Actions
+           Format: (attacker_tag, target_tag)
+           - attacker_tag: 发起攻击的己方单位的simplified_tag (0 ~ num_units-1)
+           - target_tag: 攻击目标的simplified_tag (0 ~ num_units-1)
+           注意: 验证时需确保attacker是己方单位，target是敌方单位
+
+        2. Move Actions
+           Format: (move_type, unit_tag, target)
+
+          2.1 Grid-based Movement (move_type = 1)
+               - unit_tag: 移动单位的simplified_tag (0 ~ num_units-1)
+               - target: 目标网格坐标 [x, y], x,y均在[0, 9]范围内
+               坐标系说明:
+               - 使用10x10网格
+               - 原点(0,0)在左上角
+               - x轴向右为正，范围[0,9]
+               - y轴向下为正，范围[0,9]
+
+           2.2 SMAC-style Movement (move_type = 2)
+               - unit_tag: 移动单位的simplified_tag (0 ~ num_units-1)
+               - target: [direction, 0]
+               direction说明:
+               - 0: 向上移动(y-1)
+               - 1: 向右移动(x+1)
+               - 2: 向下移动(y+1)
+               - 3: 向左移动(x-1)
+
+        Action Examples (两个玩家):
+        -----------------------
+        1. 玩家1和玩家2的动作列表:
+           actions = [player1_action, player2_action]
+
+        2. 玩家1攻击示例:
+           player1_action = {'attack': (1, 6), 'move': (0, 0, [0, 0])}
+           
+        3. 玩家2移动示例:
+           player2_action = {'attack': [], 'move': (1, 3, [5, 7])}
+           
+        4. 完整示例 - 玩家1攻击，玩家2移动:
+           actions = [
+               {'attack': (1, 6), 'move': (0, 0, [0, 0])},  # 玩家1
+               {'attack': [], 'move': (1, 3, [5, 7])}       # 玩家2
+           ]
+           
+        5. 完整示例 - 两个玩家都攻击:
+           actions = [
+               {'attack': (1, 8), 'move': (0, 0, [0, 0])},  # 玩家1
+               {'attack': (2, 7), 'move': (0, 0, [0, 0])}   # 玩家2
+           ]
+           
+        6. 完整示例 - 两个玩家都移动:
+           actions = [
+               {'attack': [], 'move': (1, 2, [3, 4])},      # 玩家1
+               {'attack': [], 'move': (2, 1, [0, 0])}       # 玩家2 (SMAC向上移动)
+           ]
+           
+        7. 完整示例 - 多个攻击命令:
+           actions = [
+               {'attack': [(1, 6), (2, 8)], 'move': (0, 0, [0, 0])},  # 玩家1
+               {'attack': [(3, 5), (4, 7)], 'move': (0, 0, [0, 0])}   # 玩家2
+           ]
+        """
         self.num_units = 100
 
         # 定义观察空间

@@ -8,7 +8,10 @@ import cv2
 import numpy as np
 import json
 import datetime
+"""
+get&save rgb image for each player test code for starcraft 2
 
+"""
 FLAGS = flags.FLAGS
 map_list = ["vlm_attention_1",
             "2c_vs_64zg_vlm_attention",

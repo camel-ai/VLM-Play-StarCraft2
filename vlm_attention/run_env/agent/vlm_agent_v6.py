@@ -1,34 +1,44 @@
 import json
 import logging
 import os
-from typing import List, Tuple, Dict, Any, Optional
 from datetime import datetime
+from typing import List, Tuple, Dict, Any, Optional
 
 import cv2
 import numpy as np
 
-
 from vlm_attention.env.config import COLORS, get_unit_name
 from vlm_attention.knowledge_data.database.sc2_unit_database import SC2UnitDatabase
 from vlm_attention.run_env.agent.agent_move_utils import (
-    summarize_unit_info, generate_important_units_prompt,
-    generate_decision_prompt, format_units_info, parse_vlm_response, parse_vlm_decision,
-    format_history_for_prompt, generate_enhanced_unit_selection_prompt,VLMPlanner,
-    generate_unit_info_summary_prompt, generate_action_normalization_prompt, normalization_system_prompt
+    generate_important_units_prompt,
+    generate_decision_prompt, parse_vlm_response, parse_vlm_decision,
+    format_history_for_prompt, VLMPlanner,
+    generate_unit_info_summary_prompt, generate_action_normalization_prompt, normalization_system_prompt,
+    normalize_important_units
 )
+from vlm_attention.run_env.agent.role_assignment import RoleAssignment
 from vlm_attention.run_env.utils import _annotate_units_on_image, draw_grid_with_labels
 from vlm_attention.utils.call_vlm import MultimodalChatbot, TextChatbot
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+"""
 
+This is the latest version of the agent.
+
+It`s action space is :
+
+move, attack
+
+
+"""
 class VLMAgent:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
                  annotate_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
                  use_self_attention: bool = False, use_rag: bool = False, history_length: int = 3,
                  replan_each_step: bool = False, use_proxy: bool = False, move_type: str = 'grid',
-                 rgb_screen_width:int=1920,rgb_screen_height:int=1080):
+                 rgb_screen_width: int = 1920, rgb_screen_height: int = 1080):
         """
         初始化VLMAgent代理。
         :param action_space: 动作空间字典
@@ -68,7 +78,8 @@ class VLMAgent:
         self.planner_dir = os.path.join(self.save_dir, "planner")
         os.makedirs(self.planner_dir, exist_ok=True)
         self.planner = VLMPlanner(self.planner_dir, replan_each_step)
-
+        self.role_assignment = RoleAssignment(config_path)
+        self.current_assignments = {}
         # 初始化数据库
         current_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.abspath(os.path.join(current_dir, '..', '..', '..'))
@@ -92,7 +103,7 @@ class VLMAgent:
         self.move_type = move_type
         if move_type not in ['grid', 'smac']:
             raise ValueError("move_type must be either 'grid' or 'smac'")
-        
+
         # 根据移动方式设置相应的move_type_id
         self.move_type_id = 1 if move_type == 'grid' else 2
 
@@ -156,11 +167,15 @@ class VLMAgent:
 
         # 生成决策
         decision_system_prompt = generate_decision_prompt()
+
+
+
         decision_user_prompt = self._generate_decision_prompt(
             observation,
             unit_summary,
             important_units_response,
-            planned_skills
+            planned_skills,
+            self.current_assignments
         )
         raw_decision_bot = MultimodalChatbot(system_prompt=decision_system_prompt, use_proxy=self.use_proxy)
         raw_decision_response = raw_decision_bot.query(decision_user_prompt, image_path=decision_image_path)
@@ -203,10 +218,10 @@ class VLMAgent:
         )
 
         # 获取有效的单位tag
-        valid_friendly_tags = [unit['simplified_tag'] for unit in observation['unit_info'] 
-                              if unit['alliance'] == 1]
-        valid_enemy_tags = [unit['simplified_tag'] for unit in observation['unit_info'] 
-                           if unit['alliance'] != 1]
+        valid_friendly_tags = [unit['simplified_tag'] for unit in observation['unit_info']
+                               if unit['alliance'] == 1]
+        valid_enemy_tags = [unit['simplified_tag'] for unit in observation['unit_info']
+                            if unit['alliance'] != 1]
 
         logger.info(f"Valid friendly tags: {valid_friendly_tags}")
         logger.info(f"Valid enemy tags: {valid_enemy_tags}")
@@ -217,7 +232,7 @@ class VLMAgent:
             for attacker_tag, target_tag in normalized_action['attack']:
                 # 确保tag是有效的整数且在有效范围内
                 if (isinstance(attacker_tag, int) and isinstance(target_tag, int) and
-                    attacker_tag in valid_friendly_tags and target_tag in valid_enemy_tags):
+                        attacker_tag in valid_friendly_tags and target_tag in valid_enemy_tags):
                     attack_actions.append((attacker_tag, target_tag))
                 else:
                     logger.warning(f"Invalid attack action: attacker={attacker_tag}, target={target_tag}")
@@ -232,7 +247,7 @@ class VLMAgent:
                     if unit_tag not in valid_friendly_tags:
                         logger.warning(f"Invalid unit tag for move: {unit_tag}")
                         continue
-                    
+
                     if isinstance(target, list):
                         if self.move_type == 'grid' and len(target) == 2:
                             x, y = target
@@ -247,6 +262,23 @@ class VLMAgent:
             normalized_action['move'] = move_actions
 
         logger.info(f"Final normalized actions: {normalized_action}")
+
+        # 在合适的时机更新角色分配
+        if self._should_update_assignments(observation):
+            # 生成初始分配方案
+            new_assignments = self.role_assignment.initial_assignment(observation)
+
+            # 执行对比学习
+            tasks = list(new_assignments.values())
+            task_similarities = self.role_assignment.contrastive_learning(tasks)
+
+            # 根据战斗结果进行反思和调整
+            battle_outcome = self._evaluate_battle_outcome(observation)
+            adjusted_assignments = self.role_assignment.reflect_and_adjust(
+                new_assignments, battle_outcome
+            )
+
+            self.current_assignments = adjusted_assignments
         return normalized_action
 
     def _normalize_attack_action(self, raw_attack_actions: List[Tuple], observation: Dict[str, Any]) -> List[Tuple]:
@@ -370,46 +402,74 @@ class VLMAgent:
         skill_desc = primary_skill.get('description', 'None')
         skill_steps = primary_skill.get('steps', [])
 
-        user_input = f"""
-            Analyze the current StarCraft II game state and identify important enemy units based on our planned micro skills:
+        user_input = f"""Analyze the current StarCraft II game state and identify important enemy units.
 
-            Primary Micro Skill Plan:
-            Name: {skill_name}
-            Description: {skill_desc}
-            Implementation Steps:
-            {chr(10).join(f"- {step}" for step in skill_steps)}
+CURRENT SITUATION:
+Primary Micro Skill: {skill_name}
+Description: {skill_desc}
+Implementation Steps:
+{chr(10).join(f"- {step}" for step in skill_steps)}
 
-            Supporting Skills:
-            {chr(10).join([
-                f"- {skill.get('name', 'Unknown')}: {skill.get('description', 'No description')} "
-                f"(Use when: {skill.get('condition', 'No condition specified')})"
-                for skill in planned_skills.get('secondary', [])
-            ])}
+Supporting Skills:
+{chr(10).join([
+    f"- {skill.get('name', 'Unknown')}: {skill.get('description', 'No description')} "
+    f"(Use when: {skill.get('condition', 'No condition specified')})"
+    for skill in planned_skills.get('secondary', [])
+])}
 
-            Current Game State:
-            {observation.get("text", "No text observation available.")}
+Current Game State:
+{observation.get("text", "No text observation available.")}
 
-            Units Information:
-            {units_info_str}
+Units Information:
+{units_info_str}
 
-            Previous Steps Context:
-            {format_history_for_prompt(self.history, history_length=self.history_length)}
+Previous Steps Context:
+{format_history_for_prompt(self.history, history_length=self.history_length)}
 
-            Based on this information, identify enemy units that are:
-            1. Most relevant to executing our {skill_name} strategy
-            2. Could potentially disrupt our planned implementation steps
-            3. Should be prioritized based on our micro skill requirements
-            """
+REQUIRED FORMAT EXAMPLE:
+## Important Units ##
+Unit: Zealot
+Tag: 7
+Reason: Highest shield value (50/50) and positioned closest to our units at [0,1], immediate threat to our Reapers
 
+## Important Units ##
+Unit: Zealot
+Tag: 12
+Reason: Full shields and blocking key escape route at [1,1], could trap our units if not dealt with
+
+YOUR TASK:
+Identify at least 2-3 important enemy units that:
+1. Are most relevant to executing our {skill_name} strategy
+2. Could potentially disrupt our planned implementation steps
+3. Should be prioritized based on our micro skill requirements
+
+CRITICAL RULES:
+- You MUST use the exact format shown in the example above
+- You MUST identify at least 2-3 units
+- You MUST include exact tag numbers
+- You MUST provide detailed tactical reasons
+- You MUST focus on units with tactical advantages (high health/shields, threatening positions)
+"""
+
+        # 获取初始响应
         important_unit_bot = MultimodalChatbot(system_prompt=system_prompt, use_proxy=self.use_proxy)
-        important_units_response = important_unit_bot.query(user_input, image_path=image_path)
+        raw_response = important_unit_bot.query(user_input, image_path=image_path)
         important_unit_bot.clear_history()
+        
+        # 保存原始响应
+        self._save_vlm_io(user_input, raw_response, "important_units_raw")
 
-        self._save_vlm_io(user_input, important_units_response, "important_units")
-        return important_units_response
+        # 规范化响应
+        normalized_response = normalize_important_units(raw_response, observation, self.use_proxy)
+        
+        # 保存规范化后的响应
+        self._save_vlm_io(user_input, normalized_response, "important_units_normalized")
+
+        return normalized_response
 
     def _generate_decision_prompt(self, observation: Dict[str, Any], unit_summary: str,
-                              important_units_response: str, planned_skills: Dict[str, Any]) -> str:
+                                  important_units_response: str, planned_skills: Dict[str, Any],
+                                  current_assignments: Dict = None) -> str:
         """生成决策提示,整合了技能规划信息"""
         # 提取主要技能信息
         primary_skill = planned_skills.get('primary', {})
@@ -417,9 +477,10 @@ class VLMAgent:
         skill_desc = primary_skill.get('description', 'None')
         skill_steps = primary_skill.get('steps', [])
 
+
         # 直接使用包含grid_position的单位信息
         units_info_str = self.format_units_info_for_prompt(observation['unit_info'])
-        
+
         # 根据移动方式生成不同的移动系统说明
         if self.move_type == 'grid':
             movement_system = f"""
@@ -484,7 +545,12 @@ class VLMAgent:
                 Unit Capabilities:
                 {unit_summary}
                 """
-
+        # 添加角色分配信息
+        if current_assignments:
+            prompt += f"""
+                Current Unit Assignments:
+                {chr(10).join([f"- {unit}: {role}" for unit, role in current_assignments.items()])}
+                """
         prompt += f"""
             Recent History:
             {format_history_for_prompt(self.history, history_length=self.history_length)}
@@ -525,13 +591,13 @@ class VLMAgent:
             CRITICAL COORDINATE SYSTEM RULES:
             1. Current unit positions in grid coordinates (NOT pixel coordinates):
             {units_info_str}
-            
+
             2. ALL movement commands MUST use grid coordinates:
                - Grid is 10x10
                - [0,0] is top-left corner
                - [9,9] is bottom-right corner
                - Example: Move: 1 -> [5, 3]  (NOT pixel coordinates like [800, 600])
-            
+
             3. INVALID EXAMPLES (DO NOT USE):
                - Move: 1 -> [1920, 1080]  (pixel coordinates)
                - Move: 1 -> [12, 15]      (out of grid range)
@@ -539,10 +605,10 @@ class VLMAgent:
             """
 
         # 添加有效tag信息
-        friendly_tags = [unit['simplified_tag'] for unit in observation['unit_info'] 
-                        if unit['alliance'] == 1]
-        enemy_tags = [unit['simplified_tag'] for unit in observation['unit_info'] 
-                     if unit['alliance'] != 1]
+        friendly_tags = [unit['simplified_tag'] for unit in observation['unit_info']
+                         if unit['alliance'] == 1]
+        enemy_tags = [unit['simplified_tag'] for unit in observation['unit_info']
+                      if unit['alliance'] != 1]
 
         prompt += f"""
         VALID UNIT TAGS:
@@ -553,7 +619,6 @@ class VLMAgent:
         """
 
         return prompt
-
 
     def _get_unit_info_from_database(self, units: List[Dict[str, Any]]) -> Dict[str, Dict]:
         """从数据库获取单位信息"""
@@ -571,18 +636,26 @@ class VLMAgent:
         return unit_info
 
     def format_units_info_for_prompt(self, unit_info: List[Dict[str, Any]]) -> str:
-        """为提示词格式化单位信息"""
+        """为提示词格式化单位信息
+
+        Args:
+            unit_info: 包含单位信息的字典列表
+
+        Returns:
+            str: 格式化后的单位信息字符串
+        """
         formatted_info = []
         for unit in unit_info:
             alliance = "Friendly" if unit['alliance'] == 1 else "Enemy"
             health_info = f"{unit['health']}/{unit['max_health']}"
             shield_info = f"{unit['shield']}/{unit['max_shield']}" if unit['max_shield'] > 0 else "No shields"
             energy_info = f"Energy: {unit['energy']}" if unit['energy'] > 0 else ""
-
+            position_info = f"Position: [{unit['grid_position'][0]:.1f}, {unit['grid_position'][1]:.1f}]"
             unit_desc = (
                 f"{unit['unit_name']} ({alliance}, Tag: {unit['simplified_tag']})\n"
                 f"Health: {health_info}, Shields: {shield_info}\n"
                 f"{energy_info}\n"
+                f"{position_info}"
             )
             formatted_info.append(unit_desc)
 
@@ -646,8 +719,9 @@ class VLMAgent:
             "planned_skills": planned_skills,
             "move_type": self.move_type
         })
-        
+
         if len(self.history) > self.history_length:
+            self.history.pop(0)
             self.history.pop(0)
 
     def _validate_and_convert_coordinates(self, x: int, y: int) -> Optional[Tuple[int, int]]:
@@ -655,3 +729,128 @@ class VLMAgent:
         if 0 <= x <= 9 and 0 <= y <= 9:
             return (x, y)
         return None
+
+    def _should_update_assignments(self, observation) -> bool:
+        """判断是否需要更新角色分配"""
+        system_prompt = """You are a StarCraft II battle analyzer focusing on tactical situation assessment. 
+        You need to determine if the current battlefield situation requires a role reassignment for units.
+        Consider unit count changes, health status changes, and positional changes.
+        Respond with 'true' if reassignment is needed, 'false' if not, followed by a brief explanation."""
+
+        # 准备当前状态信息
+        current_state = {
+            'current_units': observation['unit_info'],
+            'step_count': self.step_count,
+            'current_assignments': self.current_assignments
+        }
+
+        user_prompt = f"""Current battlefield state:
+        Step: {self.step_count}
+        Units: {self.format_units_info_for_prompt(observation['unit_info'])}
+        Current assignments: {self.current_assignments}
+
+        Previous state (if available):
+        Units: {self.format_units_info_for_prompt(getattr(self, 'previous_units', []))}
+
+        Determine if role reassignment is needed based on:
+        1. Unit count changes
+        2. Significant health/shield changes
+        3. Major positional changes
+        4. Time since last update (consider updating every 30 steps)
+        """
+
+        update_decision_bot = TextChatbot(system_prompt=system_prompt, use_proxy=self.use_proxy)
+        response = update_decision_bot.query(user_prompt)
+        update_decision_bot.clear_history()
+
+        # 解析响应
+        should_update = response.lower().startswith('true')
+        if should_update:
+            self.previous_units = observation['unit_info']
+
+        return should_update
+
+    def _evaluate_battle_outcome(self, observation) -> Dict:
+        """使用LLM评估当前战斗效果"""
+        system_prompt = """You are a StarCraft II battle analyst specializing in combat effectiveness evaluation.
+        Analyze the current battle situation and provide a detailed assessment in JSON format covering:
+        1. Survival assessment (unit counts and health status)
+        2. Combat efficiency (resource trades and unit exchanges)
+        3. Objective completion (map control and mission goals)"""
+
+        user_prompt = f"""Analyze the current battle situation:
+
+        Friendly Units:
+        {self.format_units_info_for_prompt([u for u in observation['unit_info'] if u['alliance'] == 1])}
+
+        Enemy Units:
+        {self.format_units_info_for_prompt([u for u in observation['unit_info'] if u['alliance'] != 1])}
+
+        Current Assignments:
+        {self.current_assignments}
+
+        Previous State:
+        {self._format_previous_state()}
+
+        Provide a comprehensive battle assessment in the following JSON format:
+        {{
+            "survival_assessment": {{
+                "friendly_units_count": <int>,
+                "enemy_units_count": <int>,
+                "friendly_health_percentage": <float>,
+                "enemy_health_percentage": <float>
+            }},
+            "efficiency_assessment": {{
+                "resource_efficiency": <float>,
+                "exchange_ratio": <float>
+            }},
+            "objective_assessment": {{
+                "map_control": <float>,
+                "key_positions_control": <float>,
+                "task_completion": <float>
+            }}
+        }}
+        """
+
+        assessment_bot = TextChatbot(system_prompt=system_prompt, use_proxy=self.use_proxy)
+        response = assessment_bot.query(user_prompt)
+        assessment_bot.clear_history()
+
+        try:
+            # 解析JSON响应
+            assessment = json.loads(response)
+            assessment['timestamp'] = self.step_count
+            return assessment
+        except json.JSONDecodeError:
+            logger.error("Failed to parse battle assessment response")
+            return self._generate_default_assessment()
+
+    def _generate_default_assessment(self) -> Dict:
+        """生成默认的评估结果"""
+        return {
+            'survival_assessment': {
+                'friendly_units_count': 0,
+                'enemy_units_count': 0,
+                'friendly_health_percentage': 0.0,
+                'enemy_health_percentage': 0.0
+            },
+            'efficiency_assessment': {
+                'resource_efficiency': 1.0,
+                'exchange_ratio': 1.0
+            },
+            'objective_assessment': {
+                'map_control': 0.5,
+                'key_positions_control': 0.0,
+                'task_completion': 0.0
+            },
+            'timestamp': self.step_count
+        }
+
+    def _format_previous_state(self) -> str:
+        """格式化上一个状态的信息"""
+        if not hasattr(self, 'previous_units'):
+            return "No previous state available"
+
+        return f"""Previous unit counts:
+        Friendly: {len([u for u in self.previous_units if u['alliance'] == 1])}
+        Enemy: {len([u for u in self.previous_units if u['alliance'] != 1])}"""

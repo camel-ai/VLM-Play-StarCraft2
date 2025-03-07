@@ -22,6 +22,12 @@ from vlm_attention import ROOT_DIR, CONFIG_FILE_RELATIVE_PATH
 from vlm_attention.env.two_players_env_core import SC2MultimodalTwoPlayerEnv
 from agent.test_agent import TestAgent
 
+
+"""
+multi process run the environment with two players, without ability support
+"""
+
+
 # Available maps
 map_list = [
     "vlm_attention_1_two_players",

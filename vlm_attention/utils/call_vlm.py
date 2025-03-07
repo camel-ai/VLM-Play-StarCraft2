@@ -5,17 +5,31 @@ from logging.handlers import RotatingFileHandler
 from typing import Optional, List
 
 from camel.agents import ChatAgent
-from camel.messages import BaseMessage
+from camel.messages import BaseMessage, FunctionCallingMessage, HermesFunctionFormatter, ShareGPTConversation
 from camel.responses import ChatAgentResponse
 from camel.types import ModelType, RoleType, ModelPlatformType
 from camel.models import ModelFactory, BaseModelBackend
 from camel.configs import ChatGPTConfig
 from PIL import Image
+from camel.toolkits import FunctionTool
 
 from vlm_attention.config.config import config_dir
 
 
+"""
+provide vlm&llm chatbot based on camel
+
+"""
+
 def setup_logger(name, log_file, level=logging.INFO):
+    """设置日志器，支持多进程"""
+    import multiprocessing
+    
+    # 获取进程ID并添加到日志文件名中
+    pid = multiprocessing.current_process().pid
+    base_name, ext = os.path.splitext(log_file)
+    process_log_file = f"{base_name}_{pid}{ext}"
+    
     # 创建一个过滤器
     class MessageFilter(logging.Filter):
         def filter(self, record):
@@ -27,17 +41,27 @@ def setup_logger(name, log_file, level=logging.INFO):
                     record.msg = "[image data removed]"
             return True
 
-    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    # 确保日志目录存在
+    log_dir = os.path.dirname(process_log_file)
+    if log_dir:
+        os.makedirs(log_dir, exist_ok=True)
+
+    formatter = logging.Formatter('%(asctime)s - PID:%(process)d - %(levelname)s - %(message)s')
 
     # 文件处理器
-    file_handler = RotatingFileHandler(
-        log_file,
-        maxBytes=10 * 1024 * 1024,
-        backupCount=5,
-    )
-    file_handler.setFormatter(formatter)
-    file_handler.setLevel(level)
-    file_handler.addFilter(MessageFilter())
+    try:
+        file_handler = RotatingFileHandler(
+            process_log_file,
+            maxBytes=10 * 1024 * 1024,  # 10MB
+            backupCount=5,
+            delay=True  # 延迟创建文件直到第一次写入
+        )
+        file_handler.setFormatter(formatter)
+        file_handler.setLevel(level)
+        file_handler.addFilter(MessageFilter())
+    except Exception as e:
+        print(f"Warning: Could not create file handler: {e}")
+        file_handler = None
 
     # 控制台处理器
     console_handler = logging.StreamHandler()
@@ -45,9 +69,16 @@ def setup_logger(name, log_file, level=logging.INFO):
     console_handler.setLevel(logging.WARNING)  # 控制台只显示警告及以上级别
     console_handler.addFilter(MessageFilter())
 
-    logger = logging.getLogger(name)
+    # 获取或创建logger
+    logger = logging.getLogger(f"{name}_{pid}")
     logger.setLevel(level)
-    logger.addHandler(file_handler)
+    
+    # 清除现有的处理器
+    logger.handlers = []
+    
+    # 添加新的处理器
+    if file_handler:
+        logger.addHandler(file_handler)
     logger.addHandler(console_handler)
 
     # 设置其他模块的日志级别
@@ -58,7 +89,15 @@ def setup_logger(name, log_file, level=logging.INFO):
     return logger
 
 
-main_logger = setup_logger('main_logger', 'chatbot.log', level=logging.DEBUG)
+# 修改主日志器的初始化
+main_logger = None  # 初始化为None
+
+def get_logger():
+    """获取或创建logger的工厂函数"""
+    global main_logger
+    if main_logger is None:
+        main_logger = setup_logger('main_logger', 'chatbot.log', level=logging.DEBUG)
+    return main_logger
 
 
 class BaseChatbot(ABC):
@@ -70,12 +109,14 @@ class BaseChatbot(ABC):
             chatgpt_kwargs: Optional[dict] = None,
             token_limit: Optional[int] = None,
             use_proxy: bool = False,
+            tools: Optional[List[FunctionTool]] = None,
     ):
+        self.logger = get_logger()
         if use_proxy:
             proxy_url = config_dir["proxy"]["url"]
             os.environ["http_proxy"] = proxy_url
             os.environ["https_proxy"] = proxy_url
-            main_logger.debug(f"Proxy set to: {proxy_url}")
+            self.logger.debug(f"Proxy set to: {proxy_url}")
 
         # Get configuration values
         api_key = config_dir[model_name]["api_key"]
@@ -93,7 +134,7 @@ class BaseChatbot(ABC):
             )
         else:  # openai
             model_platform = ModelPlatformType.OPENAI
-            model_type = config_dir[model_name, "llm_model_name"]
+            model_type = config_dir[model_name]["llm_model_name"]
             if not model_type:
                 model_type = "gpt-4o-mini"  # default fallback
 
@@ -125,17 +166,61 @@ class BaseChatbot(ABC):
             api_key=api_key,
         )
 
+        # 添加工具支持
+        self.tools = tools or []
+        
         # Create chat agent
         self.chat_agent = ChatAgent(
             system_message=self.system_message,
             model=model,
             token_limit=token_limit,
+            tools=self.tools
         )
 
-        main_logger.debug(f"Using model: {model_type} on platform {model_platform}")
+        self.logger.debug(f"Using model: {model_type} on platform {model_platform}")
 
-    def query(self, user_input: str) -> str:
-        raise NotImplementedError("Subclasses must implement this method")
+    def query(self, user_input: str, image_path: Optional[str] = None) -> str:
+        """查询模型并获取响应"""
+        try:
+            if image_path and self.is_multimodal:
+                # Process image if provided
+                image_list = [Image.open(image_path)] if image_path else []
+
+                # Create user message with image if available
+                user_message = BaseMessage(
+                    role_name="User",
+                    role_type=RoleType.USER,
+                    meta_dict={},
+                    content=user_input,
+                    image_list=image_list,
+                    image_detail="high"
+                )
+
+                # Get response from chat agent
+                response: ChatAgentResponse = self.chat_agent.step(user_message)
+
+                if response.msgs:
+                    self.logger.debug("Query successful")
+                    return response.msgs[0].content
+                else:
+                    return "No response generated"
+            
+            response = self.chat_agent.step(user_input)
+            
+            # 检查是否有函数调用
+            messages = [record.memory_record.message for record in self.chat_agent.memory.retrieve()]
+            if any(isinstance(message, FunctionCallingMessage) for message in messages):
+                # 使用Hermes格式化器处理函数调用
+                formatter = HermesFunctionFormatter()
+                formatted_messages = [msg.to_sharegpt(formatter) for msg in messages[1:]]
+                conversation = ShareGPTConversation(formatted_messages)
+                return conversation.model_dump_json(by_alias=True)
+            
+            return response.msgs[0].content
+
+        except Exception as e:
+            self.logger.error(f"Error in query: {e}", exc_info=True)
+            return f"Error: {str(e)}"
 
     def clear_history(self):
         self.chat_agent.reset()
@@ -149,6 +234,7 @@ class TextChatbot(BaseChatbot):
             chatgpt_kwargs: Optional[dict] = None,
             token_limit: Optional[int] = None,
             use_proxy: bool = False,
+            tools: Optional[List[FunctionTool]] = None,
     ):
         super().__init__(
             model_name=config_dir["current_model"],
@@ -157,9 +243,10 @@ class TextChatbot(BaseChatbot):
             chatgpt_kwargs=chatgpt_kwargs,
             token_limit=token_limit,
             use_proxy=use_proxy,
+            tools=tools
         )
 
-    def query(self, user_input: str) -> str:
+    def query(self, user_input: str, image_path: Optional[str] = None) -> str:
         try:
             # Create user message
             user_message = BaseMessage(
@@ -173,15 +260,15 @@ class TextChatbot(BaseChatbot):
             response: ChatAgentResponse = self.chat_agent.step(user_message)
 
             if response.msgs:
-                if main_logger.isEnabledFor(logging.DEBUG):
-                    main_logger.debug(f"Query successful: {response.msgs[0].content[:100]}...")
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self.logger.debug(f"Query successful: {response.msgs[0].content[:100]}...")
                 return response.msgs[0].content
             else:
-                main_logger.warning("No response generated")
+                self.logger.warning("No response generated")
                 return "No response generated"
 
         except Exception as e:
-            main_logger.error(f"An error occurred: {e}", exc_info=True)
+            self.logger.error(f"An error occurred: {e}", exc_info=True)
             return f"An error occurred: {str(e)}"
 
 
@@ -193,6 +280,7 @@ class MultimodalChatbot(BaseChatbot):
             chatgpt_kwargs: Optional[dict] = None,
             token_limit: Optional[int] = None,
             use_proxy: bool = False,
+            tools: Optional[List[FunctionTool]] = None,
     ):
         super().__init__(
             model_name=config_dir['current_model'],
@@ -201,6 +289,7 @@ class MultimodalChatbot(BaseChatbot):
             chatgpt_kwargs=chatgpt_kwargs,
             token_limit=token_limit,
             use_proxy=use_proxy,
+            tools=tools
         )
 
     def query(
@@ -226,13 +315,13 @@ class MultimodalChatbot(BaseChatbot):
             response: ChatAgentResponse = self.chat_agent.step(user_message)
 
             if response.msgs:
-                main_logger.debug("Query successful")
+                self.logger.debug("Query successful")
                 return response.msgs[0].content
             else:
                 return "No response generated"
 
         except Exception as e:
-            main_logger.error(f"An error occurred: {e}", exc_info=True)
+            self.logger.error(f"An error occurred: {e}", exc_info=True)
             return f"An error occurred: {str(e)}"
 
 
@@ -313,15 +402,15 @@ def test_models():
     openai_bot.clear_history()
 
     # Test Qwen model
-    qwen_bot = TextChatbot(
-        model_name="qwen",
-        system_prompt="You are a helpful assistant.",
-        use_proxy=False
-    )
-
-    response = qwen_bot.query("What is the capital of China?")
-    print("Qwen Response:", response)
-    qwen_bot.clear_history()
+    # qwen_bot = TextChatbot(
+    #     model_name="qwen",
+    #     system_prompt="You are a helpful assistant.",
+    #     use_proxy=False
+    # )
+    #
+    # response = qwen_bot.query("What is the capital of China?")
+    # print("Qwen Response:", response)
+    # qwen_bot.clear_history()
 
 
 def test_qwen():
@@ -358,4 +447,4 @@ def test_qwen():
 
 
 if __name__ == "__main__":
-    test_qwen()
+    test_models()

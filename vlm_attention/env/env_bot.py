@@ -5,12 +5,20 @@ from collections import defaultdict
 from vlm_attention.env.config import COLORS, get_unit_name
 
 import logging
+
 # 设置logger
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
+"""
+environment bot without ability support
 
+this bot provide an easier interface for building the environment without ability support
+
+based on this bot, environment can directly interact with agent through out text and image
+
+"""
 # 玩家类型常量
 _PLAYER_SELF = 1
 _PLAYER_ENEMY = 4
@@ -23,7 +31,7 @@ class UnitInfo:
     def __init__(self, unit, alliance, simplified_tag, feature_dims, rgb_dims):
         if feature_dims is None or rgb_dims is None:
             raise ValueError("feature_dims and rgb_dims must be provided to UnitInfo")
-            
+
         self.original_tag = int(unit.tag)
         self.alliance = int(alliance)
         self.unit_type = int(unit.unit_type)
@@ -43,7 +51,7 @@ class UnitInfo:
         self.energy = float(unit.energy)
         self.x = float(unit.x)
         self.y = float(unit.y)
-        
+
         try:
             # 计算网格位置 - 使用feature_dims来计算网格位置
             self.grid_x = int(self.x * 10 / self.feature_dims[0])
@@ -52,12 +60,12 @@ class UnitInfo:
             self.grid_x = max(0, min(self.grid_x, 9))
             self.grid_y = max(0, min(self.grid_y, 9))
             self.logger.debug(f"Calculated grid position: ({self.grid_x}, {self.grid_y}) "
-                            f"from screen position: ({self.x}, {self.y})")
+                              f"from screen position: ({self.x}, {self.y})")
         except Exception as e:
             self.logger.error(f"Error calculating grid position: {e}")
             self.grid_x = 0
             self.grid_y = 0
-            
+
         self.alive = self.health > 0
 
     def to_dict(self):
@@ -93,6 +101,7 @@ class UnitInfo:
                 'grid_position': (0, 0)
             }
 
+
 class UnitManager:
     def __init__(self, feature_dims, rgb_dims):
         self.unit_info = {}
@@ -104,7 +113,7 @@ class UnitManager:
         # 确保存储尺寸信息
         self.feature_dims = feature_dims
         self.rgb_dims = rgb_dims
-        
+
         # 添加日志记录
         self.logger = logging.getLogger('UnitManager')
         self.logger.info(f"Initialized UnitManager with feature_dims={feature_dims}, rgb_dims={rgb_dims}")
@@ -151,7 +160,7 @@ class UnitManager:
 
             # 记录日志
             print(f"Registered unit: {unit_name} (original_tag: {original_tag}, "
-                        f"simplified_tag: {self.next_simplified_tag - 1})")
+                  f"simplified_tag: {self.next_simplified_tag - 1})")
 
         self.initialized = True
 
@@ -168,6 +177,7 @@ class UnitManager:
         if unit_info:
             return unit_info[0]  # 返回(simplified_tag, unit_name)中的simplified_tag
         return -1
+
     def update_units(self, units):
         """更新单位状态，保持标识符的一致性"""
         if not self.initialized:
@@ -200,12 +210,12 @@ class UnitManager:
                 self.next_simplified_tag += 1
 
                 self.logger.info(f"New unit registered: {unit_name} (original_tag: {original_tag}, "
-                               f"simplified_tag: {unit_info[0]})")
+                                 f"simplified_tag: {unit_info[0]})")
 
             # 更新或创建UnitInfo对象，确保传入尺寸参数
             if original_tag not in self.unit_info:
                 self.unit_info[original_tag] = UnitInfo(unit, alliance, unit_info[0],
-                                                      self.feature_dims, self.rgb_dims)
+                                                        self.feature_dims, self.rgb_dims)
             else:
                 self.unit_info[original_tag].update_status(unit)
 
@@ -233,8 +243,9 @@ class UnitManager:
 
     def is_valid_unit(self, original_tag):
         """检查单位是否有效"""
-        return (original_tag in self.unit_info and 
+        return (original_tag in self.unit_info and
                 self.unit_info[original_tag].alive)
+
 
 class Multimodal_bot(base_agent.BaseAgent):
     """StarCraft II 多模态机器人代理
@@ -257,17 +268,18 @@ class Multimodal_bot(base_agent.BaseAgent):
         smac_move_commands (list): 当前回合的SMAC风格移动命令列表
         max_health_shield (dict): 记录单位的最大生命值和护盾
     """
+
     def __init__(self, self_color=(0, 255, 0), enemy_color=(0, 0, 255), feature_dims=None, rgb_dims=None,
                  map_size=None):
         super(Multimodal_bot, self).__init__()
-        
+
         # 添加参数验证
         if feature_dims is None or rgb_dims is None:
             raise ValueError("feature_dims and rgb_dims must be provided")
-            
+
         self.logger = logging.getLogger('Multimodal_bot')
         self.logger.info(f"Initializing Multimodal_bot with feature_dims={feature_dims}, rgb_dims={rgb_dims}")
-        
+
         self.unit_manager = UnitManager(feature_dims, rgb_dims)
         self.step_count = 0
         self.self_color = self_color
@@ -286,7 +298,7 @@ class Multimodal_bot(base_agent.BaseAgent):
         self._move_cache = {}
         self._attack_cache = {}
         self._coordinate_cache = {}
-        
+
         # 添加错误计数器
         self._error_counts = defaultdict(int)
         self.max_errors = 3  # 最大错误次数
@@ -302,7 +314,6 @@ class Multimodal_bot(base_agent.BaseAgent):
     def step(self, obs):
         """处理每一步的观察并返回动作列表"""
         self.logger.info(f"\n=== Step {self.step_count} ===")
-
 
         # 第一步时记录单位的最大生命值和护盾
         if self.step_count == 1:
@@ -325,7 +336,7 @@ class Multimodal_bot(base_agent.BaseAgent):
         # 验证并执行攻击命令
         for attacker_tag, target_tag in self.attack_commands:
             is_valid, error_msg = self.validate_attack_command(attacker_tag, target_tag)
-            
+
             if not is_valid:
                 executed_actions['failed'].append({
                     'type': 'attack',
@@ -334,11 +345,11 @@ class Multimodal_bot(base_agent.BaseAgent):
                     'reason': error_msg
                 })
                 continue
-            
+
             # 获取原始tag（已经在validate_attack_command中验证过了）
             attacker_original = self.unit_manager.get_original_tag_by_simplified(attacker_tag)
             target_original = self.unit_manager.get_original_tag_by_simplified(target_tag)
-            
+
             # 创建攻击动作
             action = actions.RAW_FUNCTIONS.Attack_unit("now", attacker_original, target_original)
             if action:
@@ -428,9 +439,6 @@ class Multimodal_bot(base_agent.BaseAgent):
         self.step_count += 1
         return actions_list
 
-
-
-
     def reset(self):
         """重置智能体状态"""
         super(Multimodal_bot, self).reset()
@@ -439,7 +447,7 @@ class Multimodal_bot(base_agent.BaseAgent):
         self.original_move_commands.clear()
         self.smac_move_commands.clear()
         self.max_health_shield.clear()
-        
+
         # 清理所有缓存
         self._move_cache.clear()
         self._attack_cache.clear()
@@ -548,18 +556,18 @@ class Multimodal_bot(base_agent.BaseAgent):
             # 修正：使用正确的方法名
             original_tag = self.unit_manager.get_original_tag_by_simplified(simplified_tag)
             self.logger.debug(f"Looking up simplified_tag {simplified_tag} -> original_tag {original_tag}")
-            
+
             if original_tag is None:
                 self.logger.warning(f"No original tag found for simplified tag {simplified_tag}")
                 return None
-            
+
             # 验证单位是否有效
             if not self.unit_manager.is_valid_unit(original_tag):
                 self.logger.warning(f"Unit with original tag {original_tag} is not valid/alive")
                 return None
-            
+
             return original_tag
-            
+
         except Exception as e:
             self.logger.error(f"Error in get_original_tag: {e}")
             return None
@@ -569,7 +577,7 @@ class Multimodal_bot(base_agent.BaseAgent):
         try:
             if not hasattr(self, '_coordinate_cache'):
                 self._coordinate_cache = {}
-            
+
             cache_key = (tuple(grid_pos), unit_info.original_tag)
             if cache_key in self._coordinate_cache:
                 return self._coordinate_cache[cache_key]
@@ -625,7 +633,7 @@ class Multimodal_bot(base_agent.BaseAgent):
             if not isinstance(grid_pos, (list, tuple)) or len(grid_pos) != 2:
                 self.logger.error(f"Invalid grid_pos format: {grid_pos}")
                 return None
-            
+
             if not isinstance(simplified_tag, int):
                 self.logger.error(f"Invalid simplified_tag format: {simplified_tag}")
                 return None
@@ -651,7 +659,7 @@ class Multimodal_bot(base_agent.BaseAgent):
 
             # 创建移动动作
             action = actions.RAW_FUNCTIONS.Move_pt("now", original_tag, world_coords)
-            
+
             # 缓存结果
             self._move_cache[cache_key] = action
             return action
@@ -749,7 +757,7 @@ class Multimodal_bot(base_agent.BaseAgent):
 
             # 创建攻击动作
             action = actions.RAW_FUNCTIONS.Attack_unit("now", attacker_original_tag, target_original_tag)
-            
+
             # 缓存结果
             self._attack_cache[cache_key] = action
             return action
@@ -778,18 +786,18 @@ class Multimodal_bot(base_agent.BaseAgent):
         # 获取原始tag
         attacker_original = self.unit_manager.get_original_tag_by_simplified(attacker_tag)
         target_original = self.unit_manager.get_original_tag_by_simplified(target_tag)
-        
+
         if not attacker_original or not target_original:
             return False, "Invalid tag"
-        
+
         # 验证单位存活和阵营
         attacker = self.unit_manager.unit_info.get(attacker_original)
         target = self.unit_manager.unit_info.get(target_original)
-        
+
         if not attacker or not target:
             return False, "Unit not found"
-        
+
         if attacker.alliance != 1 or target.alliance != 4:
             return False, "Invalid alliance"
-        
+
         return True, ""

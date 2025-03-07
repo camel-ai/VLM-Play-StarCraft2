@@ -6,6 +6,14 @@ import json
 from pathlib import Path
 
 
+"""
+unit class for starcraft 2
+
+this class is used to store the unit information
+
+it is used in the frame class
+"""
+
 @dataclass
 class Unit:
     simple_tag: int

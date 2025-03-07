@@ -2,6 +2,18 @@ import psutil
 import re
 
 
+
+
+"""
+
+Old version of process checker, not used now.
+
+
+In old version, we used OBS to record the screen realtime, and then use the process checker to check the process.
+But now, we use the pysc2 to record the screen, so the process checker is not used.
+"""
+
+
 def check_processes():
     sc2_processes = []
     all_processes = []

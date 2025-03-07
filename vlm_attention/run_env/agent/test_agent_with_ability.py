@@ -17,7 +17,16 @@ COLOR_SELF = (0, 255, 0)  # 绿色 (BGR)
 COLOR_ENEMY = (0, 0, 255)  # 红色 (BGR)
 
 
-class TestAgent:
+"""
+
+test agent for the environment with ability support
+
+It`s action space is :
+
+move, attack, ability
+
+"""
+class TestAgent_With_Ability:
     def __init__(self, action_space: Dict[str, Any], config_path: str, save_dir: str, draw_grid: bool = False,
                  annotate_units: bool = True, annotate_all_units: bool = True, grid_size: Tuple[int, int] = (10, 10),
                  use_self_attention: bool = False, use_rag: bool = False, use_proxy: bool = False,
@@ -55,7 +64,7 @@ class TestAgent:
 
         # 更新动作类型及其概率
         self.action_types = ['attack', 'grid_move', 'smac_move', 'ability', 'none']
-        self.action_probs = [0.0, 0.0, 0.0, 1.0, 0.0]  # 均匀分布概率
+        self.action_probs = [0.0, 0.0, 0.0, 0.9, 0.1]  # 调整概率分布
 
         # SMAC移动方向定义
         self.directions = range(4)  # UP(0), RIGHT(1), DOWN(2), LEFT(3)
@@ -66,8 +75,30 @@ class TestAgent:
         """处理观察并返回动作"""
         self.step_count += 1
         self.text_observation = observation["text"]
-        # logger.info(f"Processing step {self.step_count}")
-        # logger.info(f"Text observation: {self.text_observation}")
+        
+        # 添加详细的观测信息打印
+        print("\n=== Observation Details ===")
+        print("\nUnit Information:")
+        for unit in observation['unit_info']:
+            print(f"\nUnit: {unit['unit_name']} (Tag: {unit['simplified_tag']}, Alliance: {unit['alliance']})")
+            print(f"Health: {unit['health']}/{unit['max_health']}")
+            print(f"Position: {unit['position']}")
+            
+            # 特别关注技能信息
+            if 'abilities' in unit:
+                print("Abilities:")
+                for idx, ability in enumerate(unit['abilities']):
+                    print(f"  [{idx}] {ability}")
+            else:
+                print("No abilities found")
+                
+            if 'active_abilities' in unit:
+                print("Active abilities:", unit['active_abilities'])
+                
+            if 'ability_cooldowns' in unit:
+                print("Ability cooldowns:", unit['ability_cooldowns'])
+        
+        print("\n=== End of Observation Details ===\n")
 
         # 保存原始图像
         if self.save_original_images:
@@ -91,99 +122,90 @@ class TestAgent:
             'ability': []  # 新增技能命令列表
         }
 
-        # 获取当前可用的己方单位
+        # 获取当前可用的己方单位和敌方单位
         available_units = [
             unit for unit in observation['unit_info']
             if unit['alliance'] == 1
+        ]
+        enemy_units = [
+            unit for unit in observation['unit_info']
+            if unit['alliance'] == 4
         ]
 
         if not available_units:
             return action_dict
 
-        # 为每个己方单位生成动作
+        # 为每个己方单位独立决定是否生成动作，以及生成什么类型的动作
         for unit in available_units:
-            if np.random.random() < 1:  # 10%概率生成命令
-                action_type = np.random.choice(self.action_types, p=self.action_probs)
+            if 'simplified_tag' not in unit:
+                continue
 
-                if action_type == 'attack':
-                    # 随机选择一个目标
-                    target_idx = np.random.randint(0, self.num_units)
+            # 首先决定是否为这个单位生成动作（50%概率）
+            if np.random.random() < 0.5:
+                # 然后从可用的动作类型中随机选择一个
+                action_type = np.random.choice(self.action_types, p=self.action_probs)
+                
+                if action_type == 'attack' and enemy_units:
+                    # 生成攻击动作...
+                    target = np.random.choice(enemy_units)
                     action_dict['attack'].append((
                         unit['simplified_tag'],
-                        target_idx
+                        target['simplified_tag']
                     ))
-
+                    
                 elif action_type == 'grid_move':
-                    # Grid-based移动 (0-9范围内的坐标)
-                    target_position = np.random.randint(0, 9, size=2)
-                    action_dict['move'].append((
-                        1,  # 移动类型1: grid-based移动
-                        unit['simplified_tag'],
-                        target_position.tolist()
-                    ))
-
+                    # 生成网格移动动作...
+                    x = np.random.randint(0, 10)
+                    y = np.random.randint(0, 10)
+                    action_dict['move'].append((1, unit['simplified_tag'], [x, y]))
+                    
                 elif action_type == 'smac_move':
-                    # SMAC风格移动 (4个方向之一)
+                    # 生成SMAC移动动作...
                     direction = np.random.choice(self.directions)
-                    action_dict['move'].append((
-                        2,  # 移动类型2: SMAC风格移动
+                    action_dict['move'].append((2, unit['simplified_tag'], [direction, 0]))
+                    
+                elif action_type == 'ability' and 'abilities' in unit and unit['abilities']:
+                    # 生成技能动作...
+                    ability = np.random.choice(unit['abilities'])
+                    target_type = ability.get('target_type', 0)
+                    target_info = {'target_type': target_type}
+                    
+                    # 根据技能类型设置目标信息
+                    if target_type == 1:  # POINT
+                        target_info['position'] = [
+                            np.random.randint(0, 10),
+                            np.random.randint(0, 10)
+                        ]
+                        target_info['target_unit'] = 0
+                    elif target_type == 2:  # UNIT
+                        if 'LOAD' in ability.get('name', '').upper():
+                            # 选择友方单位
+                            if available_units:
+                                target_unit = np.random.choice(available_units)
+                                target_info['target_unit'] = target_unit['simplified_tag']
+                            else:
+                                continue
+                        else:
+                            # 选择敌方单位
+                            if enemy_units:
+                                target_unit = np.random.choice(enemy_units)
+                                target_info['target_unit'] = target_unit['simplified_tag']
+                            else:
+                                continue
+                        target_info['position'] = [0, 0]
+                    else:  # QUICK or AUTO
+                        target_info['position'] = [0, 0]
+                        target_info['target_unit'] = 0
+                    
+                    ability_index = unit['abilities'].index(ability)
+                    action_dict['ability'].append((
                         unit['simplified_tag'],
-                        [direction, 0]  # direction in [0,1,2,3], 第二个值填充0
+                        ability_index,
+                        target_info
                     ))
 
-                elif action_type == 'ability':
-                    if 'abilities' in unit and unit['abilities']:
-                        # 随机选择一个可用技能
-                        ability = np.random.choice(unit['abilities'])
-                        ability_name = ability['name']
-                        target_type = ability['target_type']
-
-                        # 根据技能的目标类型构建target_info
-                        target_info = {'target_type': target_type}
-
-                        if target_type == 0:  # QUICK - 无需目标
-                            target_info['position'] = [0, 0]  # 添加默认值
-                            target_info['target_unit'] = 0  # 添加默认值
-
-                        elif target_type == 1:  # POINT - 目标位置
-                            target_position = np.random.randint(0, 9, size=2)
-                            target_info['position'] = target_position.tolist()
-                            target_info['target_unit'] = 0  # 添加默认值
-
-                        elif target_type == 2:  # UNIT - 目标单位
-                            # 对于LOAD，选择友方单位
-                            if 'LOAD' in ability_name:
-                                friendly_units = [u for u in observation['unit_info']
-                                                  if u['alliance'] == 1 and
-                                                  u['simplified_tag'] != unit['simplified_tag']]
-                                if friendly_units:
-                                    target_unit = np.random.choice(friendly_units)
-                                    target_info['target_unit'] = target_unit['simplified_tag']
-                                else:
-                                    return action_dict
-                            else:  # 其他技能选择敌方单位
-                                enemy_units = [u for u in observation['unit_info']
-                                               if u['alliance'] != 1]
-                                if enemy_units:
-                                    target_unit = np.random.choice(enemy_units)
-                                    target_info['target_unit'] = target_unit['simplified_tag']
-                                else:
-                                    return action_dict
-                            target_info['position'] = [0, 0]  # 添加默认值
-
-                        elif target_type == 3:  # AUTO - 自动施放
-                            target_info['position'] = [0, 0]  # 添加默认值
-                            target_info['target_unit'] = 0  # 添加默认值
-
-                        # 构建ability命令
-                        ability_index = unit['abilities'].index(ability)
-                        action_dict['ability'].append((
-                            unit['simplified_tag'],
-                            ability_index,
-                            target_info
-                        ))
-        # 记录日志
-        logger.info(f"Step {self.step_count}: Generated actions:")
+        # 记录生成的动作
+        logger.info(f"\nStep {self.step_count} Generated Actions:")
         logger.info(f"Attack actions: {action_dict['attack']}")
         logger.info(f"Move actions: {action_dict['move']}")
         logger.info(f"Ability actions: {action_dict['ability']}")

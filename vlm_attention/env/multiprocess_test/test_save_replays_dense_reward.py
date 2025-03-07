@@ -9,6 +9,15 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
+
+"""
+save replay & dense reward test code for starcraft 2
+
+"""
+
+
+
 FLAGS = flags.FLAGS
 map_list = ["2m_vs_1z_vlm_attention",
             "3m_vlm_attention",

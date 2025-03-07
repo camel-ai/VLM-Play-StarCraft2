@@ -6,6 +6,13 @@ logger = logging.getLogger(__name__)
 import math
 
 
+
+"""
+automatic annotate the unit on the image from pysc2 observation. 
+pysc2 observation is a dictionary, we need to extract the unit information from the dictionary.
+
+"""
+
 def _annotate_units_on_image(image, units_to_annotate, circle_radius=25, font_scale=1, circle_thickness=2):
     """
     在图像上标注指定的单位，确保标注完整且清晰可读。

@@ -9,16 +9,22 @@ from s2clientprotocol import sc2api_pb2 as sc_pb
 
 from pysc2.env import sc2_env
 from pysc2.lib import actions, features
-from vlm_attention.env.env_bot_with_ability import Multimodal_bot
 from vlm_attention.env.config import *
+from vlm_attention.env.env_bot_with_ability import Multimodal_with_ability_bot
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 # 玩家类型常量
 _PLAYER_SELF = 1
 _PLAYER_ENEMY = 4
+"""
+environment with ability support
 
-class SC2MultimodalEnv(gym.Env):
+this environment provide an easier interface for building the environment with ability support
+
+based on this environment, we can directly interact with agent through out text and image
+"""
+class SC2Multimodal_with_ability_Env(gym.Env):
     MAX_RETRY_ATTEMPTS = 3
     RETRY_DELAY = 2  # seconds
 
@@ -31,7 +37,7 @@ class SC2MultimodalEnv(gym.Env):
 
     def __init__(self, map_name, save_dir, replay_dir, timestamp,
                  feature_dims=None, rgb_dims=None, map_size=None):
-        super(SC2MultimodalEnv, self).__init__()
+        super(SC2Multimodal_with_ability_Env, self).__init__()
 
         # 验证必要的参数
         if feature_dims is None or rgb_dims is None or map_size is None:
@@ -97,7 +103,7 @@ class SC2MultimodalEnv(gym.Env):
            - health/shield/energy: 单位状态值
            - position: 单位在屏幕上的坐标 (x, y)
 
-        Action Space 包含两种动作类型:
+        Action Space 包含三种动作类型:
         1. Attack Actions
            Format: (attacker_tag, target_tag)
            - attacker_tag: 发起攻击的己方单位的simplified_tag (0 ~ num_units-1)
@@ -124,6 +130,47 @@ class SC2MultimodalEnv(gym.Env):
                - 1: 向右移动(x+1)
                - 2: 向下移动(y+1)
                - 3: 向左移动(x-1)
+               
+        3. Ability Actions
+           Format: (caster_tag, ability_index, target_info)
+           - caster_tag: 释放技能的单位的simplified_tag (0 ~ num_units-1)
+           - ability_index: 技能在ABILITY_MANAGER.ability_function_map中的索引
+           - target_info: 包含目标类型和目标信息的字典
+             - target_type: 技能目标类型 (0=quick, 1=point, 2=unit, 3=autocast)
+             - position: 点目标的坐标 [x, y]，用于target_type=1
+             - target_unit: 单位目标的simplified_tag，用于target_type=2
+
+        Action Examples:
+        --------------
+        1. Attack Action Examples:
+           - 单位1攻击单位6: 
+             {'attack': (1, 6), 'move': (0, 0, [0, 0]), 'ability': (0, 0, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})}
+           - 单位2攻击单位8: 
+             {'attack': (2, 8), 'move': (0, 0, [0, 0]), 'ability': (0, 0, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})}
+           - 多个攻击指令: 
+             {'attack': [(1, 6), (2, 8)], 'move': (0, 0, [0, 0]), 'ability': (0, 0, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})}
+
+        2. Move Action Examples:
+           - 网格移动(单位3移动到坐标(5,7)): 
+             {'attack': [], 'move': (1, 3, [5, 7]), 'ability': (0, 0, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})}
+           - SMAC移动(单位2向右移动): 
+             {'attack': [], 'move': (2, 2, [1, 0]), 'ability': (0, 0, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})}
+
+        3. Ability Action Examples:
+           - 单位1使用快速施放技能(索引5): 
+             {'attack': [], 'move': (0, 0, [0, 0]), 'ability': (1, 5, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})}
+           - 单位2使用点目标技能(索引7)指向坐标(4,6): 
+             {'attack': [], 'move': (0, 0, [0, 0]), 'ability': (2, 7, {'target_type': 1, 'position': [4, 6], 'target_unit': 0})}
+           - 单位3使用单位目标技能(索引10)指向单位8: 
+             {'attack': [], 'move': (0, 0, [0, 0]), 'ability': (3, 10, {'target_type': 2, 'position': [0, 0], 'target_unit': 8})}
+           - 单位4开启自动施放技能(索引12): 
+             {'attack': [], 'move': (0, 0, [0, 0]), 'ability': (4, 12, {'target_type': 3, 'position': [0, 0], 'target_unit': 0})}
+
+        4. 组合动作Examples:
+           - 单位1攻击单位6，同时单位2使用技能: 
+             {'attack': (1, 6), 'move': (0, 0, [0, 0]), 'ability': (2, 5, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})}
+           - 单位2移动到(3,4)，同时单位3使用点目标技能: 
+             {'attack': [], 'move': (1, 2, [3, 4]), 'ability': (3, 7, {'target_type': 1, 'position': [5, 5], 'target_unit': 0})}
 
         Returns:
             None: 直接设置类的observation_space和action_space属性
@@ -258,9 +305,6 @@ class SC2MultimodalEnv(gym.Env):
             logger.error(f"Error getting game result: {str(e)}", exc_info=True)
             return ("UNDECIDED", 0)
 
-
-
-
     def _create_env(self):
         """创建SC2环境"""
         agent_interface_format = features.AgentInterfaceFormat(
@@ -315,6 +359,12 @@ class SC2MultimodalEnv(gym.Env):
     def step(self, action):
         """单步执行"""
         try:
+            # 记录接收到的动作
+            logger.info("\nReceived actions:")
+            logger.info(f"Attack commands: {action.get('attack', [])}")
+            logger.info(f"Move commands: {action.get('move', [])}")
+            logger.info(f"Ability commands: {action.get('ability', [])}")
+
             # 设置机器人的动作命令
             try:
                 self.bot.attack_commands = action.get('attack', [])
@@ -330,6 +380,7 @@ class SC2MultimodalEnv(gym.Env):
                 # 新增：处理技能命令
                 self.bot.ability_commands = action.get('ability', [])
             except Exception as e:
+                logger.error(f"Bot command setting error: {str(e)}")
                 return None, 0, True, {"error": f"Bot command setting error: {str(e)}"}
 
             # 1. 执行空步骤并获取观察
@@ -352,7 +403,14 @@ class SC2MultimodalEnv(gym.Env):
             # 2. 获取机器人动作
             try:
                 bot_actions = self.bot.step(obs[0])
+                if bot_actions:
+                    logger.info("\nGenerated pysc2 actions:")
+                    for act in bot_actions:
+                        logger.info(f"Action: {act}")
+                else:
+                    logger.warning("No valid pysc2 actions generated!")
             except Exception as e:
+                logger.error(f"Bot action error: {str(e)}")
                 return None, 0, True, {"error": f"Bot action error: {str(e)}"}
 
             # 3. 执行动作
@@ -375,6 +433,12 @@ class SC2MultimodalEnv(gym.Env):
                 self.total_reward += reward  # 累积过程中的奖励(这里都是0)
                 info = {'total_reward': self.total_reward}
 
+            # 记录执行的原始动作
+            if bot_actions:
+                logger.info("\nExecuted raw actions:")
+                for raw_action in bot_actions:
+                    logger.info(str(raw_action))
+
             return next_state, reward, done, info
 
         except Exception as e:
@@ -384,19 +448,17 @@ class SC2MultimodalEnv(gym.Env):
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
         """重置环境"""
         try:
-            # 关闭现有环境
             if self.sc2_env is not None:
                 self.close()
             self.episode_count += 1
-            self.total_reward = 0  # 重置累积奖励
+            self.total_reward = 0
             logger.info(f"\nStarting Episode {self.episode_count:04d}")
 
-            # 创建新环境
             self.sc2_env = self._create_env()
             obs = self.sc2_env.reset()
 
-            # 重置机器人
-            self.bot = Multimodal_bot(
+            # 使用带技能的机器人
+            self.bot = Multimodal_with_ability_bot(
                 self_color=self.self_color,
                 enemy_color=self.enemy_color,
                 feature_dims=self.feature_dims,
@@ -406,14 +468,12 @@ class SC2MultimodalEnv(gym.Env):
             self.bot.setup(self.sc2_env.observation_spec(), self.sc2_env.action_spec())
             self.bot.reset()
 
-            # 确保UnitManager的初始化状态被重置
+            # 重置状态
             self.bot.unit_manager.initialized = False
             self.bot.unit_manager.tag_registry.clear()
             self.bot.unit_manager.type_counters.clear()
             self.bot.unit_manager.next_simplified_tag = 1
 
-            # 重置状态
-            self.previous_score = None
             return self._get_observation(obs[0])
 
         except Exception as e:
@@ -478,6 +538,7 @@ class SC2MultimodalEnv(gym.Env):
                         'max_shield': unit['max_shield'],
                         'energy': unit['energy'],
                         'position': unit['position'],
+                        'grid_position':unit['grid_position'],
                         'abilities': unit_obj.available_abilities,
                         'active_abilities': list(unit_obj.active_abilities),
                         'ability_cooldowns': {
@@ -494,8 +555,3 @@ class SC2MultimodalEnv(gym.Env):
 
         except Exception as e:
             raise
-
-
-
-
-

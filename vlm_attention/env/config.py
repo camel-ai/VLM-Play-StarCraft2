@@ -1,7 +1,17 @@
 from pysc2.lib.units import Neutral, Protoss, Terran, Zerg
 from pysc2.lib.actions import RAW_FUNCTIONS
 from pysc2.lib import actions, units, upgrades
+import logging
 
+"""
+Config of the entire environment, including:
+action types, direction constants, 
+player types, colors, 
+target types, logger, 
+ability manager, format unit name, 
+get unit name, ability manager.
+
+"""
 # Action types
 _NO_OP = 0
 _MOVE = 1
@@ -29,6 +39,7 @@ TARGET_TYPE = {
     "AUTO": 3  # Autocast (e.g. Heal)
 }
 
+logger = logging.getLogger(__name__)
 
 class AbilityManager:
     """用于管理游戏中的技能系统"""
@@ -332,6 +343,22 @@ class AbilityManager:
             print(f"Error creating ability action for {ability_name}: {e}")
 
         return None
+
+    def debug_unit_abilities(self, unit_type):
+        """打印单位的所有可用技能"""
+        try:
+            unit_enum = units.get_unit_type(unit_type)
+            base_abilities = self.unit_ability_map.get(unit_enum, {}).get('base', set())
+            upgraded_abilities = self.unit_ability_map.get(unit_enum, {}).get('upgraded', set())
+            
+            logger.info(f"Unit type {unit_type} ({unit_enum.name}) abilities:")
+            logger.info(f"Base abilities: {base_abilities}")
+            logger.info(f"Upgraded abilities: {upgraded_abilities}")
+            
+            return base_abilities, upgraded_abilities
+        except ValueError:
+            logger.error(f"Invalid unit type: {unit_type}")
+            return set(), set()
 
 
 def format_unit_name(enum_name: str) -> str:

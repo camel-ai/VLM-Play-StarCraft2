@@ -1,6 +1,8 @@
 import logging
 import os
 from typing import Optional, Tuple
+import random
+import time
 
 import gym
 import numpy as np
@@ -15,7 +17,13 @@ from vlm_attention.env.env_bot import Multimodal_bot
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+"""
+environment without ability support
 
+this environment provide an easier interface for building the environment without ability support
+
+based on this environment, we can directly interact with agent through out text and image
+"""
 class SC2MultimodalEnv(gym.Env):
     MAX_RETRY_ATTEMPTS = 3
     RETRY_DELAY = 2  # seconds
@@ -122,6 +130,28 @@ class SC2MultimodalEnv(gym.Env):
                - 1: 向右移动(x+1)
                - 2: 向下移动(y+1)
                - 3: 向左移动(x-1)
+
+        Action Examples:
+        --------------
+        1. Attack Action Examples:
+           - 单位1攻击单位6: {'attack': (1, 6), 'move': (0, 0, [0, 0])}
+           - 单位2攻击单位8: {'attack': (2, 8), 'move': (0, 0, [0, 0])}
+           - 多个攻击指令: {'attack': [(1, 6), (2, 8), (3, 7)], 'move': (0, 0, [0, 0])}
+           - 不执行攻击: {'attack': [], 'move': (0, 0, [0, 0])}
+
+        2. Move Action Examples:
+           - 网格移动(单位3移动到坐标(5,7)): {'attack': [], 'move': (1, 3, [5, 7])}
+           - SMAC移动(单位2向右移动): {'attack': [], 'move': (2, 2, [1, 0])}
+           - SMAC移动(单位4向下移动): {'attack': [], 'move': (2, 4, [2, 0])}
+           - 不移动: {'attack': [], 'move': (0, 0, [0, 0])}
+
+        3. 组合动作Examples:
+           - 单位1攻击单位6，同时单位2移动到(3,4): 
+             {'attack': (1, 6), 'move': (1, 2, [3, 4])}
+           - 单位2攻击单位7，同时单位3向上移动: 
+             {'attack': (2, 7), 'move': (2, 3, [0, 0])}
+           - 多个单位攻击，一个单位移动:
+             {'attack': [(1, 6), (2, 8)], 'move': (1, 3, [5, 7])}
 
         Returns:
             None: 直接设置类的observation_space和action_space属性
@@ -247,11 +277,8 @@ class SC2MultimodalEnv(gym.Env):
             logger.error(f"Error getting game result: {str(e)}", exc_info=True)
             return ("UNDECIDED", 0)
 
-
-
-
     def _create_env(self):
-        """创建SC2环境"""
+        """创建SC2环境，添加重试机制处理多进程冲突"""
         agent_interface_format = features.AgentInterfaceFormat(
             feature_dimensions=features.Dimensions(screen=self.feature_dims, minimap=(32, 32)),
             rgb_dimensions=features.Dimensions(screen=self.rgb_dims, minimap=(64, 64)),
@@ -267,22 +294,38 @@ class SC2MultimodalEnv(gym.Env):
             raw_resolution=64
         )
 
-        try:
-            # 使用基础文件名，让sc2_env生成初始replay
-            return sc2_env.SC2Env(
-                map_name=self.map_name,
-                players=[sc2_env.Agent(sc2_env.Race.terran),
-                         sc2_env.Bot(sc2_env.Race.random, sc2_env.Difficulty.easy)],
-                agent_interface_format=agent_interface_format,
-                step_mul=8,
-                game_steps_per_episode=1000,
-                visualize=True,
-                score_index=0,  # 使用dense reward
-                score_multiplier=1,  # 可以调整reward的scale
-            )
-        except Exception as e:
-            logger.error(f"Failed to create SC2Env: {e}")
-            raise
+        max_retries = 3
+        retry_delay = 2.0  # 基础延迟时间(秒)
+
+        for attempt in range(max_retries):
+            try:
+                # 添加随机延迟，避免多进程同时创建环境
+                if attempt > 0:  # 第一次尝试不延迟
+                    random_delay = random.uniform(0, retry_delay * (attempt + 1))
+                    time.sleep(random_delay)
+                    logger.info(f"Retry attempt {attempt + 1} after {random_delay:.2f}s delay")
+
+                env = sc2_env.SC2Env(
+                    map_name=self.map_name,
+                    players=[sc2_env.Agent(sc2_env.Race.terran),
+                             sc2_env.Bot(sc2_env.Race.random, sc2_env.Difficulty.easy)],
+                    agent_interface_format=agent_interface_format,
+                    step_mul=8,
+                    game_steps_per_episode=1000,
+                    visualize=True,
+                    score_index=0,
+                    score_multiplier=1,
+                )
+                logger.info("Successfully created SC2Env")
+                return env
+
+            except Exception as e:
+                logger.warning(f"Attempt {attempt + 1} failed to create SC2Env: {str(e)}")
+                if attempt < max_retries - 1:
+                    continue
+                else:
+                    logger.error("All attempts to create SC2Env failed")
+                    raise
 
     def _save_replay_with_result(self, result_tuple: Tuple[str, int]):
         """使用游戏结果和累积奖励保存回放"""
@@ -421,7 +464,6 @@ class SC2MultimodalEnv(gym.Env):
     def __del__(self):
         self.close()
 
-
     def _get_observation(self, obs):
         """获取观察信息"""
         try:
@@ -467,9 +509,3 @@ class SC2MultimodalEnv(gym.Env):
         except Exception as e:
             logger.error(f"Error in _get_observation: {e}")
             raise
-
-
-
-
-
-

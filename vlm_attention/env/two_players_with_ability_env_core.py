@@ -10,12 +10,18 @@ from s2clientprotocol import sc2api_pb2 as sc_pb
 from pysc2.env import sc2_env
 from pysc2.lib import actions, features
 from vlm_attention.env.config import COLORS, get_unit_name
-from vlm_attention.env.env_bot_with_ability import Multimodal_bot
+from vlm_attention.env.env_bot_with_ability import Multimodal_with_ability_bot
 from vlm_attention.env.config import COLORS, ABILITY_MANAGER  # 添加ABILITY_MANAGER
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+"""
+environment with two players, with ability support
 
+this environment provide an easier interface for building the environment with two players with ability support
+
+based on this environment, we can directly interact with agent through out text and image
+"""
 class SC2MultimodalTwoPlayerEnv(gym.Env):
     MAX_RETRY_ATTEMPTS = 3
     RETRY_DELAY = 2
@@ -70,7 +76,121 @@ class SC2MultimodalTwoPlayerEnv(gym.Env):
         self._define_spaces()
 
     def _define_spaces(self):
-        """定义观察和动作空间"""
+        """定义观察和动作空间
+
+        Observation Space 包含三个主要部分:
+        1. Text Observation
+           - 游戏状态的文字描述
+           - 包含所有单位的生命值、护盾值等状态信息
+           - 按阵营(己方/敌方)分组组织
+
+        2. Image Observation
+           - RGB格式的游戏画面截图
+           - 形状: (height, width, 3)
+           - 像素值范围: [0, 255]
+           - 包含所有单位的可视化表示
+
+        3. Unit Information
+           - original_tag: PySC2原生单位标识符 (0 ~ 999999)
+           - simplified_tag: 简化的单位标识符 (1 ~ 99)
+           - alliance: 单位阵营 (1:己方, 4:敌方)
+           - unit_type: 单位类型编号 (0 ~ 999)
+           - unit_name: 单位类型名称
+           - health/shield/energy: 单位状态值
+           - position: 单位在屏幕上的坐标 (x, y)
+           - abilities: 单位可用技能列表
+           - active_abilities: 单位当前激活的技能
+           - ability_cooldowns: 单位技能冷却时间
+
+        Action Space 包含三种动作类型:
+        1. Attack Actions
+           Format: (attacker_tag, target_tag)
+           - attacker_tag: 发起攻击的己方单位的simplified_tag (0 ~ num_units-1)
+           - target_tag: 攻击目标的simplified_tag (0 ~ num_units-1)
+           注意: 验证时需确保attacker是己方单位，target是敌方单位
+
+        2. Move Actions
+           Format: (move_type, unit_tag, target)
+
+          2.1 Grid-based Movement (move_type = 1)
+               - unit_tag: 移动单位的simplified_tag (0 ~ num_units-1)
+               - target: 目标网格坐标 [x, y], x,y均在[0, 9]范围内
+               坐标系说明:
+               - 使用10x10网格
+               - 原点(0,0)在左上角
+               - x轴向右为正，范围[0,9]
+               - y轴向下为正，范围[0,9]
+
+           2.2 SMAC-style Movement (move_type = 2)
+               - unit_tag: 移动单位的simplified_tag (0 ~ num_units-1)
+               - target: [direction, 0]
+               direction说明:
+               - 0: 向上移动(y-1)
+               - 1: 向右移动(x+1)
+               - 2: 向下移动(y+1)
+               - 3: 向左移动(x-1)
+               
+        3. Ability Actions
+           Format: (caster_tag, ability_index, target_info)
+           - caster_tag: 释放技能的单位的simplified_tag (0 ~ num_units-1)
+           - ability_index: 技能在ABILITY_MANAGER.ability_function_map中的索引
+           - target_info: 包含目标类型和目标信息的字典
+             - target_type: 技能目标类型 (0=quick, 1=point, 2=unit, 3=autocast)
+             - position: 点目标的坐标 [x, y]，用于target_type=1
+             - target_unit: 单位目标的simplified_tag，用于target_type=2
+
+        Action Examples (两个玩家带技能):
+        -----------------------------
+        1. 玩家1和玩家2的动作列表:
+           actions = [player1_action, player2_action]
+
+        2. 基本攻击示例:
+           player1_action = {
+               'attack': (1, 6), 
+               'move': (0, 0, [0, 0]), 
+               'ability': (0, 0, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})
+           }
+           
+        3. 基本移动示例:
+           player2_action = {
+               'attack': [], 
+               'move': (1, 3, [5, 7]), 
+               'ability': (0, 0, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})
+           }
+           
+        4. 技能使用示例:
+           # 玩家1使用快速施放技能
+           player1_ability = {
+               'attack': [], 
+               'move': (0, 0, [0, 0]), 
+               'ability': (2, 5, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})
+           }
+           
+           # 玩家2使用点目标技能
+           player2_ability = {
+               'attack': [], 
+               'move': (0, 0, [0, 0]), 
+               'ability': (3, 7, {'target_type': 1, 'position': [4, 6], 'target_unit': 0})
+           }
+           
+        5. 完整示例 - 玩家1攻击，玩家2使用技能:
+           actions = [
+               {'attack': (1, 6), 'move': (0, 0, [0, 0]), 'ability': (0, 0, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})},  # 玩家1
+               {'attack': [], 'move': (0, 0, [0, 0]), 'ability': (3, 7, {'target_type': 1, 'position': [4, 6], 'target_unit': 0})}      # 玩家2
+           ]
+           
+        6. 完整示例 - 玩家1移动，玩家2使用单位目标技能:
+           actions = [
+               {'attack': [], 'move': (1, 2, [3, 4]), 'ability': (0, 0, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})},     # 玩家1
+               {'attack': [], 'move': (0, 0, [0, 0]), 'ability': (4, 10, {'target_type': 2, 'position': [0, 0], 'target_unit': 8})}     # 玩家2
+           ]
+           
+        7. 完整示例 - 两个玩家都使用技能:
+           actions = [
+               {'attack': [], 'move': (0, 0, [0, 0]), 'ability': (2, 5, {'target_type': 0, 'position': [0, 0], 'target_unit': 0})},     # 玩家1
+               {'attack': [], 'move': (0, 0, [0, 0]), 'ability': (3, 12, {'target_type': 3, 'position': [0, 0], 'target_unit': 0})}     # 玩家2
+           ]
+        """
         self.num_units = 100
 
         # 定义观察空间
@@ -396,7 +516,7 @@ class SC2MultimodalTwoPlayerEnv(gym.Env):
 
             # 创建两个bot实例
             self.bots = [
-                Multimodal_bot(
+                Multimodal_with_ability_bot(
                     self_color=self.self_color,
                     enemy_color=self.enemy_color,
                     feature_dims=self.feature_dims,

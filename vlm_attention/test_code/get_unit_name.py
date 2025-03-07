@@ -1,6 +1,10 @@
 import json
 from pathlib import Path
 
+"""
+extract the unit name from the json file from the firecrawl_test,
+and save the unit name to the json file
+"""
 
 def extract_unit_names(input_file_path):
     # 读取JSON文件

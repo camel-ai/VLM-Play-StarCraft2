@@ -14,7 +14,6 @@
 """Module setuptools script."""
 
 import distutils.command.build
-
 from setuptools import setup, find_packages
 
 description = """PySC2 - StarCraft II Learning Environment
@@ -63,7 +62,8 @@ setup(
         'pysc2.maps',
         'pysc2.run_configs',
         'pysc2.tests',
-    ],
+        'vlm_attention',
+    ] + [f'vlm_attention.{pkg}' for pkg in find_packages(where='vlm_attention')],
     install_requires=[
         'absl-py>=0.1.0',
         'deepdiff',
@@ -81,7 +81,7 @@ setup(
         'sk-video',
         'websocket-client',
         'pre-commit',
-        'camel-ai==0.2.14',
+        # 移除 camel-ai 依赖
         'pillow',
     ],
     entry_points={

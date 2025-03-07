@@ -7,6 +7,12 @@ from absl import app, flags
 import cv2
 import numpy as np
 
+"""
+move test code for starcraft 2
+
+this code is used to test the move action of the given unit, based on the ###feature action space###.
+
+"""
 FLAGS = flags.FLAGS
 map_list = ["vlm_attention_1",
             "2c_vs_64zg_vlm_attention",
