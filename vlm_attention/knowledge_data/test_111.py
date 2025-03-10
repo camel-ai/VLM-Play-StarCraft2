@@ -3,7 +3,7 @@ import os
 
 os.environ['HTTP_PROXY'] = 'http://127.0.0.1:7890'
 os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:7890'
-app = FirecrawlApp(api_key="fc-96cdb2de30954131b1a9e6cc8bb34d65")
+app = FirecrawlApp(api_key="")
 
 # Scrape a website:
 scrape_status = app.scrape_url(
